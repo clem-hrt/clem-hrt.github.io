@@ -3,10 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Clement Heritier | Portfolio</title>
 
-<!-- Google Font -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
@@ -21,36 +19,36 @@ body {
 
 /* SIDEBAR */
 .sidebar {
-    width: 250px;
+    width: 260px;
     background: #020617;
     height: 100vh;
-    padding: 20px;
+    padding: 30px 20px;
     position: fixed;
 }
 
 .sidebar h2 {
-    font-size: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
+}
+
+.sidebar p {
+    color: #94a3b8;
+    font-size: 14px;
 }
 
 .sidebar a {
     display: block;
-    padding: 12px;
-    margin: 5px 0;
-    text-decoration: none;
+    margin: 15px 0;
     color: #94a3b8;
-    border-radius: 6px;
-    transition: 0.3s;
+    text-decoration: none;
 }
 
 .sidebar a:hover {
-    background: #1e293b;
     color: white;
 }
 
 /* MAIN */
 .main {
-    margin-left: 250px;
+    margin-left: 260px;
     width: 100%;
 }
 
@@ -60,12 +58,12 @@ body {
     padding: 15px 30px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
 }
 
-.topbar h1 {
-    margin: 0;
-    font-size: 18px;
+.topbar a {
+    color: #3b82f6;
+    text-decoration: none;
+    margin-left: 15px;
 }
 
 /* CONTENT */
@@ -73,16 +71,20 @@ body {
     padding: 30px;
 }
 
+.section {
+    margin-bottom: 40px;
+}
+
 .card {
     background: #1e293b;
     padding: 20px;
-    margin-bottom: 20px;
+    margin-top: 15px;
     border-radius: 10px;
     transition: 0.3s;
 }
 
 .card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-5px);
 }
 
 button {
@@ -99,7 +101,7 @@ button {
     display: none;
 }
 
-/* SKILLS GRID */
+/* SKILLS */
 .skills {
     display: flex;
     flex-wrap: wrap;
@@ -107,19 +109,15 @@ button {
 }
 
 .skill {
-    background: #0ea5e9;
+    background: #3b82f6;
     padding: 8px 12px;
     border-radius: 20px;
 }
 
 /* RESPONSIVE */
 @media (max-width: 800px) {
-    .sidebar {
-        display: none;
-    }
-    .main {
-        margin-left: 0;
-    }
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
 }
 
 </style>
@@ -136,14 +134,21 @@ function toggle(id) {
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-    <h2>Clement 🚀</h2>
+    <h2>Clement Heritier</h2>
+    <p>Embedded Systems & Robotics Engineer</p>
+
+    <hr>
+
+    <p>📍 Pittsburgh, US</p>
+    <p>📧 clem.heritier@laposte.net</p>
+
+    <hr>
 
     <a href="#about">About</a>
     <a href="#experience">Experience</a>
     <a href="#projects">Projects</a>
     <a href="#skills">Skills</a>
     <a href="#education">Education</a>
-
 </div>
 
 <!-- MAIN -->
@@ -151,105 +156,104 @@ function toggle(id) {
 
     <!-- TOPBAR -->
     <div class="topbar">
-        <h1>Embedded Systems & Robotics Engineer</h1>
+        <div>Portfolio Dashboard</div>
         <div>
-            <a href="https://www.linkedin.com" target="_blank">LinkedIn</a>
+            <a href="https://www.linkedin.com/in/clementheritier093404227" target="_blank">LinkedIn</a>
         </div>
     </div>
 
-    <!-- CONTENT -->
     <div class="content">
 
         <!-- ABOUT -->
-        <section id="about">
+        <div class="section" id="about">
+            <h2>👋 About</h2>
             <div class="card">
-                <h2>👋 About Me</h2>
-                <p>
-                    Lab Test Automation Engineer at Alstom specialized in embedded systems,
-                    automation frameworks, and network diagnostics. Passionate about robotics,
-                    real-time systems, and building impactful engineering solutions.
-                </p>
+                Lab Test Automation Engineer at Alstom, specializing in embedded systems,
+                automation frameworks, and real-time network diagnostics.
+                Passionate about robotics, system validation, and scalable engineering solutions.
             </div>
-        </section>
+        </div>
 
         <!-- EXPERIENCE -->
-        <section id="experience">
+        <div class="section" id="experience">
             <h2>🚀 Experience</h2>
 
             <div class="card">
-                <h3>Alstom — Lab Test Automation Engineer</h3>
-                <button onclick="toggle('exp1')">Details</button>
-                <div id="exp1" class="hidden">
-                    <p>• Full-stack network analysis platform</p>
-                    <p>• Robot Framework automation</p>
-                    <p>• API backend + GUI</p>
-                    <p>• Debug & system reliability improvements</p>
+                <h3>Alstom — Lab Test Automation Engineer (VIE)</h3>
+                <button onclick="toggle('e1')">View Details</button>
+                <div id="e1" class="hidden">
+                    <p>• Developed full-stack network analysis platform (real-time packet capture & diagnostics)</p>
+                    <p>• Automated validation workflows with Robot Framework</p>
+                    <p>• Built API-driven backend and GUI interfaces</p>
+                    <p>• Reduced debugging time & improved system traceability</p>
                 </div>
             </div>
 
             <div class="card">
                 <h3>Bosch — Model-Based Engineer</h3>
-                <button onclick="toggle('exp2')">Details</button>
-                <div id="exp2" class="hidden">
-                    <p>• MATLAB / Simulink workflows</p>
-                    <p>• MCDC test improvements</p>
-                    <p>• PIL debugging</p>
+                <button onclick="toggle('e2')">View Details</button>
+                <div id="e2" class="hidden">
+                    <p>• MATLAB / Simulink workflow deployment</p>
+                    <p>• Improved MCDC test coverage</p>
+                    <p>• Debugged embedded PIL execution issues</p>
                 </div>
             </div>
 
             <div class="card">
-                <h3>Andrice — Embedded Engineer</h3>
-                <button onclick="toggle('exp3')">Details</button>
-                <div id="exp3" class="hidden">
-                    <p>• 500W power converter</p>
-                    <p>• PCB design</p>
-                    <p>• System validation</p>
+                <h3>Andrice — Embedded Systems Engineer</h3>
+                <button onclick="toggle('e3')">View Details</button>
+                <div id="e3" class="hidden">
+                    <p>• Designed 500W power converter</p>
+                    <p>• PCB development (Altium)</p>
+                    <p>• Electrical and thermal validation</p>
                 </div>
             </div>
 
-        </section>
+        </div>
 
         <!-- PROJECTS -->
-        <section id="projects">
+        <div class="section" id="projects">
             <h2>📡 Projects</h2>
 
             <div class="card">
-                <h3>Autonomous Robotic System</h3>
-                <p>Navigation, control and real-world testing of a surface robot.</p>
+                <h3>Autonomous Robotic Waste Collection</h3>
+                <p>Navigation and control of an autonomous surface vehicle with real-world validation.</p>
             </div>
 
             <div class="card">
                 <h3>Voix de l’Univers</h3>
-                <p>Electromagnetic signal detection embedded system.</p>
+                <p>Embedded system detecting electromagnetic signals with PCB design and signal analysis.</p>
             </div>
 
-        </section>
+        </div>
 
         <!-- SKILLS -->
-        <section id="skills">
+        <div class="section" id="skills">
             <h2>🧠 Skills</h2>
-
             <div class="skills">
                 <div class="skill">Python</div>
                 <div class="skill">C/C++</div>
+                <div class="skill">Java</div>
                 <div class="skill">STM32</div>
                 <div class="skill">ESP32</div>
                 <div class="skill">MATLAB</div>
                 <div class="skill">ROS</div>
                 <div class="skill">Docker</div>
+                <div class="skill">Git</div>
                 <div class="skill">Robot Framework</div>
             </div>
-        </section>
+        </div>
 
         <!-- EDUCATION -->
-        <section id="education">
+        <div class="section" id="education">
             <h2>🎓 Education</h2>
 
             <div class="card">
-                <p>Master in Robotics — Heriot-Watt University</p>
-                <p>Master in Embedded Systems — ESIEE Paris</p>
+                <p><strong>Master in Robotics</strong> — Heriot-Watt University (UK)</p>
+                <p><strong>Master in Embedded & Electrical Systems</strong> — ESIEE Paris</p>
             </div>
-        </section>
+
+        </div>
 
     </div>
 
