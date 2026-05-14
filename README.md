@@ -1,1 +1,99 @@
 # clem-hrt.github.io
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Name - Resume</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #0f172a;
+    color: #f1f5f9;
+}
+
+header {
+    text-align: center;
+    padding: 40px;
+    background: #1e293b;
+}
+
+section {
+    padding: 40px;
+}
+
+.card {
+    background: #1e293b;
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.03);
+}
+
+button {
+    padding: 10px 15px;
+    border: none;
+    background: #3b82f6;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
+}
+</style>
+
+<script>
+function toggleDetails(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle("hidden");
+}
+</script>
+
+</head>
+
+<body>
+
+<header>
+    <h1>Your Name</h1>
+    <p>Lab Test Automation Engineer</p>
+</header>
+
+<section>
+    <h2>Experience</h2>
+
+    <div class="card">
+        <h3>Company Name</h3>
+        <p>Automation Engineer</p>
+        <button onclick="toggleDetails('job1')">Show Details</button>
+        <div id="job1" class="hidden">
+            <p>• Built automation frameworks</p>
+            <p>• Developed test scripts</p>
+        </div>
+    </div>
+
+</section>
+
+<section>
+    <h2>Skills</h2>
+    <div class="card">Python</div>
+    <div class="card">Selenium</div>
+    <div class="card">CI/CD</div>
+</section>
+
+<section>
+    <h2>Projects</h2>
+    <div class="card">
+        Automated Testing Tool
+    </div>
+</section>
+
+</body>
+</html>
