@@ -1,263 +1,205 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Clement Heritier | Portfolio</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<style>
+<title>Clement Heritage | Embedded Systems & Automation Engineer</title>
 
-body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    display: flex;
-    background: #0f172a;
-    color: #e2e8f0;
-}
+<meta name="description" content="Embedded Systems & Robotics Engineer specializing in automation, real-time systems, and test infrastructure.">
+<meta name="keywords" content="embedded systems, robotics, automation, python, c++, ROS, test engineering">
 
-/* SIDEBAR */
-.sidebar {
-    width: 260px;
-    background: #020617;
-    height: 100vh;
-    padding: 30px 20px;
-    position: fixed;
-}
+<link href="img/favicon.ico" rel="icon">
 
-.sidebar h2 {
-    margin-bottom: 10px;
-}
-
-.sidebar p {
-    color: #94a3b8;
-    font-size: 14px;
-}
-
-.sidebar a {
-    display: block;
-    margin: 15px 0;
-    color: #94a3b8;
-    text-decoration: none;
-}
-
-.sidebar a:hover {
-    color: white;
-}
-
-/* MAIN */
-.main {
-    margin-left: 260px;
-    width: 100%;
-}
-
-/* TOPBAR */
-.topbar {
-    background: #020617;
-    padding: 15px 30px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.topbar a {
-    color: #3b82f6;
-    text-decoration: none;
-    margin-left: 15px;
-}
-
-/* CONTENT */
-.content {
-    padding: 30px;
-}
-
-.section {
-    margin-bottom: 40px;
-}
-
-.card {
-    background: #1e293b;
-    padding: 20px;
-    margin-top: 15px;
-    border-radius: 10px;
-    transition: 0.3s;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-}
-
-button {
-    margin-top: 10px;
-    padding: 6px 10px;
-    background: #3b82f6;
-    border: none;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.hidden {
-    display: none;
-}
-
-/* SKILLS */
-.skills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.skill {
-    background: #3b82f6;
-    padding: 8px 12px;
-    border-radius: 20px;
-}
-
-/* RESPONSIVE */
-@media (max-width: 800px) {
-    .sidebar { display: none; }
-    .main { margin-left: 0; }
-}
-
-</style>
-
-<script>
-function toggle(id) {
-    document.getElementById(id).classList.toggle("hidden");
-}
-</script>
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,700|Poppins:300,500" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/font-awesome.min.css">
 
 </head>
 
 <body>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
-    <h2>Clement Heritier</h2>
-    <p>Embedded Systems & Robotics Engineer</p>
-
-    <hr>
-
-    <p>📍 Pittsburgh, US</p>
-    <p>📧 clem.heritier@laposte.net</p>
-
-    <hr>
-
-    <a href="#about">About</a>
-    <a href="#experience">Experience</a>
-    <a href="#projects">Projects</a>
-    <a href="#skills">Skills</a>
-    <a href="#education">Education</a>
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
-    <!-- TOPBAR -->
-    <div class="topbar">
-        <div>Portfolio Dashboard</div>
-        <div>
-            <a href="https://www.linkedin.com/in/clementheritier093404227" target="_blank">LinkedIn</a>
-        </div>
+<!-- NAV -->
+<nav class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="logo" href="#">C.Heritage</a>
     </div>
 
-    <div class="content">
+    <ul class="nav navbar-nav navbar-right">
+      <li><a href="#" data-scroll-nav="0">Home</a></li>
+      <li><a href="#" data-scroll-nav="1">About</a></li>
+      <li><a href="#" data-scroll-nav="2">Experience</a></li>
+      <li><a href="#" data-scroll-nav="3">Projects</a></li>
+      <li><a href="#" data-scroll-nav="4">Contact</a></li>
+    </ul>
+  </div>
+</nav>
 
-        <!-- ABOUT -->
-        <div class="section" id="about">
-            <h2>👋 About</h2>
-            <div class="card">
-                Lab Test Automation Engineer at Alstom, specializing in embedded systems,
-                automation frameworks, and real-time network diagnostics.
-                Passionate about robotics, system validation, and scalable engineering solutions.
-            </div>
-        </div>
+<!-- HEADER -->
+<section id="home" class="header" data-scroll-index="0" style="background-image: url(img/bg.jpg);">
 
-        <!-- EXPERIENCE -->
-        <div class="section" id="experience">
-            <h2>🚀 Experience</h2>
+<div class="v-middle">
+<div class="container">
+<div class="caption">
 
-            <div class="card">
-                <h3>Alstom — Lab Test Automation Engineer (VIE)</h3>
-                <button onclick="toggle('e1')">View Details</button>
-                <div id="e1" class="hidden">
-                    <p>• Developed full-stack network analysis platform (real-time packet capture & diagnostics)</p>
-                    <p>• Automated validation workflows with Robot Framework</p>
-                    <p>• Built API-driven backend and GUI interfaces</p>
-                    <p>• Reduced debugging time & improved system traceability</p>
-                </div>
-            </div>
+<h5>Hello</h5>
 
-            <div class="card">
-                <h3>Bosch — Model-Based Engineer</h3>
-                <button onclick="toggle('e2')">View Details</button>
-                <div id="e2" class="hidden">
-                    <p>• MATLAB / Simulink workflow deployment</p>
-                    <p>• Improved MCDC test coverage</p>
-                    <p>• Debugged embedded PIL execution issues</p>
-                </div>
-            </div>
+<h1>
+I am Clement Heritage<br>
+<span>Automation Engineer | Embedded Systems | Robotics</span>
+</h1>
 
-            <div class="card">
-                <h3>Andrice — Embedded Systems Engineer</h3>
-                <button onclick="toggle('e3')">View Details</button>
-                <div id="e3" class="hidden">
-                    <p>• Designed 500W power converter</p>
-                    <p>• PCB development (Altium)</p>
-                    <p>• Electrical and thermal validation</p>
-                </div>
-            </div>
+<div class="social-icon">
+<a href="https://www.linkedin.com/in/clementheritier093404227" target="_blank">
+<i class="fa fa-linkedin"></i>
+</a>
 
-        </div>
-
-        <!-- PROJECTS -->
-        <div class="section" id="projects">
-            <h2>📡 Projects</h2>
-
-            <div class="card">
-                <h3>Autonomous Robotic Waste Collection</h3>
-                <p>Navigation and control of an autonomous surface vehicle with real-world validation.</p>
-            </div>
-
-            <div class="card">
-                <h3>Voix de l’Univers</h3>
-                <p>Embedded system detecting electromagnetic signals with PCB design and signal analysis.</p>
-            </div>
-
-        </div>
-
-        <!-- SKILLS -->
-        <div class="section" id="skills">
-            <h2>🧠 Skills</h2>
-            <div class="skills">
-                <div class="skill">Python</div>
-                <div class="skill">C/C++</div>
-                <div class="skill">Java</div>
-                <div class="skill">STM32</div>
-                <div class="skill">ESP32</div>
-                <div class="skill">MATLAB</div>
-                <div class="skill">ROS</div>
-                <div class="skill">Docker</div>
-                <div class="skill">Git</div>
-                <div class="skill">Robot Framework</div>
-            </div>
-        </div>
-
-        <!-- EDUCATION -->
-        <div class="section" id="education">
-            <h2>🎓 Education</h2>
-
-            <div class="card">
-                <p><strong>Master in Robotics</strong> — Heriot-Watt University (UK)</p>
-                <p><strong>Master in Embedded & Electrical Systems</strong> — ESIEE Paris</p>
-            </div>
-
-        </div>
-
-    </div>
+<a href="mailto:clem.heritier@laposte.net">
+<i class="fa fa-envelope"></i>
+</a>
+</div>
 
 </div>
+</div>
+</div>
+</section>
+
+<!-- ABOUT -->
+<section class="hero section-padding" data-scroll-index="1">
+<div class="container">
+<div class="row">
+
+<div class="col-md-6">
+<img src="img/your-photo.jpg" alt="">
+</div>
+
+<div class="col-md-6">
+<h3>About Me</h3>
+
+<p>
+I am an Embedded Systems & Automation Engineer currently working at Alstom (USA).
+I design scalable test infrastructures, real-time analysis tools, and embedded solutions for complex systems.
+</p>
+
+<p>
+With a strong background in robotics and electronics, I specialize in Python, C/C++, ROS, and system validation.
+My work focuses on improving reliability, accelerating validation workflows, and solving deep technical issues.
+</p>
+
+<!-- skills -->
+<div class="skills">
+<h6>Python / Automation</h6>
+<div class="progress"><div class="progress-bar" style="width:95%"></div></div>
+
+<h6>Embedded Systems (C/C++, STM32)</h6>
+<div class="progress"><div class="progress-bar" style="width:90%"></div></div>
+
+<h6>Robotics (ROS)</h6>
+<div class="progress"><div class="progress-bar" style="width:85%"></div></div>
+
+<h6>APIs / Tools / Debugging</h6>
+<div class="progress"><div class="progress-bar" style="width:85%"></div></div>
+</div>
+
+</div>
+</div>
+</div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="services section-padding bg-gray" data-scroll-index="2">
+<div class="container">
+
+<h3>Experience</h3>
+
+<div class="item">
+<h5>Lab Test Automation Engineer — Alstom (USA)</h5>
+<p>
+Built a full-stack network analysis platform enabling real-time diagnostics of embedded communication systems.
+Automated validation workflows using Robot Framework and improved system reliability across teams.
+</p>
+</div>
+
+<div class="item">
+<h5>Model-Based Engineering Intern — Bosch</h5>
+<p>
+Improved model coverage (MCDC) and supported MATLAB/Simulink workflows in automotive systems.
+Resolved embedded execution issues during PIL testing.
+</p>
+</div>
+
+<div class="item">
+<h5>Embedded Systems Intern — Andrice</h5>
+<p>
+Designed a 500W power converter, including PCB development and full validation (thermal & electrical testing).
+</p>
+</div>
+
+</div>
+</section>
+
+<!-- PROJECTS -->
+<section class="portfolio section-padding" data-scroll-index="3">
+<div class="container">
+
+<h3>Projects</h3>
+
+<div class="row">
+
+<div class="col-md-4">
+<h5>Autonomous Robotic System</h5>
+<p>
+Developed navigation and control algorithms for an autonomous vehicle with real-world validation.
+</p>
+</div>
+
+<div class="col-md-4">
+<h5>Network Analysis Platform</h5>
+<p>
+Full-stack tool for packet capture, visualization, and system-level debugging.
+</p>
+</div>
+
+<div class="col-md-4">
+<h5>Power Converter Design</h5>
+<p>
+Designed and validated a 500W embedded power system with PCB and testing.
+</p>
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact section-padding" data-scroll-index="4">
+<div class="container text-center">
+
+<h3>Contact</h3>
+
+<p>Pittsburgh (USA) / Paris (France)</p>
+<p>clem.heritier@laposte.net</p>
+<p>+33 6 34 37 13 23</p>
+
+<a href="CV_EN_HERITIER.pdf" download class="btn btn-primary">
+Download CV
+</a>
+
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer class="text-center">
+<p>© 2026 Clement Heritage — Embedded Systems Engineer</p>
+</footer>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
 
 </body>
 </html>
