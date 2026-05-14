@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Name - Resume</title>
+<title>Clement Heritier - Portfolio</title>
 
 <style>
 body {
@@ -15,31 +15,38 @@ body {
 
 header {
     text-align: center;
-    padding: 40px;
+    padding: 50px;
     background: #1e293b;
+}
+
+h1 {
+    margin: 0;
 }
 
 section {
     padding: 40px;
+    max-width: 1000px;
+    margin: auto;
 }
 
 .card {
     background: #1e293b;
     padding: 20px;
-    margin: 15px 0;
+    margin: 20px 0;
     border-radius: 10px;
     transition: transform 0.3s;
 }
 
 .card:hover {
-    transform: scale(1.03);
+    transform: scale(1.02);
 }
 
 button {
-    padding: 10px 15px;
-    border: none;
+    margin-top: 10px;
+    padding: 8px 12px;
     background: #3b82f6;
     color: white;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
 }
@@ -50,7 +57,7 @@ button {
 </style>
 
 <script>
-function toggleDetails(id) {
+function toggle(id) {
     const el = document.getElementById(id);
     el.classList.toggle("hidden");
 }
@@ -61,36 +68,74 @@ function toggleDetails(id) {
 <body>
 
 <header>
-    <h1>Your Name</h1>
-    <p>Lab Test Automation Engineer</p>
+    <h1>Clement Heritier</h1>
+    <p>Embedded Systems & Robotics Engineer</p>
+    <p>📍 Pittsburgh, US | 📧 clem.heritier@laposte.net</p>
 </header>
 
 <section>
-    <h2>Experience</h2>
+    <h2>🚀 Experience</h2>
 
     <div class="card">
-        <h3>Company Name</h3>
-        <p>Automation Engineer</p>
-        <button onclick="toggleDetails('job1')">Show Details</button>
-        <div id="job1" class="hidden">
-            <p>• Built automation frameworks</p>
-            <p>• Developed test scripts</p>
+        <h3>Alstom - Lab Test Automation Engineer (VIE)</h3>
+        <button onclick="toggle('exp1')">Show Details</button>
+        <div id="exp1" class="hidden">
+            <p>• Full-stack network analysis platform (real-time packet capture & diagnostics)</p>
+            <p>• Automated validation workflows with Robot Framework</p>
+            <p>• API backend + GUI → reduced debugging time</p>
+            <p>• Cross-team collaboration to improve system reliability</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Bosch - Model-Based Engineer</h3>
+        <button onclick="toggle('exp2')">Show Details</button>
+        <div id="exp2" class="hidden">
+            <p>• MATLAB / Simulink workflows</p>
+            <p>• Improved MCDC coverage (safety validation)</p>
+            <p>• Debugged PIL testing on embedded systems</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Andrice - Embedded Systems Engineer</h3>
+        <button onclick="toggle('exp3')">Show Details</button>
+        <div id="exp3" class="hidden">
+            <p>• Designed 500W power converter</p>
+            <p>• PCB design (Altium)</p>
+            <p>• Electrical & thermal testing</p>
         </div>
     </div>
 
 </section>
 
 <section>
-    <h2>Skills</h2>
-    <div class="card">Python</div>
-    <div class="card">Selenium</div>
-    <div class="card">CI/CD</div>
+    <h2>🧠 Skills</h2>
+    <div class="card">Python, C/C++, Java</div>
+    <div class="card">Embedded: STM32, ESP32</div>
+    <div class="card">Tools: MATLAB, ROS, Docker, Git</div>
 </section>
 
 <section>
-    <h2>Projects</h2>
+    <h2>📡 Projects</h2>
+
     <div class="card">
-        Automated Testing Tool
+        <h3>Autonomous Robotic Waste Collection</h3>
+        <p>Navigation + control of autonomous surface robot</p>
+    </div>
+
+    <div class="card">
+        <h3>Voix de l’Univers</h3>
+        <p>Embedded system detecting electromagnetic signals</p>
+    </div>
+
+</section>
+
+<section>
+    <h2>🎓 Education</h2>
+    <div class="card">
+        <p>Master in Robotics – Heriot-Watt University</p>
+        <p>Master in Embedded Systems – ESIEE Paris</p>
     </div>
 </section>
 
