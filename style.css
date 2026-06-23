@@ -1,127 +1,65 @@
 body {
-
-  margin: 0;
-
-  font-family: Arial, sans-serif;
-
-  background: #0f172a;
-
-  color: white;
-
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url('https://images.unsplash.com/photo-1503264116251-35a269479413');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    color: white;
 }
 
-
-/* NAVBAR */
-
-.navbar {
-
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: center;
-
-  padding: 20px;
-
-  background: #111827;
-
-  position: sticky;
-
-  top: 0;
-
+/* Overlay for readability */
+.overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 100vh;
 }
 
-
-
-.logo {
-
-  font-weight: bold;
-
-  font-size: 18px;
-
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
 }
 
-
-
-nav {
-
-  display: flex;
-
-  gap: 10px;
-
+/* Navigation tabs */
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: bold;
+    transition: color 0.3s;
 }
 
-
-
-.tab {
-
-  background: transparent;
-
-  border: 1px solid #334155;
-
-  color: white;
-
-  padding: 8px 12px;
-
-  cursor: pointer;
-
-  border-radius: 6px;
-
+nav a:hover {
+    color: #00d4ff;
 }
 
-
-
-.tab:hover {
-
-  background: #1e293b;
-
+/* Welcome content */
+.content {
+    text-align: center;
+    margin-top: 15%;
 }
 
-
-
-.tab.active {
-
-  background: #2563eb;
-
-  border-color: #2563eb;
-
+.content h1 {
+    font-size: 3em;
 }
 
-
-
-/* SECTIONS */
-
-.section {
-
-  display: none;
-
-  padding: 60px;
-
-  max-width: 900px;
-
-  margin: auto;
-
+.content p {
+    font-size: 1.2em;
 }
 
-
-
-.section.active {
-
-  display: block;
-
+.btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #00d4ff;
+    border: none;
+    border-radius: 5px;
+    color: black;
+    font-size: 1em;
+    cursor: pointer;
 }
 
-
-/* CARDS */
-
-.card {
-
-  background: #1e293b;
-
-  padding: 15px;
-
-  margin-top: 15px;
-
-  border-radius: 10px;
-
+.btn:hover {
+    background-color: #009ec3;
 }
