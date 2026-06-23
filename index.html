@@ -2,21 +2,15 @@
 
 <html lang="en">
 
-
-
 <head>
 
-<meta charset="UTF-8">
+  <meta charset="UTF-8" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
+  <title>Your Name | Robotics Engineer</title>
 
-
-<title>Clément Héritier | Embedded Systems & Robotics Engineer</title>
-
-
-
-<link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="styles.css"/>
 
 </head>
 
@@ -26,363 +20,137 @@
 
 
 
-<header>
+  <!-- TOP NAVIGATION -->
 
+  <header class="navbar">
 
+    <div class="logo">YourName</div>
 
-<h1>Clément Héritier</h1>
 
 
+    <nav>
 
-<p class="subtitle">
+      <button class="tab active" onclick="showSection('home')">Home</button>
 
-Embedded Systems & Robotics Engineer
+      <button class="tab" onclick="showSection('about')">About</button>
 
-</p>
+      <button class="tab" onclick="showSection('projects')">Projects</button>
 
+      <button class="tab" onclick="showSection('experience')">Experience</button>
 
+      <button class="tab" onclick="showSection('contact')">Contact</button>
 
-<p class="description">
+    </nav>
 
-Currently working as a Lab Test Automation Engineer at Alstom in Pittsburgh.
+  </header>
 
-Passionate about robotics, embedded systems, automation and autonomous navigation.
 
-</p>
 
+  <!-- CONTENT -->
 
+  <main>
 
-<div class="buttons">
 
-<a href="assets/CV_EN_HERITIER.pdf" target="_blank">Resume</a>
 
-<a href="https://https://clem-hrt.github.io/" target="_blank">GitHub</a>
+    <!-- HOME -->
 
-<a href="https://www.linkedin.com/in/clementheritier093404227/" target="_blank">LinkedIn</a>
+    <section id="home" class="section active">
 
-</div>
+      <h1>Hi, I'm Your Name 👋</h1>
 
+      <p>Robotics & Embedded Systems Engineer</p>
 
+      <p>Specialized in autonomous systems, path planning, and simulation.</p>
 
-</header>
+    </section>
 
 
 
-<section>
+    <!-- ABOUT -->
 
+    <section id="about" class="section">
 
+      <h1>About Me</h1>
 
-<h2>About</h2>
+      <p>
 
+        Write a strong short bio here: robotics MSc, embedded systems, ROS, etc.
 
+      </p>
 
-<p>
+    </section>
 
-Robotics and Embedded Systems engineer with hands-on experience in model-based development,
 
-test automation, PCB design, autonomous systems and embedded software.
 
-</p>
+    <!-- PROJECTS -->
 
+    <section id="projects" class="section">
 
+      <h1>Projects</h1>
 
-</section>
 
 
+      <div class="card">
 
-<section>
+        <h3>BlueBoat Path Planning</h3>
 
+        <p>A*, RRT*, and Hybrid A* applied to marine robotics simulation.</p>
 
+      </div>
 
-<h2>Experience</h2>
 
 
+      <div class="card">
 
-<div class="card">
+        <h3>Embedded Systems Project</h3>
 
+        <p>Describe another key project.</p>
 
+      </div>
 
-<h3>Alstom</h3>
+    </section>
 
 
 
-<p>Lab Test Automation Engineer (VIE)</p>
+    <!-- EXPERIENCE -->
 
+    <section id="experience" class="section">
 
+      <h1>Experience</h1>
 
-<ul>
 
-<li>Network analysis platform development</li>
 
-<li>Robot Framework automation</li>
+      <div class="card">
 
-<li>Backend APIs and GUI tools</li>
+        <h3>Internship - Bosch</h3>
 
-<li>System validation and diagnostics</li>
+        <p>Embedded systems / robotics-related work description.</p>
 
-</ul>
+      </div>
 
+    </section>
 
 
-</div>
 
+    <!-- CONTACT -->
 
+    <section id="contact" class="section">
 
-<div class="card">
+      <h1>Contact</h1>
 
+      <p>Email: your.email@example.com</p>
 
+      <p>LinkedIn / GitHub links here</p>
 
-<h3>Bosch</h3>
+    </section>
 
 
 
-<p>Model Based & Function Development Engineer</p>
+  </main>
 
 
 
-<ul>
-
-<li>MATLAB / Simulink workflows</li>
-
-<li>MCDC coverage improvements</li>
-
-<li>PIL testing</li>
-
-<li>Embedded validation</li>
-
-</ul>
-
-
-
-</div>
-
-
-
-<div class="card">
-
-
-
-<h3>Andrice</h3>
-
-
-
-<p>Embedded Systems Engineer</p>
-
-
-
-<ul>
-
-<li>500W power converter design</li>
-
-<li>PCB development</li>
-
-<li>Altium Designer</li>
-
-<li>Validation and testing</li>
-
-</ul>
-
-
-
-</div>
-
-
-
-</section>
-
-
-
-<section>
-
-
-
-<h2>Featured Projects</h2>
-
-
-
-<div class="card">
-
-
-
-<h3>Autonomous Robotic Waste Collection System</h3>
-
-
-
-<p>
-
-Master Dissertation at Heriot-Watt University.
-
-Development of path planning and navigation strategies
-
-for autonomous surface vehicles.
-
-</p>
-
-
-
-</div>
-
-
-
-<div class="card">
-
-
-
-<h3>Voix de l'Univers</h3>
-
-
-
-<p>
-
-Embedded system designed to capture and analyze
-
-electromagnetic signals using custom hardware.
-
-</p>
-
-
-
-</div>
-
-
-
-</section>
-
-
-
-<section>
-
-
-
-<h2>Skills</h2>
-
-
-
-<div class="skills">
-
-
-
-<span>Python</span>
-
-<span>C/C++</span>
-
-<span>MATLAB</span>
-
-<span>ROS</span>
-
-<span>Docker</span>
-
-<span>Git</span>
-
-<span>Robot Framework</span>
-
-<span>STM32</span>
-
-<span>ESP32</span>
-
-<span>VHDL</span>
-
-<span>Altium Designer</span>
-
-<span>LTSpice</span>
-
-
-
-</div>
-
-
-
-</section>
-
-
-
-<section>
-
-
-
-<h2>GitHub Projects</h2>
-
-
-
-<div id="github-projects">
-
-
-
-Loading repositories...
-
-
-
-</div>
-
-
-
-</section>
-
-
-
-<section>
-
-
-
-<h2>Education</h2>
-
-
-
-<div class="card">
-
-
-
-<h3>Heriot-Watt University</h3>
-
-
-
-<p>MSc Robotics (2023–2024)</p>
-
-
-
-</div>
-
-
-
-<div class="card">
-
-
-
-<h3>ESIEE Paris</h3>
-
-
-
-<p>Embedded & Electrical Systems Engineering (2021–2024)</p>
-
-
-
-</div>
-
-
-
-</section>
-
-
-
-<footer>
-
-
-
-<p>
-
-© 2026 Clément Héritier
-
-</p>
-
-
-
-</footer>
-
-
-
-<script src="script.js"></script>
-
-
+  <script src="script.js"></script>
 
 </body>
 
