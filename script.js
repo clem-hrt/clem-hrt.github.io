@@ -1,103 +1,35 @@
-const username = "clem-hrt";
+function showSection(id) {
 
 
 
-fetch(`https://api.github.com/users/${username}/repos`)
+  // hide all sections
 
-.then(response => response.json())
+  document.querySelectorAll(".section").forEach(sec => {
 
-.then(repos => {
+    sec.classList.remove("active");
 
+  });
 
 
-const container =
 
-document.getElementById("github-projects");
+  // remove active from tabs
 
+  document.querySelectorAll(".tab").forEach(tab => {
 
+    tab.classList.remove("active");
 
-container.innerHTML = "";
+  });
 
 
 
-repos
+  // show selected section
 
-.sort(
+  document.getElementById(id).classList.add("active");
 
-(a,b)=>
 
-new Date(b.updated_at)
 
--
+  // activate clicked tab
 
-new Date(a.updated_at)
+  event.target.classList.add("active");
 
-)
-
-.slice(0,6)
-
-.forEach(repo => {
-
-
-
-container.innerHTML += `
-
-<div class="repo">
-
-
-
-<h3>${repo.name}</h3>
-
-
-
-<p>
-
-${repo.description || "No description"}
-
-</p>
-
-
-
-<p>
-
-Language: ${repo.language || "N/A"}
-
-</p>
-
-
-
-<a href="${repo.html_url}" target="_blank">
-
-View Repository
-
-</a>
-
-
-
-</div>
-
-`;
-
-
-
-});
-
-
-
-})
-
-.catch(() => {
-
-
-
-document.getElementById(
-
-"github-projects"
-
-).innerHTML =
-
-"Unable to load repositories.";
-
-
-
-});
+}
