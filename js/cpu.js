@@ -27,15 +27,29 @@ const CPU = (() => {
 
                         <div class="cpu-core">
 
-                            <span class="cpu-ref">CH-RX02</span>
+                            <span class="cpu-corner cpu-corner-tl"></span>
+                            <span class="cpu-corner cpu-corner-tr"></span>
+                            <span class="cpu-corner cpu-corner-bl"></span>
+                            <span class="cpu-corner cpu-corner-br"></span>
 
-                            <h2>Clément Héritier</h2>
+                            <div class="cpu-core-grid"></div>
 
-                            <p>
-                                Embedded Systems & Robotics Engineer
-                            </p>
+                            <div class="cpu-core-content">
 
-                            <div id="cpu-monitor-slot"></div>
+                                <div class="cpu-identity">
+                                    <span class="cpu-ref">CH-RX01</span>
+                                    <span class="cpu-subref">CORE MODULE</span>
+                                </div>
+
+                                <h2>Clément Héritier</h2>
+
+                                <p>
+                                    Embedded Systems & Robotics Engineer
+                                </p>
+
+                                <div id="cpu-monitor-slot"></div>
+
+                            </div>
 
                         </div>
 
@@ -57,7 +71,12 @@ const CPU = (() => {
 
     function createPins(side, count) {
         return Array.from({ length: count }, (_, index) => {
-            return `<span class="cpu-pin cpu-pin-${side}" data-pin="${side}-${index + 1}"></span>`;
+            return `
+                <span 
+                    class="cpu-pin cpu-pin-${side}" 
+                    data-pin="${side}-${index + 1}">
+                </span>
+            `;
         }).join("");
     }
 
