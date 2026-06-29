@@ -65,8 +65,17 @@ const Boot = (() => {
             bootLayer.innerHTML = "";
             bootLayer.classList.add("boot-hidden");
 
-            console.log("SYSTEM ONLINE");
-            console.log("Next sprint: CPU initialization");
+            CPU.create();
+            Network.create();
+
+            setTimeout(() => {
+                CPU.show();
+            }, 200);
+
+            setTimeout(() => {
+                Network.show();
+            }, 900);
+            
         }, 2200);
     }
 
