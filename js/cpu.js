@@ -86,14 +86,31 @@ const CPU = (() => {
 
     function activateModulePins(moduleId) {
         const pinMap = {
-            experience: ["left-1", "left-2"],
-            education: ["left-7", "left-8"],
+            experience: [
+                "left-1", "left-2", "left-3", "left-4"
+            ],
 
-            skills: ["top-3", "top-4", "top-5", "top-6"],
-            hobbies: ["bottom-3", "bottom-4", "bottom-5", "bottom-6"],
+            education: [
+                "left-5", "left-6", "left-7", "left-8"
+            ],
 
-            projects: ["right-1", "right-2"],
-            certifications: ["right-7", "right-8"]
+            skills: [
+                "top-1", "top-2", "top-3", "top-4",
+                "top-5", "top-6", "top-7", "top-8"
+            ],
+
+            hobbies: [
+                "bottom-1", "bottom-2", "bottom-3", "bottom-4",
+                "bottom-5", "bottom-6", "bottom-7", "bottom-8"
+            ],
+
+            projects: [
+                "right-1", "right-2", "right-3", "right-4"
+            ],
+
+            certifications: [
+                "right-5", "right-6", "right-7", "right-8"
+            ]
         };
 
         pinMap[moduleId]?.forEach(pinId => {
