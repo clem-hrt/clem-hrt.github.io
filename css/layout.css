@@ -873,3 +873,143 @@ RESPONSIVE SAFETY
         grid-template-columns:1fr;
     }
 }
+
+/* ==========================================================
+SYSTEM MONITOR
+========================================================== */
+
+#system-layer{
+    position:absolute;
+    inset:0;
+    width:100%;
+    min-height:100vh;
+    z-index:35;
+    pointer-events:none;
+}
+
+.system-monitor{
+    position:absolute;
+    left:50%;
+    bottom:24px;
+
+    width:min(520px, calc(100vw - 40px));
+
+    transform:translateX(-50%) translateY(18px);
+
+    padding:14px 18px;
+
+    border:1px solid rgba(53,194,255,.18);
+    border-radius:var(--radius-medium);
+
+    background:rgba(7,11,18,.72);
+    backdrop-filter:blur(16px);
+
+    box-shadow:
+        var(--shadow-soft),
+        0 0 28px rgba(53,194,255,.06);
+
+    opacity:0;
+
+    transition:
+        opacity .7s ease,
+        transform .7s ease,
+        border-color .35s ease;
+}
+
+.system-monitor-visible .system-monitor{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+
+.monitor-header{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+
+    margin-bottom:12px;
+
+    color:var(--clr-accent);
+    letter-spacing:3px;
+    font-size:.68rem;
+}
+
+.monitor-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+
+    background:var(--clr-success);
+    box-shadow:0 0 12px rgba(57,243,140,.9);
+}
+
+.monitor-row{
+    display:grid;
+    grid-template-columns:1fr auto;
+
+    gap:18px;
+
+    padding:5px 0;
+
+    font-size:.72rem;
+    letter-spacing:1.4px;
+
+    color:var(--clr-text-secondary);
+}
+
+.monitor-row strong{
+    color:#788599;
+    font-weight:500;
+    transition:color var(--transition-normal), text-shadow var(--transition-normal);
+}
+
+.monitor-row strong.monitor-online{
+    color:var(--clr-success);
+    text-shadow:0 0 12px rgba(57,243,140,.45);
+}
+
+.monitor-progress{
+    position:relative;
+
+    width:100%;
+    height:4px;
+
+    margin-top:12px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.06);
+
+    overflow:hidden;
+}
+
+.monitor-progress span{
+    display:block;
+
+    width:0%;
+    height:100%;
+
+    border-radius:999px;
+
+    background:linear-gradient(
+        90deg,
+        var(--clr-accent),
+        var(--clr-success)
+    );
+
+    box-shadow:0 0 16px rgba(57,243,140,.5);
+
+    transition:width .5s ease;
+}
+
+@media (max-width:850px){
+    .system-monitor{
+        position:fixed;
+        bottom:14px;
+        padding:12px 14px;
+    }
+
+    .monitor-row{
+        font-size:.66rem;
+    }
+}
