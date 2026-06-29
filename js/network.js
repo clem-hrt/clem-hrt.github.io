@@ -1,7 +1,7 @@
 /*
 ========================================
 NETWORK ENGINE
-Persistent module activation + item details
+Six-module PCB layout + persistent activation
 ========================================
 */
 
@@ -54,6 +54,63 @@ const Network = (() => {
                 }
             ]
         },
+
+        {
+            id: "skills",
+            label: "Skills",
+            position: "top-center",
+            subtitle: "Technical stack",
+            items: [
+                {
+                    title: "Programming",
+                    meta: "Python · C/C++ · Java · VHDL",
+                    date: "Software foundations",
+                    details: [
+                        "Python",
+                        "C / C++",
+                        "HTML / CSS",
+                        "Java",
+                        "VHDL"
+                    ]
+                },
+                {
+                    title: "Embedded & Electronics",
+                    meta: "STM32 · ESP32 · PCB",
+                    date: "Hardware-oriented engineering",
+                    details: [
+                        "STM32",
+                        "ESP32 / ESP8266",
+                        "Altium Designer",
+                        "LTSpice",
+                        "PCB bring-up"
+                    ]
+                },
+                {
+                    title: "Software & Tools",
+                    meta: "MATLAB · ROS · Docker · Git",
+                    date: "Engineering workflow",
+                    details: [
+                        "MATLAB / Simulink",
+                        "ROS",
+                        "Robot Framework",
+                        "Git / GitHub",
+                        "Docker",
+                        "IBM Rhapsody"
+                    ]
+                },
+                {
+                    title: "Languages",
+                    meta: "FR · EN · ES",
+                    date: "International communication",
+                    details: [
+                        "French — Native",
+                        "English — Professional",
+                        "Spanish — Basic"
+                    ]
+                }
+            ]
+        },
+
         {
             id: "projects",
             label: "Projects",
@@ -84,10 +141,53 @@ const Network = (() => {
                 }
             ]
         },
+
+        {
+            id: "education",
+            label: "Education",
+            position: "bottom-left",
+            subtitle: "Academic path",
+            items: [
+                {
+                    title: "Heriot-Watt University",
+                    meta: "Master degree in Robotics",
+                    date: "Sep 2023 – Sep 2024 · Edinburgh, UK",
+                    details: [
+                        "Robotics engineering",
+                        "Autonomous systems",
+                        "Navigation and control",
+                        "Robotic surface vehicle project"
+                    ]
+                },
+                {
+                    title: "ESIEE Paris",
+                    meta: "Master degree in Embedded & Electrical Systems",
+                    date: "Sep 2021 – Sep 2024 · Paris, FR",
+                    details: [
+                        "Embedded systems",
+                        "Electrical systems",
+                        "Software engineering",
+                        "Model-based development"
+                    ]
+                },
+                {
+                    title: "CPGE",
+                    meta: "Mathematics & Physics",
+                    date: "Sep 2018 – Sep 2021 · Valence, FR",
+                    details: [
+                        "Intensive mathematics",
+                        "Physics",
+                        "Engineering sciences",
+                        "Scientific problem solving"
+                    ]
+                }
+            ]
+        },
+
         {
             id: "hobbies",
             label: "Hobbies",
-            position: "bottom-left",
+            position: "bottom-center",
             subtitle: "Beyond engineering",
             items: [
                 {
@@ -125,6 +225,7 @@ const Network = (() => {
                 }
             ]
         },
+
         {
             id: "certifications",
             label: "Certifications",
@@ -166,17 +267,25 @@ const Network = (() => {
     function createTraces() {
         pcbLayer.innerHTML = `
             <svg class="pcb-svg" viewBox="0 0 1000 700" preserveAspectRatio="none">
+
                 <path class="pcb-trace" data-trace="experience"
-                    d="M500 350 C390 310, 300 230, 190 150" />
+                    d="M500 350 C410 285, 300 205, 175 135" />
+
+                <path class="pcb-trace" data-trace="skills"
+                    d="M500 350 C500 280, 500 175, 500 80" />
 
                 <path class="pcb-trace" data-trace="projects"
-                    d="M500 350 C610 310, 700 230, 810 150" />
+                    d="M500 350 C590 285, 700 205, 825 135" />
+
+                <path class="pcb-trace" data-trace="education"
+                    d="M500 350 C410 420, 300 495, 175 565" />
 
                 <path class="pcb-trace" data-trace="hobbies"
-                    d="M500 350 C390 395, 300 480, 190 550" />
+                    d="M500 350 C500 430, 500 535, 500 625" />
 
                 <path class="pcb-trace" data-trace="certifications"
-                    d="M500 350 C610 395, 700 480, 810 550" />
+                    d="M500 350 C590 420, 700 495, 825 565" />
+
             </svg>
         `;
     }
@@ -192,6 +301,7 @@ const Network = (() => {
                 </div>
 
                 <div class="module-content">
+
                     <div class="module-items">
                         ${module.items.map((item, index) => `
                             <button class="module-item"
@@ -208,6 +318,7 @@ const Network = (() => {
                             Select an item to inspect details.
                         </span>
                     </div>
+
                 </div>
 
             </article>
@@ -218,42 +329,77 @@ const Network = (() => {
         document.querySelectorAll(".module-card").forEach(card => {
             const moduleId = card.dataset.module;
 
-            card.addEventListener("mouseenter", () => activateModule(moduleId));
+            card.addEventListener("mouseenter", () => {
+                activateModule(moduleId);
+                openModule(moduleId);
+            });
+
+            card.addEventListener("click", () => {
+                activateModule(moduleId);
+                openModule(moduleId);
+            });
         });
 
         document.querySelectorAll(".module-item").forEach(itemButton => {
             const moduleId = itemButton.dataset.moduleItem;
             const itemIndex = Number(itemButton.dataset.itemIndex);
 
-            itemButton.addEventListener("mouseenter", () => showItemDetails(moduleId, itemIndex));
-            itemButton.addEventListener("click", () => showItemDetails(moduleId, itemIndex));
+            itemButton.addEventListener("mouseenter", event => {
+                event.stopPropagation();
+                showItemDetails(moduleId, itemIndex);
+            });
+
+            itemButton.addEventListener("click", event => {
+                event.stopPropagation();
+                showItemDetails(moduleId, itemIndex);
+            });
         });
     }
 
     function activateModule(id) {
-        if (activatedModules.has(id)) return;
-
+    if (!activatedModules.has(id)) {
         activatedModules.add(id);
 
-        document.querySelector(`[data-module="${id}"]`)?.classList.add("module-active", "module-locked");
-        document.querySelector(`[data-trace="${id}"]`)?.classList.add("trace-active", "trace-locked");
+        document
+            .querySelector(`[data-module="${id}"]`)
+            ?.classList.add("module-active", "module-locked");
+
+        document
+            .querySelector(`[data-trace="${id}"]`)
+            ?.classList.add("trace-active", "trace-locked");
 
         CPU.activateModulePins(id);
 
-        SystemMonitor.setModules(activateModules.size, modules.length);
+        SystemMonitor.setModules(activatedModules.size, modules.length);
         SystemMonitor.setConnection(id);
+    }
 
-        if (activatedModules.size === modules.length) {
-            CPU.setCoreActivated();
-            SystemMonitor.setCoreStatus("ACTIVATED");
-            SystemMonitor.setConnection("STABLE");
-            moduleLayer.classList.add("all-modules-active");
-            pcbLayer.classList.add("all-traces-active");
-        }
+    if (activatedModules.size === modules.length) {
+        CPU.setCoreActivated();
+
+        SystemMonitor.setCoreStatus("ACTIVATED");
+        SystemMonitor.setModules(activatedModules.size, modules.length);
+        SystemMonitor.setConnection("STABLE", { temporary: false });
+
+        moduleLayer.classList.add("all-modules-active");
+        pcbLayer.classList.add("all-traces-active");
+    }
+}
+    
+
+    function openModule(id) {
+        document
+            .querySelectorAll(".module-card")
+            .forEach(card => card.classList.remove("module-open"));
+
+        document
+            .querySelector(`[data-module="${id}"]`)
+            ?.classList.add("module-open");
     }
 
     function showItemDetails(moduleId, itemIndex) {
         activateModule(moduleId);
+        openModule(moduleId);
 
         const module = modules.find(entry => entry.id === moduleId);
         const item = module.items[itemIndex];
@@ -288,9 +434,14 @@ const Network = (() => {
         moduleLayer.classList.add("modules-visible");
     }
 
+    function getTotalModules() {
+    return modules.length;
+    }
+
     return {
         create,
-        show
+        show,
+        getTotalModules
     };
 
 })();
