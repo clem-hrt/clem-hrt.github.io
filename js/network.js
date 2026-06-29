@@ -265,30 +265,40 @@ const Network = (() => {
     }
 
     function createTraces() {
-        pcbLayer.innerHTML = `
-            <svg class="pcb-svg" viewBox="0 0 1000 700" preserveAspectRatio="none">
+    pcbLayer.innerHTML = `
+        <svg class="pcb-svg" viewBox="0 0 1000 700" preserveAspectRatio="none">
 
-                <path class="pcb-trace" data-trace="experience"
-                    d="M500 350 C410 285, 300 205, 175 135" />
+            <!-- CPU connection pads -->
+            <circle class="pcb-pad" data-pad="experience" cx="455" cy="315" r="5" />
+            <circle class="pcb-pad" data-pad="skills" cx="500" cy="290" r="5" />
+            <circle class="pcb-pad" data-pad="projects" cx="545" cy="315" r="5" />
 
-                <path class="pcb-trace" data-trace="skills"
-                    d="M500 350 C500 280, 500 175, 500 80" />
+            <circle class="pcb-pad" data-pad="education" cx="455" cy="385" r="5" />
+            <circle class="pcb-pad" data-pad="hobbies" cx="500" cy="410" r="5" />
+            <circle class="pcb-pad" data-pad="certifications" cx="545" cy="385" r="5" />
 
-                <path class="pcb-trace" data-trace="projects"
-                    d="M500 350 C590 285, 700 205, 825 135" />
+            <!-- PCB traces -->
+            <path class="pcb-trace" data-trace="experience"
+                d="M455 315 C405 285, 310 210, 175 135" />
 
-                <path class="pcb-trace" data-trace="education"
-                    d="M500 350 C410 420, 300 495, 175 565" />
+            <path class="pcb-trace" data-trace="skills"
+                d="M500 290 C500 235, 500 155, 500 80" />
 
-                <path class="pcb-trace" data-trace="hobbies"
-                    d="M500 350 C500 430, 500 535, 500 625" />
+            <path class="pcb-trace" data-trace="projects"
+                d="M545 315 C595 285, 690 210, 825 135" />
 
-                <path class="pcb-trace" data-trace="certifications"
-                    d="M500 350 C590 420, 700 495, 825 565" />
+            <path class="pcb-trace" data-trace="education"
+                d="M455 385 C405 420, 310 500, 175 565" />
 
-            </svg>
-        `;
-    }
+            <path class="pcb-trace" data-trace="hobbies"
+                d="M500 410 C500 470, 500 550, 500 625" />
+
+            <path class="pcb-trace" data-trace="certifications"
+                d="M545 385 C595 420, 690 500, 825 565" />
+
+        </svg>
+    `;
+}
 
     function createModules() {
         moduleLayer.innerHTML = modules.map(module => `
