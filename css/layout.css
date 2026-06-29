@@ -1,212 +1,65 @@
 /* ==========================================================
    LAYOUT
    Portfolio - Clément Héritier
+   Clean version for current architecture
+========================================================== */
+
+/* ==========================================================
+   GLOBAL PAGE
 ========================================================== */
 
 html,
 body{
-
     width:100%;
-    height:100%;
-
+    min-height:100%;
     overflow-x:hidden;
-
 }
 
 body{
-
     background:var(--clr-background);
-
     color:var(--clr-text);
-
     font-family:var(--font-body);
-
     position:relative;
-
 }
 
-
 /* ==========================================================
-APP
+   APP ROOT
 ========================================================== */
 
 #app{
-
     position:relative;
-
     z-index:var(--z-content);
-
     width:100%;
-
     min-height:100vh;
-
+    overflow:hidden;
 }
 
-
 /* ==========================================================
-GLOBAL CONTAINER
+   GLOBAL UTILITIES
 ========================================================== */
 
 .container{
-
     width:min(1400px,92vw);
-
     margin:auto;
-
 }
 
-
-/* ==========================================================
-UTILITY
-========================================================== */
-
 .hidden{
-
     display:none;
-
 }
 
 .center{
-
     display:flex;
-
     justify-content:center;
-
     align-items:center;
-
 }
 
 .fullscreen{
-
     width:100vw;
-
     height:100vh;
-
 }
 
 /* ==========================================================
-BOOT SCREEN
-========================================================== */
-
-.boot-screen{
-
-    width:100%;
-    height:100vh;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-}
-
-.boot-container{
-
-    display:flex;
-
-    flex-direction:column;
-
-    align-items:center;
-
-    gap:18px;
-
-}
-
-.system-label{
-
-    color:var(--clr-accent);
-
-    letter-spacing:4px;
-
-    font-size:.75rem;
-
-    opacity:.75;
-
-}
-
-.boot-container h1{
-
-    font-family:var(--font-title);
-
-    font-size:4rem;
-
-    letter-spacing:6px;
-
-    font-weight:700;
-
-}
-
-.boot-container h2{
-
-    font-family:var(--font-title);
-
-    font-size:1.4rem;
-
-    color:#6f7c90;
-
-    letter-spacing:10px;
-
-    font-weight:400;
-
-}
-
-.boot-container p{
-
-    color:var(--clr-text-secondary);
-
-    margin-top:12px;
-
-    font-size:.95rem;
-
-}
-
-.boot-divider{
-
-    width:260px;
-
-    height:2px;
-
-    margin-top:20px;
-
-    background:
-
-    linear-gradient(
-
-        90deg,
-
-        transparent,
-
-        var(--clr-accent),
-
-        transparent
-
-    );
-
-    opacity:.35;
-
-}
-
-#power-port{
-
-    margin-top:18px;
-
-    padding:10px 22px;
-
-    border:1px solid rgba(53,194,255,.25);
-
-    border-radius:8px;
-
-    color:var(--clr-accent);
-
-    font-size:.75rem;
-
-    letter-spacing:2px;
-
-}
-
-/* ==========================================================
-LAYERS
+   APPLICATION LAYERS
 ========================================================== */
 
 #boot-layer,
@@ -235,27 +88,36 @@ LAYERS
 
 #module-layer{
     z-index:30;
+    pointer-events:none;
+}
+
+/* Legacy safety: system monitor is now inside CPU */
+#system-layer{
+    display:none;
 }
 
 /* ==========================================================
-CPU MICROCONTROLLER
+   CPU MICROCONTROLLER
 ========================================================== */
 
 .cpu-wrapper{
     width:100%;
     min-height:100vh;
+
     display:flex;
     align-items:center;
     justify-content:center;
 }
 
 .cpu-chip{
-    position:relative;
-    display:flex;
-    align-items:center;
-    gap:14px;
+    display:grid;
+    grid-template-rows:auto auto auto;
+    place-items:center;
+    gap:10px;
+
     opacity:0;
     transform:scale(.92);
+
     transition:
         opacity .9s ease,
         transform .9s ease;
@@ -266,90 +128,290 @@ CPU MICROCONTROLLER
     transform:scale(1);
 }
 
+.cpu-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+}
+
+/* ==========================================================
+   CPU CORE
+========================================================== */
+
 .cpu-core{
-    width:340px;
-    min-height:230px;
-    padding:34px 30px;
+    width:360px;
+    padding:26px 26px 22px;
+
     border-radius:18px;
+
     background:rgba(12,18,30,.92);
+
     border:1px solid rgba(53,194,255,.22);
+
     box-shadow:
         var(--shadow-card),
         inset 0 0 28px rgba(53,194,255,.035);
+
     text-align:center;
+
+    transition:
+        border-color var(--transition-normal),
+        box-shadow var(--transition-normal);
 }
 
 .cpu-ref{
     display:block;
+
     color:var(--clr-accent);
+
     letter-spacing:4px;
-    font-size:.72rem;
-    margin-bottom:20px;
+    font-size:.68rem;
+
+    margin-bottom:14px;
 }
 
 .cpu-core h2{
     font-family:var(--font-title);
-    font-size:1.75rem;
-    margin-bottom:16px;
+    font-size:1.55rem;
+    margin-bottom:10px;
 }
 
 .cpu-core p{
     color:var(--clr-text-secondary);
-    line-height:1.7;
-    font-size:.95rem;
+
+    line-height:1.45;
+    font-size:.88rem;
 }
 
 .cpu-core-status{
-    margin-top:28px;
+    margin-top:16px;
+
     display:flex;
     align-items:center;
     justify-content:center;
     gap:10px;
+
     color:#8995a8;
+
     letter-spacing:2px;
-    font-size:.72rem;
+    font-size:.68rem;
 }
 
 .cpu-led{
     width:9px;
     height:9px;
+
     border-radius:50%;
+
     background:var(--clr-accent);
+
     box-shadow:0 0 16px rgba(53,194,255,.65);
+
+    transition:
+        background var(--transition-normal),
+        box-shadow var(--transition-normal);
 }
 
-.cpu-pins{
+/* ==========================================================
+   CPU PINS
+========================================================== */
+
+.cpu-pins-top,
+.cpu-pins-bottom{
+    display:grid;
+    grid-template-columns:repeat(8, 1fr);
+    gap:10px;
+}
+
+.cpu-pins-left,
+.cpu-pins-right{
     display:grid;
     grid-template-rows:repeat(8, 1fr);
     gap:11px;
 }
 
-.cpu-pins span{
+.cpu-pins-top .cpu-pin,
+.cpu-pins-bottom .cpu-pin{
+    width:5px;
+    height:34px;
+}
+
+.cpu-pins-left .cpu-pin,
+.cpu-pins-right .cpu-pin{
     width:38px;
     height:5px;
+}
+
+.cpu-pin{
     border-radius:999px;
-    background:rgba(53,194,255,.28);
+
+    background:rgba(53,194,255,.24);
+
     box-shadow:0 0 8px rgba(53,194,255,.12);
+
+    transition:
+        background var(--transition-normal),
+        box-shadow var(--transition-normal),
+        transform var(--transition-normal);
 }
 
-.cpu-pins-left span{
-    transform-origin:right;
-}
+.cpu-pin.pin-active{
+    background:var(--clr-success);
 
-.cpu-pins-right span{
-    transform-origin:left;
+    box-shadow:
+        0 0 10px rgba(57,243,140,.9),
+        0 0 22px rgba(57,243,140,.45);
 }
 
 /* ==========================================================
-PCB NETWORK
+   CPU CORE ACTIVATED
+========================================================== */
+
+.core-activated .cpu-core{
+    border-color:rgba(57,243,140,.65);
+
+    box-shadow:
+        var(--shadow-card),
+        0 0 55px rgba(57,243,140,.18),
+        inset 0 0 38px rgba(57,243,140,.08);
+}
+
+.core-activated .cpu-led{
+    background:var(--clr-success);
+
+    box-shadow:0 0 22px rgba(57,243,140,.95);
+}
+
+.core-activated #cpu-status-text{
+    color:var(--clr-success);
+}
+
+/* ==========================================================
+   SYSTEM MONITOR INSIDE CPU
+========================================================== */
+
+#cpu-monitor-slot{
+    margin-top:18px;
+}
+
+.core-monitor{
+    padding:12px;
+
+    border:1px solid rgba(53,194,255,.16);
+    border-radius:14px;
+
+    background:rgba(4,8,14,.42);
+
+    box-shadow:
+        inset 0 0 18px rgba(53,194,255,.025),
+        0 0 18px rgba(53,194,255,.04);
+}
+
+.core-monitor-header{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+
+    margin-bottom:10px;
+
+    color:var(--clr-accent);
+
+    letter-spacing:2.6px;
+    font-size:.58rem;
+}
+
+.core-monitor-dot{
+    width:6px;
+    height:6px;
+
+    border-radius:50%;
+
+    background:var(--clr-success);
+
+    box-shadow:0 0 10px rgba(57,243,140,.9);
+}
+
+.core-monitor-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px 14px;
+}
+
+.core-monitor-row{
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+
+    color:var(--clr-text-secondary);
+
+    font-size:.58rem;
+    letter-spacing:1.1px;
+}
+
+.core-monitor-row strong{
+    color:#7d899a;
+    font-weight:500;
+
+    transition:
+        color var(--transition-normal),
+        text-shadow var(--transition-normal);
+}
+
+.core-monitor-row strong.is-online{
+    color:var(--clr-success);
+
+    text-shadow:0 0 10px rgba(57,243,140,.55);
+}
+
+.core-monitor-progress{
+    position:relative;
+
+    width:100%;
+    height:4px;
+
+    margin-top:12px;
+
+    border-radius:999px;
+
+    background:rgba(255,255,255,.06);
+
+    overflow:hidden;
+}
+
+.core-monitor-progress span{
+    display:block;
+
+    width:0%;
+    height:100%;
+
+    border-radius:999px;
+
+    background:linear-gradient(
+        90deg,
+        var(--clr-accent),
+        var(--clr-success)
+    );
+
+    box-shadow:0 0 14px rgba(57,243,140,.5);
+
+    transition:width .45s ease;
+}
+
+/* ==========================================================
+   PCB NETWORK
 ========================================================== */
 
 .pcb-svg{
     position:absolute;
     inset:0;
+
     width:100%;
     height:100%;
+
     opacity:0;
+
     transition:opacity 1s ease;
 }
 
@@ -359,30 +421,87 @@ PCB NETWORK
 
 .pcb-trace{
     fill:none;
+
     stroke:rgba(53,194,255,.18);
     stroke-width:3;
     stroke-linecap:round;
+
     stroke-dasharray:10 12;
+
     filter:drop-shadow(0 0 4px rgba(53,194,255,.12));
+
+    transition:
+        stroke var(--transition-normal),
+        stroke-width var(--transition-normal),
+        filter var(--transition-normal);
+}
+
+.trace-active{
+    stroke:var(--clr-accent);
+    stroke-width:4;
+
+    stroke-dasharray:14 8;
+
+    filter:
+        drop-shadow(0 0 8px rgba(53,194,255,.75))
+        drop-shadow(0 0 18px rgba(53,194,255,.35));
+
+    animation:traceFlow 1.1s linear infinite;
+}
+
+.trace-locked{
+    stroke:var(--clr-success);
+
+    filter:
+        drop-shadow(0 0 8px rgba(57,243,140,.7))
+        drop-shadow(0 0 18px rgba(57,243,140,.28));
 }
 
 /* ==========================================================
-MODULE CARDS
+   MODULE VARIABLES
+========================================================== */
+
+:root{
+    --module-closed-width:clamp(220px, 18vw, 255px);
+    --module-open-width:clamp(390px, 33vw, 500px);
+}
+
+/* ==========================================================
+   MODULE BASE
 ========================================================== */
 
 .module-card{
     position:absolute;
-    width:260px;
+
+    width:var(--module-closed-width);
+    max-height:calc(50vh - 80px);
+
     padding:22px;
+
+    overflow:hidden;
+
     border-radius:var(--radius-medium);
+
     background:rgba(10,16,28,.72);
+
     border:1px solid rgba(53,194,255,.14);
+
     box-shadow:var(--shadow-soft);
+
+    backdrop-filter:blur(18px);
+
     opacity:0;
+
     transform:translateY(18px) scale(.96);
+
+    pointer-events:auto;
+
+    cursor:pointer;
+
     transition:
         opacity .8s ease,
         transform .8s ease,
+        width .5s ease,
         border-color .3s ease,
         box-shadow .3s ease;
 }
@@ -392,142 +511,198 @@ MODULE CARDS
     transform:translateY(0) scale(1);
 }
 
+/* A module can be activated without staying visually open */
+.module-card.module-locked{
+    width:var(--module-closed-width);
+
+    border-color:rgba(57,243,140,.34);
+}
+
+.module-card.module-open{
+    width:var(--module-open-width);
+
+    z-index:8;
+
+    transform:translateY(-4px) scale(1.035);
+
+    border-color:rgba(53,194,255,.58);
+
+    box-shadow:
+        var(--shadow-card),
+        0 0 42px rgba(53,194,255,.16);
+}
+
+.module-card.module-locked:not(.module-open) h3{
+    color:var(--clr-success);
+}
+
+.module-card.module-open h3{
+    color:var(--clr-accent);
+}
+
+/* ==========================================================
+   SIX MODULE POSITIONS
+========================================================== */
+
 .module-top-left{
-    left:9vw;
-    top:16vh;
+    left:clamp(22px, 3vw, 54px);
+    top:clamp(38px, 6vh, 76px);
+    right:auto;
+    bottom:auto;
+    translate:0 0;
+
+    transform-origin:left center;
+}
+
+.module-top-center{
+    left:50%;
+    top:clamp(22px, 4vh, 48px);
+    right:auto;
+    bottom:auto;
+    translate:-50% 0;
+
+    transform-origin:center center;
 }
 
 .module-top-right{
-    right:9vw;
-    top:16vh;
+    right:clamp(22px, 3vw, 54px);
+    top:clamp(38px, 6vh, 76px);
+    left:auto;
+    bottom:auto;
+    translate:0 0;
+
+    transform-origin:right center;
 }
 
 .module-bottom-left{
-    left:9vw;
-    bottom:16vh;
+    left:clamp(22px, 3vw, 54px);
+    bottom:clamp(38px, 6vh, 76px);
+    right:auto;
+    top:auto;
+    translate:0 0;
+
+    transform-origin:left center;
+}
+
+.module-bottom-center{
+    left:50%;
+    bottom:clamp(22px, 4vh, 48px);
+    right:auto;
+    top:auto;
+    translate:-50% 0;
+
+    transform-origin:center center;
 }
 
 .module-bottom-right{
-    right:9vw;
-    bottom:16vh;
+    right:clamp(22px, 3vw, 54px);
+    bottom:clamp(38px, 6vh, 76px);
+    left:auto;
+    top:auto;
+    translate:0 0;
+
+    transform-origin:right center;
 }
 
-.module-index{
-    display:block;
-    color:var(--clr-accent);
-    letter-spacing:3px;
-    font-size:.62rem;
-    margin-bottom:14px;
-    opacity:.75;
-}
-
-.module-card h3{
-    font-family:var(--font-title);
-    font-size:1.2rem;
-    margin-bottom:10px;
-}
-
-.module-card p{
-    color:var(--clr-text-secondary);
-    font-size:.85rem;
-    line-height:1.5;
-}
-
-
-/* ==========================================================
-PERSISTENT ACTIVATION STATES
-========================================================== */
-
-.module-locked{
-    border-color:rgba(57,243,140,.42);
-}
-
-.module-locked h3{
-    color:var(--clr-success);
-}
-
-.module-locked p{
-    color:rgba(245,248,252,.72);
-}
-
-.trace-locked{
-    stroke:var(--clr-success);
-    filter:
-        drop-shadow(0 0 8px rgba(57,243,140,.7))
-        drop-shadow(0 0 18px rgba(57,243,140,.28));
-}
-
-.cpu-pin.pin-active{
-    background:var(--clr-success);
-    box-shadow:
-        0 0 10px rgba(57,243,140,.9),
-        0 0 22px rgba(57,243,140,.45);
-}
-
-.core-activated .cpu-core{
-    border-color:rgba(57,243,140,.65);
-    box-shadow:
-        var(--shadow-card),
-        0 0 55px rgba(57,243,140,.18),
-        inset 0 0 38px rgba(57,243,140,.08);
-}
-
-.core-activated .cpu-led{
-    background:var(--clr-success);
-    box-shadow:0 0 22px rgba(57,243,140,.95);
-}
-
-.core-activated #cpu-status-text{
-    color:var(--clr-success);
-}
-
-.all-modules-active .module-card{
-    border-color:rgba(57,243,140,.48);
+/* Center modules must stay compact to protect CPU area */
+.module-top-center.module-open,
+.module-bottom-center.module-open{
+    max-height:calc(50vh - 145px);
 }
 
 /* ==========================================================
-MODULE DETAIL INTERACTIONS
+   MODULE HEADER
 ========================================================== */
-
-.module-card{
-    overflow:hidden;
-}
 
 .module-header{
     position:relative;
     z-index:2;
 }
 
+.module-index{
+    display:block;
+
+    color:var(--clr-accent);
+
+    letter-spacing:3px;
+    font-size:.62rem;
+
+    margin-bottom:14px;
+
+    opacity:.75;
+}
+
+.module-card.module-open .module-index,
+.module-card.module-locked .module-index{
+    opacity:1;
+}
+
+.module-card h3{
+    font-family:var(--font-title);
+    font-size:1.2rem;
+
+    margin-bottom:10px;
+
+    transition:color var(--transition-normal);
+}
+
+.module-card p{
+    color:var(--clr-text-secondary);
+
+    font-size:.85rem;
+    line-height:1.5;
+}
+
+/* ==========================================================
+   MODULE CONTENT
+========================================================== */
+
 .module-content{
     display:grid;
-    grid-template-columns:1fr;
+    grid-template-columns:minmax(135px,.85fr) minmax(180px,1.15fr);
     gap:14px;
 
     max-height:0;
+
+    margin-top:0;
+
     opacity:0;
+
     transform:translateY(10px);
 
     transition:
         max-height .65s ease,
         opacity .45s ease,
-        transform .45s ease;
+        transform .45s ease,
+        margin-top .45s ease;
 }
 
-.module-locked .module-content{
-    max-height:420px;
-    opacity:1;
-    transform:translateY(0);
+.module-open .module-content{
+    max-height:310px;
+
     margin-top:18px;
+
+    opacity:1;
+
+    transform:translateY(0);
 }
+
+/* ==========================================================
+   MODULE ITEMS
+========================================================== */
 
 .module-items{
     display:flex;
     flex-direction:column;
     gap:8px;
+
+    min-width:0;
 }
 
 .module-item{
     width:100%;
+    min-height:52px;
+
     padding:10px 12px;
 
     display:flex;
@@ -539,6 +714,7 @@ MODULE DETAIL INTERACTIONS
     border-radius:10px;
 
     color:var(--clr-text);
+
     background:rgba(255,255,255,.025);
 
     cursor:pointer;
@@ -552,7 +728,9 @@ MODULE DETAIL INTERACTIONS
 .module-item:hover,
 .module-item.item-active{
     border-color:rgba(53,194,255,.55);
+
     background:rgba(53,194,255,.08);
+
     transform:translateX(4px);
 }
 
@@ -563,12 +741,21 @@ MODULE DETAIL INTERACTIONS
 
 .module-item small{
     color:var(--clr-text-secondary);
+
     font-size:.72rem;
 }
 
+/* ==========================================================
+   MODULE DETAIL PANEL
+========================================================== */
+
 .module-detail{
-    min-height:120px;
+    min-height:100%;
+    max-height:245px;
+
     padding:14px;
+
+    overflow:auto;
 
     border:1px solid rgba(57,243,140,.12);
     border-radius:12px;
@@ -585,34 +772,50 @@ MODULE DETAIL INTERACTIONS
 
 .module-detail.detail-active{
     opacity:1;
+
     border-color:rgba(57,243,140,.35);
+
     background:rgba(57,243,140,.035);
+}
+
+/* Center modules need smaller detail zone */
+.module-top-center .module-detail,
+.module-bottom-center .module-detail{
+    max-height:150px;
 }
 
 .detail-placeholder{
     display:block;
+
     color:var(--clr-text-secondary);
+
     font-size:.78rem;
     line-height:1.5;
 }
 
 .detail-date{
     display:block;
+
     color:var(--clr-success);
+
     font-size:.68rem;
     letter-spacing:1.5px;
+
     margin-bottom:8px;
 }
 
 .module-detail h4{
     font-family:var(--font-title);
     font-size:.95rem;
+
     margin-bottom:5px;
 }
 
 .module-detail p{
     color:var(--clr-text-secondary);
+
     font-size:.76rem;
+
     margin-bottom:10px;
 }
 
@@ -620,19 +823,26 @@ MODULE DETAIL INTERACTIONS
     display:flex;
     flex-direction:column;
     gap:5px;
+
+    padding-bottom:4px;
 }
 
 .module-detail li{
     position:relative;
+
     padding-left:14px;
+
     color:rgba(245,248,252,.78);
+
     font-size:.74rem;
     line-height:1.35;
 }
 
 .module-detail li::before{
     content:"";
+
     position:absolute;
+
     left:0;
     top:.45rem;
 
@@ -640,155 +850,13 @@ MODULE DETAIL INTERACTIONS
     height:5px;
 
     border-radius:50%;
+
     background:var(--clr-success);
+
     box-shadow:0 0 8px rgba(57,243,140,.65);
 }
 
-/* Slightly larger active panels, without overloading the screen */
-.module-card.module-locked{
-    width:310px;
-}
-
-.module-top-left.module-locked,
-.module-bottom-left.module-locked{
-    transform-origin:left center;
-}
-
-.module-top-right.module-locked,
-.module-bottom-right.module-locked{
-    transform-origin:right center;
-}
-
-/* ==========================================================
-SPRINT 2.6
-QUADRANT MODULE LAYOUT + SIDE DETAILS
-========================================================== */
-
-/* 
-Each module now lives inside its own screen quadrant.
-The CPU keeps the center free.
-*/
-
-#module-layer{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100vh;
-    pointer-events:none;
-}
-
-/* Base module sizing */
-.module-card{
-    pointer-events:auto;
-
-    width:clamp(300px, 30vw, 430px);
-    max-height:calc(50vh - 70px);
-
-    overflow:hidden;
-
-    backdrop-filter:blur(18px);
-}
-
-/* Active module gets wider, but still stays inside its quadrant */
-.module-card.module-locked{
-    width:clamp(380px, 36vw, 560px);
-    max-height:calc(50vh - 56px);
-}
-
-/* ==========================================================
-QUADRANT POSITIONS
-========================================================== */
-
-/* Top-left quadrant : Professional Experience */
-.module-top-left{
-    left:clamp(22px, 4vw, 70px);
-    top:clamp(70px, 10vh, 110px);
-    right:auto;
-    bottom:auto;
-}
-
-/* Top-right quadrant : Projects */
-.module-top-right{
-    right:clamp(22px, 4vw, 70px);
-    top:clamp(70px, 10vh, 110px);
-    left:auto;
-    bottom:auto;
-}
-
-/* Bottom-left quadrant : Hobbies */
-.module-bottom-left{
-    left:clamp(22px, 4vw, 70px);
-    bottom:clamp(45px, 7vh, 90px);
-    right:auto;
-    top:auto;
-}
-
-/* Bottom-right quadrant : Certifications */
-.module-bottom-right{
-    right:clamp(22px, 4vw, 70px);
-    bottom:clamp(45px, 7vh, 90px);
-    left:auto;
-    top:auto;
-}
-
-/* Correct expansion direction */
-.module-top-left,
-.module-bottom-left{
-    transform-origin:left center;
-}
-
-.module-top-right,
-.module-bottom-right{
-    transform-origin:right center;
-}
-
-/* ==========================================================
-SIDE-BY-SIDE DETAILS
-========================================================== */
-
-.module-content{
-    display:grid;
-    grid-template-columns:minmax(145px, .85fr) minmax(180px, 1.15fr);
-    gap:14px;
-
-    max-height:0;
-    opacity:0;
-    transform:translateY(10px);
-
-    transition:
-        max-height .65s ease,
-        opacity .45s ease,
-        transform .45s ease;
-}
-
-.module-locked .module-content{
-    max-height:330px;
-    opacity:1;
-    transform:translateY(0);
-    margin-top:18px;
-}
-
-/* Left column */
-.module-items{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-    min-width:0;
-}
-
-/* Item buttons */
-.module-item{
-    min-height:54px;
-}
-
-/* Right column */
-.module-detail{
-    min-height:100%;
-    max-height:260px;
-    overflow:auto;
-}
-
-/* Cleaner scrollbar for detail panel */
+/* Detail scrollbar */
 .module-detail::-webkit-scrollbar{
     width:5px;
 }
@@ -803,38 +871,27 @@ SIDE-BY-SIDE DETAILS
     border-radius:999px;
 }
 
-/* The detail panel should not push the whole card downward */
-.module-detail ul{
-    padding-bottom:4px;
+/* ==========================================================
+   ALL MODULES ACTIVE
+========================================================== */
+
+.all-modules-active .module-card:not(.module-open){
+    border-color:rgba(57,243,140,.48);
+}
+
+.all-modules-active .module-card.module-open{
+    transform:translateY(-4px) scale(1.035);
 }
 
 /* ==========================================================
-AVOID CPU COLLISION
+   RESPONSIVE SAFETY
 ========================================================== */
 
-/* 
-Small visual reduction when all modules are active.
-This avoids a crowded look.
-*/
+@media (max-width:1200px){
 
-.all-modules-active .module-card:not(:hover){
-    transform:scale(.98);
-}
-
-/* Keep hovered/active cards visually dominant */
-.module-card:hover{
-    z-index:5;
-}
-
-/* ==========================================================
-RESPONSIVE SAFETY
-========================================================== */
-
-@media (max-width:1150px){
-
-    .module-card,
-    .module-card.module-locked{
-        width:clamp(280px, 36vw, 390px);
+    :root{
+        --module-closed-width:clamp(205px,18vw,235px);
+        --module-open-width:clamp(340px,32vw,420px);
     }
 
     .module-content{
@@ -842,174 +899,107 @@ RESPONSIVE SAFETY
     }
 
     .module-detail{
-        max-height:150px;
+        max-height:140px;
     }
 }
 
-@media (max-width:850px){
+@media (max-width:900px){
 
+    #app{
+        overflow:visible;
+    }
+
+    #cpu-layer,
     #module-layer{
         position:relative;
+        inset:auto;
+        min-height:auto;
+    }
+
+    #pcb-layer{
+        display:none;
+    }
+
+    .cpu-wrapper{
+        min-height:auto;
+        padding:80px 20px 40px;
+    }
+
+    .cpu-chip{
+        transform:scale(.9);
+    }
+
+    .cpu-visible .cpu-chip{
+        transform:scale(.9);
+    }
+
+    #module-layer{
         display:grid;
         grid-template-columns:1fr;
         gap:18px;
-        padding:120px 20px 40px;
+
+        padding:20px 20px 60px;
+
         height:auto;
     }
 
     .module-card,
     .module-card.module-locked,
+    .module-card.module-open,
     .module-top-left,
+    .module-top-center,
     .module-top-right,
     .module-bottom-left,
+    .module-bottom-center,
     .module-bottom-right{
         position:relative;
+
         inset:auto;
+
+        translate:0 0;
+
         width:100%;
+
         max-height:none;
     }
 
     .module-content{
         grid-template-columns:1fr;
     }
-}
 
-/* ==========================================================
-SYSTEM MONITOR
-========================================================== */
-
-#system-layer{
-    position:absolute;
-    inset:0;
-    width:100%;
-    min-height:100vh;
-    z-index:35;
-    pointer-events:none;
-}
-
-.system-monitor{
-    position:absolute;
-    left:50%;
-    bottom:24px;
-
-    width:min(520px, calc(100vw - 40px));
-
-    transform:translateX(-50%) translateY(18px);
-
-    padding:14px 18px;
-
-    border:1px solid rgba(53,194,255,.18);
-    border-radius:var(--radius-medium);
-
-    background:rgba(7,11,18,.72);
-    backdrop-filter:blur(16px);
-
-    box-shadow:
-        var(--shadow-soft),
-        0 0 28px rgba(53,194,255,.06);
-
-    opacity:0;
-
-    transition:
-        opacity .7s ease,
-        transform .7s ease,
-        border-color .35s ease;
-}
-
-.system-monitor-visible .system-monitor{
-    opacity:1;
-    transform:translateX(-50%) translateY(0);
-}
-
-.monitor-header{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-
-    margin-bottom:12px;
-
-    color:var(--clr-accent);
-    letter-spacing:3px;
-    font-size:.68rem;
-}
-
-.monitor-dot{
-    width:7px;
-    height:7px;
-    border-radius:50%;
-
-    background:var(--clr-success);
-    box-shadow:0 0 12px rgba(57,243,140,.9);
-}
-
-.monitor-row{
-    display:grid;
-    grid-template-columns:1fr auto;
-
-    gap:18px;
-
-    padding:5px 0;
-
-    font-size:.72rem;
-    letter-spacing:1.4px;
-
-    color:var(--clr-text-secondary);
-}
-
-.monitor-row strong{
-    color:#788599;
-    font-weight:500;
-    transition:color var(--transition-normal), text-shadow var(--transition-normal);
-}
-
-.monitor-row strong.monitor-online{
-    color:var(--clr-success);
-    text-shadow:0 0 12px rgba(57,243,140,.45);
-}
-
-.monitor-progress{
-    position:relative;
-
-    width:100%;
-    height:4px;
-
-    margin-top:12px;
-
-    border-radius:999px;
-
-    background:rgba(255,255,255,.06);
-
-    overflow:hidden;
-}
-
-.monitor-progress span{
-    display:block;
-
-    width:0%;
-    height:100%;
-
-    border-radius:999px;
-
-    background:linear-gradient(
-        90deg,
-        var(--clr-accent),
-        var(--clr-success)
-    );
-
-    box-shadow:0 0 16px rgba(57,243,140,.5);
-
-    transition:width .5s ease;
-}
-
-@media (max-width:850px){
-    .system-monitor{
-        position:fixed;
-        bottom:14px;
-        padding:12px 14px;
+    .module-open .module-content{
+        max-height:520px;
     }
 
-    .monitor-row{
-        font-size:.66rem;
+    .module-detail,
+    .module-top-center .module-detail,
+    .module-bottom-center .module-detail{
+        max-height:220px;
+    }
+}
+
+@media (max-width:520px){
+
+    .cpu-core{
+        width:300px;
+        padding:22px 20px 20px;
+    }
+
+    .cpu-core h2{
+        font-size:1.32rem;
+    }
+
+    .core-monitor-grid{
+        grid-template-columns:1fr;
+    }
+
+    .cpu-pins-left .cpu-pin,
+    .cpu-pins-right .cpu-pin{
+        width:26px;
+    }
+
+    .cpu-pins-top .cpu-pin,
+    .cpu-pins-bottom .cpu-pin{
+        height:26px;
     }
 }
