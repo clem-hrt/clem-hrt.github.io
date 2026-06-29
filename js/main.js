@@ -1,17 +1,10 @@
 /*
 ========================================
-
-Portfolio Controller
-
+MAIN CONTROLLER
+Clément Héritier Portfolio
 ========================================
 */
 
-console.clear();
-
-const cpuCard = document.querySelector(".cpu-card");
-
-setTimeout(()=>{
-
-    cpuCard.classList.add("fade-in");
-
-},1200);
+document.addEventListener("DOMContentLoaded", () => {
+    Boot.start();
+});
