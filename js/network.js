@@ -268,33 +268,43 @@ const Network = (() => {
     pcbLayer.innerHTML = `
         <svg class="pcb-svg" viewBox="0 0 1000 700" preserveAspectRatio="none">
 
-            <!-- CPU connection pads -->
-            <circle class="pcb-pad" data-pad="experience" cx="455" cy="315" r="5" />
-            <circle class="pcb-pad" data-pad="skills" cx="500" cy="290" r="5" />
-            <circle class="pcb-pad" data-pad="projects" cx="545" cy="315" r="5" />
+            <!-- Connector pads close to the CPU -->
+            <rect class="pcb-pad pcb-pad-left" data-pad="experience"
+                x="438" y="304" width="34" height="6" rx="3" />
 
-            <circle class="pcb-pad" data-pad="education" cx="455" cy="385" r="5" />
-            <circle class="pcb-pad" data-pad="hobbies" cx="500" cy="410" r="5" />
-            <circle class="pcb-pad" data-pad="certifications" cx="545" cy="385" r="5" />
+            <rect class="pcb-pad pcb-pad-top" data-pad="skills"
+                x="497" y="276" width="6" height="34" rx="3" />
 
-            <!-- PCB traces -->
+            <rect class="pcb-pad pcb-pad-right" data-pad="projects"
+                x="528" y="304" width="34" height="6" rx="3" />
+
+            <rect class="pcb-pad pcb-pad-left" data-pad="education"
+                x="438" y="390" width="34" height="6" rx="3" />
+
+            <rect class="pcb-pad pcb-pad-bottom" data-pad="hobbies"
+                x="497" y="390" width="6" height="34" rx="3" />
+
+            <rect class="pcb-pad pcb-pad-right" data-pad="certifications"
+                x="528" y="390" width="34" height="6" rx="3" />
+
+            <!-- PCB traces connected to pads -->
             <path class="pcb-trace" data-trace="experience"
-                d="M455 315 C405 285, 310 210, 175 135" />
+                d="M438 307 C390 285, 300 210, 175 135" />
 
             <path class="pcb-trace" data-trace="skills"
-                d="M500 290 C500 235, 500 155, 500 80" />
+                d="M500 276 C500 225, 500 150, 500 80" />
 
             <path class="pcb-trace" data-trace="projects"
-                d="M545 315 C595 285, 690 210, 825 135" />
+                d="M562 307 C610 285, 700 210, 825 135" />
 
             <path class="pcb-trace" data-trace="education"
-                d="M455 385 C405 420, 310 500, 175 565" />
+                d="M438 393 C390 420, 300 500, 175 565" />
 
             <path class="pcb-trace" data-trace="hobbies"
-                d="M500 410 C500 470, 500 550, 500 625" />
+                d="M500 424 C500 475, 500 550, 500 625" />
 
             <path class="pcb-trace" data-trace="certifications"
-                d="M545 385 C595 420, 690 500, 825 565" />
+                d="M562 393 C610 420, 700 500, 825 565" />
 
         </svg>
     `;
