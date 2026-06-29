@@ -1,63 +1,70 @@
 /*
 ========================================
 SYSTEM MONITOR
-Displays global portfolio system state
+Embedded inside the CPU core
 ========================================
 */
 
 const SystemMonitor = (() => {
 
-    const systemLayer = document.querySelector("#system-layer");
-
     const state = {
         power: "OFFLINE",
         core: "STANDBY",
         modulesActive: 0,
-        modulesTotal: 4,
+        modulesTotal: 6,
         connection: "IDLE"
     };
 
-    function create() {
-        systemLayer.innerHTML = `
-            <aside class="system-monitor">
+    let connectionTimeout = null;
 
-                <div class="monitor-header">
-                    <span class="monitor-dot"></span>
+    function create() {
+        const slot = document.querySelector("#cpu-monitor-slot");
+
+        if (!slot) {
+            console.warn("SystemMonitor: #cpu-monitor-slot not found.");
+            return;
+        }
+
+        slot.innerHTML = `
+            <div class="core-monitor">
+
+                <div class="core-monitor-header">
+                    <span class="core-monitor-dot"></span>
                     <span>SYSTEM MONITOR</span>
                 </div>
 
-                <div class="monitor-row">
-                    <span>POWER</span>
-                    <strong id="monitor-power">OFFLINE</strong>
+                <div class="core-monitor-grid">
+
+                    <div class="core-monitor-row">
+                        <span>POWER</span>
+                        <strong id="core-monitor-power">OFFLINE</strong>
+                    </div>
+
+                    <div class="core-monitor-row">
+                        <span>CORE</span>
+                        <strong id="core-monitor-core">STANDBY</strong>
+                    </div>
+
+                    <div class="core-monitor-row">
+                        <span>MODULES</span>
+                        <strong id="core-monitor-modules">0 / 6</strong>
+                    </div>
+
+                    <div class="core-monitor-row">
+                        <span>LINK</span>
+                        <strong id="core-monitor-connection">IDLE</strong>
+                    </div>
+
                 </div>
 
-                <div class="monitor-row">
-                    <span>CORE</span>
-                    <strong id="monitor-core">STANDBY</strong>
+                <div class="core-monitor-progress">
+                    <span id="core-monitor-progress-bar"></span>
                 </div>
 
-                <div class="monitor-row">
-                    <span>MODULES</span>
-                    <strong id="monitor-modules">0 / 4</strong>
-                </div>
-
-                <div class="monitor-row">
-                    <span>CONNECTION</span>
-                    <strong id="monitor-connection">IDLE</strong>
-                </div>
-
-                <div class="monitor-progress">
-                    <span id="monitor-progress-bar"></span>
-                </div>
-
-            </aside>
+            </div>
         `;
 
         render();
-    }
-
-    function show() {
-        systemLayer.classList.add("system-monitor-visible");
     }
 
     function setPowerOnline() {
@@ -66,36 +73,36 @@ const SystemMonitor = (() => {
     }
 
     function setCoreStatus(status) {
-        state.core = status;
+        state.core = status.toUpperCase();
         render();
     }
 
-    function setModules(active, total = 4) {
+    function setModules(active, total = 6) {
         state.modulesActive = active;
         state.modulesTotal = total;
         render();
     }
 
-    function setConnection(label) {
+    function setConnection(label, options = { temporary: true }) {
         state.connection = label.toUpperCase();
         render();
 
-        window.clearTimeout(setConnection.timeout);
+        window.clearTimeout(connectionTimeout);
 
-        setConnection.timeout = window.setTimeout(() => {
-            if (state.core !== "ACTIVATED") {
+        if (options.temporary && state.connection !== "STABLE") {
+            connectionTimeout = window.setTimeout(() => {
                 state.connection = "IDLE";
                 render();
-            }
-        }, 1400);
+            }, 1300);
+        }
     }
 
     function render() {
-        const power = document.querySelector("#monitor-power");
-        const core = document.querySelector("#monitor-core");
-        const modules = document.querySelector("#monitor-modules");
-        const connection = document.querySelector("#monitor-connection");
-        const progressBar = document.querySelector("#monitor-progress-bar");
+        const power = document.querySelector("#core-monitor-power");
+        const core = document.querySelector("#core-monitor-core");
+        const modules = document.querySelector("#core-monitor-modules");
+        const connection = document.querySelector("#core-monitor-connection");
+        const progressBar = document.querySelector("#core-monitor-progress-bar");
 
         if (!power || !core || !modules || !connection || !progressBar) return;
 
@@ -110,15 +117,14 @@ const SystemMonitor = (() => {
 
         progressBar.style.width = `${progress}%`;
 
-        power.classList.toggle("monitor-online", state.power === "ONLINE");
-        core.classList.toggle("monitor-online", state.core === "ACTIVATED");
-        modules.classList.toggle("monitor-online", state.modulesActive === state.modulesTotal);
-        connection.classList.toggle("monitor-online", state.connection !== "IDLE");
+        power.classList.toggle("is-online", state.power === "ONLINE");
+        core.classList.toggle("is-online", state.core === "ACTIVATED");
+        modules.classList.toggle("is-online", state.modulesActive === state.modulesTotal);
+        connection.classList.toggle("is-online", state.connection !== "IDLE");
     }
 
     return {
         create,
-        show,
         setPowerOnline,
         setCoreStatus,
         setModules,
