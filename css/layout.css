@@ -1003,3 +1003,81 @@ body{
         height:26px;
     }
 }
+/* ==========================================================
+SCROLLABLE MODULE CONTENT
+Keeps cards clean when items or details are too long
+========================================================== */
+
+/* The open module keeps a fixed readable height */
+.module-open .module-content{
+    max-height:min(330px, calc(50vh - 150px));
+    overflow:hidden;
+}
+
+/* Left column: list of fields/items */
+.module-items{
+    max-height:245px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding-right:4px;
+}
+
+/* Right column: selected item details */
+.module-detail{
+    max-height:245px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding-right:12px;
+}
+
+/* Center modules are closer to the CPU, so they stay more compact */
+.module-top-center.module-open .module-content,
+.module-bottom-center.module-open .module-content{
+    max-height:min(230px, calc(50vh - 170px));
+}
+
+.module-top-center .module-items,
+.module-bottom-center .module-items,
+.module-top-center .module-detail,
+.module-bottom-center .module-detail{
+    max-height:165px;
+}
+
+/* Clean scrollbar for both columns */
+.module-items::-webkit-scrollbar,
+.module-detail::-webkit-scrollbar{
+    width:5px;
+}
+
+.module-items::-webkit-scrollbar-track,
+.module-detail::-webkit-scrollbar-track{
+    background:rgba(255,255,255,.03);
+    border-radius:999px;
+}
+
+.module-items::-webkit-scrollbar-thumb,
+.module-detail::-webkit-scrollbar-thumb{
+    background:rgba(53,194,255,.35);
+    border-radius:999px;
+}
+
+.module-items::-webkit-scrollbar-thumb:hover,
+.module-detail::-webkit-scrollbar-thumb:hover{
+    background:rgba(53,194,255,.6);
+}
+
+/* Firefox support */
+.module-items,
+.module-detail{
+    scrollbar-width:thin;
+    scrollbar-color:rgba(53,194,255,.45) rgba(255,255,255,.03);
+}
+
+/* ==========================================================
+CPU STATUS CLEANUP
+The core status is now only displayed in System Monitor
+========================================================== */
+
+.cpu-core-status{
+    display:none;
+}
