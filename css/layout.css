@@ -1380,3 +1380,112 @@ PCB PAD REFINEMENT
 .trace-active{
     stroke-width:4.2;
 }
+/* ==========================================================
+SPRINT 3.2
+LOW-LAG PCB TRACES + FULL PIN GROUP ACTIVATION
+========================================================== */
+
+/* Remove expensive infinite SVG animation */
+.trace-active{
+    animation:none;
+}
+
+/* Base traces: clean, solid, hardware-like */
+.pcb-trace{
+    stroke:rgba(53,194,255,.20);
+    stroke-width:3;
+    stroke-linecap:round;
+    stroke-dasharray:none;
+
+    filter:none;
+
+    transition:
+        stroke .25s ease,
+        stroke-width .25s ease,
+        opacity .25s ease;
+}
+
+/* Active trace: solid connection, no laggy dash movement */
+.trace-active,
+.trace-locked{
+    stroke:var(--clr-success);
+    stroke-width:4.5;
+
+    filter:
+        drop-shadow(0 0 5px rgba(57,243,140,.45));
+}
+
+/* Connector pads are now pin extensions, not dots */
+.pcb-pad{
+    opacity:0;
+
+    fill:rgba(53,194,255,.24);
+    stroke:none;
+
+    filter:none;
+
+    transition:
+        opacity .6s ease,
+        fill .25s ease,
+        filter .25s ease;
+}
+
+.network-visible .pcb-pad{
+    opacity:1;
+}
+
+/* Active connector pad matches the active CPU pins */
+.pcb-pad.pad-active{
+    fill:var(--clr-success);
+
+    filter:
+        drop-shadow(0 0 6px rgba(57,243,140,.55));
+}
+
+/* Make active CPU pins feel physically connected */
+.cpu-pin.pin-active{
+    transform:scale(1.08);
+
+    background:var(--clr-success);
+
+    box-shadow:
+        0 0 8px rgba(57,243,140,.85),
+        0 0 18px rgba(57,243,140,.35),
+        inset 0 0 5px rgba(255,255,255,.20);
+}
+
+/* Stronger section-group feeling */
+.cpu-pins-left .cpu-pin.pin-active,
+.cpu-pins-right .cpu-pin.pin-active{
+    width:44px;
+}
+
+.cpu-pins-top .cpu-pin.pin-active,
+.cpu-pins-bottom .cpu-pin.pin-active{
+    height:40px;
+}
+
+/* Reduce visual noise from inactive pins */
+.cpu-pin:not(.pin-active){
+    background:rgba(53,194,255,.15);
+    box-shadow:
+        inset 0 0 3px rgba(255,255,255,.06),
+        0 0 4px rgba(53,194,255,.08);
+}
+
+/* Keep active tips bright but not over-glowing */
+.cpu-pin.pin-active::after{
+    background:#ffffff;
+    opacity:.75;
+}
+
+/* CPU reacts to any active trace without heavy shadows */
+.core-activated .cpu-core{
+    border-color:rgba(57,243,140,.68);
+
+    box-shadow:
+        var(--shadow-card),
+        0 0 34px rgba(57,243,140,.12),
+        inset 0 0 30px rgba(57,243,140,.07);
+}
+
