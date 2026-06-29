@@ -658,3 +658,218 @@ MODULE DETAIL INTERACTIONS
 .module-bottom-right.module-locked{
     transform-origin:right center;
 }
+
+/* ==========================================================
+SPRINT 2.6
+QUADRANT MODULE LAYOUT + SIDE DETAILS
+========================================================== */
+
+/* 
+Each module now lives inside its own screen quadrant.
+The CPU keeps the center free.
+*/
+
+#module-layer{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100vh;
+    pointer-events:none;
+}
+
+/* Base module sizing */
+.module-card{
+    pointer-events:auto;
+
+    width:clamp(300px, 30vw, 430px);
+    max-height:calc(50vh - 70px);
+
+    overflow:hidden;
+
+    backdrop-filter:blur(18px);
+}
+
+/* Active module gets wider, but still stays inside its quadrant */
+.module-card.module-locked{
+    width:clamp(380px, 36vw, 560px);
+    max-height:calc(50vh - 56px);
+}
+
+/* ==========================================================
+QUADRANT POSITIONS
+========================================================== */
+
+/* Top-left quadrant : Professional Experience */
+.module-top-left{
+    left:clamp(22px, 4vw, 70px);
+    top:clamp(70px, 10vh, 110px);
+    right:auto;
+    bottom:auto;
+}
+
+/* Top-right quadrant : Projects */
+.module-top-right{
+    right:clamp(22px, 4vw, 70px);
+    top:clamp(70px, 10vh, 110px);
+    left:auto;
+    bottom:auto;
+}
+
+/* Bottom-left quadrant : Hobbies */
+.module-bottom-left{
+    left:clamp(22px, 4vw, 70px);
+    bottom:clamp(45px, 7vh, 90px);
+    right:auto;
+    top:auto;
+}
+
+/* Bottom-right quadrant : Certifications */
+.module-bottom-right{
+    right:clamp(22px, 4vw, 70px);
+    bottom:clamp(45px, 7vh, 90px);
+    left:auto;
+    top:auto;
+}
+
+/* Correct expansion direction */
+.module-top-left,
+.module-bottom-left{
+    transform-origin:left center;
+}
+
+.module-top-right,
+.module-bottom-right{
+    transform-origin:right center;
+}
+
+/* ==========================================================
+SIDE-BY-SIDE DETAILS
+========================================================== */
+
+.module-content{
+    display:grid;
+    grid-template-columns:minmax(145px, .85fr) minmax(180px, 1.15fr);
+    gap:14px;
+
+    max-height:0;
+    opacity:0;
+    transform:translateY(10px);
+
+    transition:
+        max-height .65s ease,
+        opacity .45s ease,
+        transform .45s ease;
+}
+
+.module-locked .module-content{
+    max-height:330px;
+    opacity:1;
+    transform:translateY(0);
+    margin-top:18px;
+}
+
+/* Left column */
+.module-items{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    min-width:0;
+}
+
+/* Item buttons */
+.module-item{
+    min-height:54px;
+}
+
+/* Right column */
+.module-detail{
+    min-height:100%;
+    max-height:260px;
+    overflow:auto;
+}
+
+/* Cleaner scrollbar for detail panel */
+.module-detail::-webkit-scrollbar{
+    width:5px;
+}
+
+.module-detail::-webkit-scrollbar-track{
+    background:rgba(255,255,255,.03);
+    border-radius:999px;
+}
+
+.module-detail::-webkit-scrollbar-thumb{
+    background:rgba(53,194,255,.35);
+    border-radius:999px;
+}
+
+/* The detail panel should not push the whole card downward */
+.module-detail ul{
+    padding-bottom:4px;
+}
+
+/* ==========================================================
+AVOID CPU COLLISION
+========================================================== */
+
+/* 
+Small visual reduction when all modules are active.
+This avoids a crowded look.
+*/
+
+.all-modules-active .module-card:not(:hover){
+    transform:scale(.98);
+}
+
+/* Keep hovered/active cards visually dominant */
+.module-card:hover{
+    z-index:5;
+}
+
+/* ==========================================================
+RESPONSIVE SAFETY
+========================================================== */
+
+@media (max-width:1150px){
+
+    .module-card,
+    .module-card.module-locked{
+        width:clamp(280px, 36vw, 390px);
+    }
+
+    .module-content{
+        grid-template-columns:1fr;
+    }
+
+    .module-detail{
+        max-height:150px;
+    }
+}
+
+@media (max-width:850px){
+
+    #module-layer{
+        position:relative;
+        display:grid;
+        grid-template-columns:1fr;
+        gap:18px;
+        padding:120px 20px 40px;
+        height:auto;
+    }
+
+    .module-card,
+    .module-card.module-locked,
+    .module-top-left,
+    .module-top-right,
+    .module-bottom-left,
+    .module-bottom-right{
+        position:relative;
+        inset:auto;
+        width:100%;
+        max-height:none;
+    }
+
+    .module-content{
+        grid-template-columns:1fr;
+    }
+}
