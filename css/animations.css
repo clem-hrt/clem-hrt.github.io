@@ -159,3 +159,13 @@ BOOT ENGINE
         filter:blur(10px);
     }
 }
+
+@keyframes traceFlow{
+    from{
+        stroke-dashoffset:0;
+    }
+
+    to{
+        stroke-dashoffset:-44;
+    }
+}
