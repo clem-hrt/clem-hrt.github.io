@@ -432,3 +432,55 @@ MODULE CARDS
     font-size:.85rem;
     line-height:1.5;
 }
+
+
+/* ==========================================================
+PERSISTENT ACTIVATION STATES
+========================================================== */
+
+.module-locked{
+    border-color:rgba(57,243,140,.42);
+}
+
+.module-locked h3{
+    color:var(--clr-success);
+}
+
+.module-locked p{
+    color:rgba(245,248,252,.72);
+}
+
+.trace-locked{
+    stroke:var(--clr-success);
+    filter:
+        drop-shadow(0 0 8px rgba(57,243,140,.7))
+        drop-shadow(0 0 18px rgba(57,243,140,.28));
+}
+
+.cpu-pin.pin-active{
+    background:var(--clr-success);
+    box-shadow:
+        0 0 10px rgba(57,243,140,.9),
+        0 0 22px rgba(57,243,140,.45);
+}
+
+.core-activated .cpu-core{
+    border-color:rgba(57,243,140,.65);
+    box-shadow:
+        var(--shadow-card),
+        0 0 55px rgba(57,243,140,.18),
+        inset 0 0 38px rgba(57,243,140,.08);
+}
+
+.core-activated .cpu-led{
+    background:var(--clr-success);
+    box-shadow:0 0 22px rgba(57,243,140,.95);
+}
+
+.core-activated #cpu-status-text{
+    color:var(--clr-success);
+}
+
+.all-modules-active .module-card{
+    border-color:rgba(57,243,140,.48);
+}
