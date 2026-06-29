@@ -27,18 +27,14 @@ const CPU = (() => {
 
                         <div class="cpu-core">
 
-                            <span class="cpu-ref">CH-RX02</span>
+                            <span class="cpu-ref">CH-RX01</span>
 
                             <h2>Clément Héritier</h2>
 
                             <p>
-                                Embedded Systems & Robotics Engineer
+                                Embedded Systems<br>
+                                Robotics Engineer
                             </p>
-
-                            <div class="cpu-core-status">
-                                <span class="cpu-led"></span>
-                                <span id="cpu-status-text">CORE STANDBY</span>
-                            </div>
 
                             <div id="cpu-monitor-slot"></div>
 
@@ -90,12 +86,6 @@ const CPU = (() => {
     }
 
     function setCoreActivated() {
-        const status = document.querySelector("#cpu-status-text");
-
-        if (status) {
-            status.textContent = "CORE ACTIVATED";
-        }
-
         cpuLayer.classList.add("core-activated");
     }
 
