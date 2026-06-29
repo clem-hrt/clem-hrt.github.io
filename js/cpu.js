@@ -1,7 +1,7 @@
 /*
 ========================================
 CPU ENGINE
-Creates the central microcontroller
+Central microcontroller state
 ========================================
 */
 
@@ -16,7 +16,7 @@ const CPU = (() => {
                 <div class="cpu-chip">
 
                     <div class="cpu-pins cpu-pins-left">
-                        ${createPins(8)}
+                        ${createPins("left", 8)}
                     </div>
 
                     <div class="cpu-core">
@@ -26,12 +26,12 @@ const CPU = (() => {
 
                         <div class="cpu-core-status">
                             <span class="cpu-led"></span>
-                            CORE STANDBY
+                            <span id="cpu-status-text">CORE STANDBY</span>
                         </div>
                     </div>
 
                     <div class="cpu-pins cpu-pins-right">
-                        ${createPins(8)}
+                        ${createPins("right", 8)}
                     </div>
 
                 </div>
@@ -40,17 +40,39 @@ const CPU = (() => {
         `;
     }
 
-    function createPins(count) {
-        return Array.from({ length: count }, () => `<span></span>`).join("");
+    function createPins(side, count) {
+        return Array.from({ length: count }, (_, index) => {
+            return `<span class="cpu-pin cpu-pin-${side}" data-pin="${side}-${index + 1}"></span>`;
+        }).join("");
     }
 
     function show() {
         cpuLayer.classList.add("cpu-visible");
     }
 
+    function activateModulePins(moduleId) {
+        const pinMap = {
+            experience: ["left-1", "left-2"],
+            hobbies: ["left-7", "left-8"],
+            projects: ["right-1", "right-2"],
+            certifications: ["right-7", "right-8"]
+        };
+
+        pinMap[moduleId]?.forEach(pinId => {
+            document.querySelector(`[data-pin="${pinId}"]`)?.classList.add("pin-active");
+        });
+    }
+
+    function setCoreActivated() {
+        document.querySelector("#cpu-status-text").textContent = "CORE ACTIVATED";
+        cpuLayer.classList.add("core-activated");
+    }
+
     return {
         create,
-        show
+        show,
+        activateModulePins,
+        setCoreActivated
     };
 
 })();
