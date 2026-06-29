@@ -240,8 +240,13 @@ const Network = (() => {
 
         CPU.activateModulePins(id);
 
+        SystemMonitor.setModules(activateModules.size, modules.length);
+        SystemMonitor.setConnection(id);
+
         if (activatedModules.size === modules.length) {
             CPU.setCoreActivated();
+            SystemMonitor.setCoreStatus("ACTIVATED");
+            SystemMonitor.setConnection("STABLE");
             moduleLayer.classList.add("all-modules-active");
             pcbLayer.classList.add("all-traces-active");
         }
