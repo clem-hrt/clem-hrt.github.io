@@ -27,7 +27,7 @@ const CPU = (() => {
 
                         <div class="cpu-core">
 
-                            <span class="cpu-ref">CH-RX01</span>
+                            <span class="cpu-ref">CH-RX02</span>
 
                             <h2>Clément Héritier</h2>
 
