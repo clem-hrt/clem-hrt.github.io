@@ -1,1 +1,267 @@
+/* ==========================================================
+BACKGROUND
+Everything here is STATIC.
 
+No interactive elements.
+
+The objective is to create depth,
+not attract attention.
+========================================================== */
+
+
+.background{
+
+    position:fixed;
+
+    inset:0;
+
+    overflow:hidden;
+
+    z-index:var(--z-background);
+
+}
+
+
+
+/* ==========================================================
+MAIN GRADIENT
+========================================================== */
+
+
+.background-gradient{
+
+    position:absolute;
+
+    inset:0;
+
+    background:
+
+    radial-gradient(
+        circle at top,
+        #18263d 0%,
+        transparent 45%
+    ),
+
+    radial-gradient(
+        circle at bottom right,
+        #0b1220 0%,
+        transparent 45%
+    ),
+
+    linear-gradient(
+        180deg,
+        #070b12,
+        #04070d
+    );
+
+}
+
+
+
+/* ==========================================================
+GRID
+========================================================== */
+
+
+.background-grid{
+
+    position:absolute;
+
+    inset:0;
+
+    opacity:.12;
+
+    background-image:
+
+        linear-gradient(
+
+            rgba(255,255,255,.04) 1px,
+
+            transparent 1px
+
+        ),
+
+        linear-gradient(
+
+            90deg,
+
+            rgba(255,255,255,.04) 1px,
+
+            transparent 1px
+
+        );
+
+    background-size:
+
+        50px 50px;
+
+}
+
+
+
+/* ==========================================================
+LARGE GRID
+========================================================== */
+
+
+.background-grid::after{
+
+    content:"";
+
+    position:absolute;
+
+    inset:0;
+
+    background-image:
+
+        linear-gradient(
+
+            rgba(255,255,255,.06) 1px,
+
+            transparent 1px
+
+        ),
+
+        linear-gradient(
+
+            90deg,
+
+            rgba(255,255,255,.06) 1px,
+
+            transparent 1px
+
+        );
+
+    background-size:
+
+        250px 250px;
+
+}
+
+
+
+/* ==========================================================
+LIGHT
+========================================================== */
+
+
+.background::before{
+
+    content:"";
+
+    position:absolute;
+
+    width:900px;
+
+    height:900px;
+
+    left:50%;
+
+    top:-550px;
+
+    transform:translateX(-50%);
+
+    border-radius:50%;
+
+    background:
+
+    radial-gradient(
+
+        circle,
+
+        rgba(53,194,255,.08),
+
+        transparent 70%
+
+    );
+
+}
+
+
+
+/* ==========================================================
+BOTTOM LIGHT
+========================================================== */
+
+
+.background::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:900px;
+
+    height:900px;
+
+    bottom:-650px;
+
+    left:-300px;
+
+    border-radius:50%;
+
+    background:
+
+    radial-gradient(
+
+        circle,
+
+        rgba(53,194,255,.05),
+
+        transparent 75%
+
+    );
+
+}
+
+
+
+/* ==========================================================
+NOISE
+========================================================== */
+
+
+.background-noise{
+
+    position:absolute;
+
+    inset:0;
+
+    opacity:.025;
+
+    background-image:
+
+    radial-gradient(
+
+        white .7px,
+
+        transparent .7px
+
+    );
+
+    background-size:
+
+        6px 6px;
+
+}
+
+
+
+/* ==========================================================
+PCB PLACEHOLDER
+
+Real PCB traces
+will arrive later.
+
+========================================================== */
+
+
+.background-pcb{
+
+    position:absolute;
+
+    inset:0;
+
+    pointer-events:none;
+
+}
