@@ -32,8 +32,7 @@ const CPU = (() => {
                             <h2>Clément Héritier</h2>
 
                             <p>
-                                Embedded Systems<br>
-                                Robotics Engineer
+                                Embedded Systems & Robotics Engineer
                             </p>
 
                             <div id="cpu-monitor-slot"></div>
