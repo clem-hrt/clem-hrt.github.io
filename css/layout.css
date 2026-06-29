@@ -204,3 +204,103 @@ BOOT SCREEN
     letter-spacing:2px;
 
 }
+
+/* ==========================================================
+CPU
+========================================================== */
+
+#cpu-section{
+
+    position:absolute;
+
+    inset:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    pointer-events:none;
+
+}
+
+.cpu-card{
+
+    width:420px;
+
+    padding:42px;
+
+    border-radius:20px;
+
+    background:rgba(20,28,42,.82);
+
+    border:1px solid rgba(53,194,255,.12);
+
+    backdrop-filter:blur(16px);
+
+    box-shadow:var(--shadow-card);
+
+    opacity:0;
+
+    transform:translateY(40px);
+
+}
+
+.cpu-tag{
+
+    color:var(--clr-accent);
+
+    letter-spacing:3px;
+
+    font-size:.75rem;
+
+}
+
+.cpu-card h2{
+
+    margin-top:18px;
+
+    font-size:2.1rem;
+
+    font-family:var(--font-title);
+
+}
+
+.cpu-card p{
+
+    margin-top:16px;
+
+    line-height:1.8;
+
+    color:var(--clr-text-secondary);
+
+}
+
+.cpu-status{
+
+    margin-top:34px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    letter-spacing:2px;
+
+    color:#8893A3;
+
+}
+
+.status-led{
+
+    width:10px;
+
+    height:10px;
+
+    border-radius:50%;
+
+    background:#666;
+
+}
