@@ -65,13 +65,15 @@ const Boot = (() => {
             bootLayer.innerHTML = "";
             bootLayer.classList.add("boot-hidden");
 
+            CPU.create();
+            
             SystemMonitor.create();
             SystemMonitor.setPowerOnline();
             SystemMonitor.setCoreStatus("STANDBY");
-            SystemMonitor.setModules(0, 4);
-            SystemMonitor.show();
+            SystemMonitor.setModules(0, Network.getTotalModules());
+            SystemMonitor.setConnection("IDLE", { temporary: false});
             
-            CPU.create();
+            
             Network.create();
 
             setTimeout(() => {
