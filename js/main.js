@@ -1,27 +1,17 @@
 /*
-====================================
+========================================
 
-Portfolio
+Portfolio Controller
 
-Clément Héritier
-
-Main Controller
-
-====================================
+========================================
 */
 
 console.clear();
 
-console.log(
+const cpuCard = document.querySelector(".cpu-card");
 
-"%cCV SYSTEM INITIALIZED",
+setTimeout(()=>{
 
-"color:#35C2FF;font-size:16px;font-weight:bold;"
+    cpuCard.classList.add("fade-in");
 
-);
-
-console.log(
-
-"Waiting for external power..."
-
-);
+},1200);
