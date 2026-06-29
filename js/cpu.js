@@ -15,23 +15,44 @@ const CPU = (() => {
 
                 <div class="cpu-chip">
 
-                    <div class="cpu-pins cpu-pins-left">
-                        ${createPins("left", 8)}
+                    <div class="cpu-pins cpu-pins-top">
+                        ${createPins("top", 8)}
                     </div>
 
-                    <div class="cpu-core">
-                        <span class="cpu-ref">CH-RX01</span>
-                        <h2>Clément Héritier</h2>
-                        <p>Embedded Systems<br>Robotics Engineer</p>
+                    <div class="cpu-row">
 
-                        <div class="cpu-core-status">
-                            <span class="cpu-led"></span>
-                            <span id="cpu-status-text">CORE STANDBY</span>
+                        <div class="cpu-pins cpu-pins-left">
+                            ${createPins("left", 8)}
                         </div>
+
+                        <div class="cpu-core">
+
+                            <span class="cpu-ref">CH-RX01</span>
+
+                            <h2>Clément Héritier</h2>
+
+                            <p>
+                                Embedded Systems<br>
+                                Robotics Engineer
+                            </p>
+
+                            <div class="cpu-core-status">
+                                <span class="cpu-led"></span>
+                                <span id="cpu-status-text">CORE STANDBY</span>
+                            </div>
+
+                            <div id="cpu-monitor-slot"></div>
+
+                        </div>
+
+                        <div class="cpu-pins cpu-pins-right">
+                            ${createPins("right", 8)}
+                        </div>
+
                     </div>
 
-                    <div class="cpu-pins cpu-pins-right">
-                        ${createPins("right", 8)}
+                    <div class="cpu-pins cpu-pins-bottom">
+                        ${createPins("bottom", 8)}
                     </div>
 
                 </div>
@@ -53,18 +74,29 @@ const CPU = (() => {
     function activateModulePins(moduleId) {
         const pinMap = {
             experience: ["left-1", "left-2"],
-            hobbies: ["left-7", "left-8"],
+            education: ["left-7", "left-8"],
+
+            skills: ["top-3", "top-4", "top-5", "top-6"],
+            hobbies: ["bottom-3", "bottom-4", "bottom-5", "bottom-6"],
+
             projects: ["right-1", "right-2"],
             certifications: ["right-7", "right-8"]
         };
 
         pinMap[moduleId]?.forEach(pinId => {
-            document.querySelector(`[data-pin="${pinId}"]`)?.classList.add("pin-active");
+            document
+                .querySelector(`[data-pin="${pinId}"]`)
+                ?.classList.add("pin-active");
         });
     }
 
     function setCoreActivated() {
-        document.querySelector("#cpu-status-text").textContent = "CORE ACTIVATED";
+        const status = document.querySelector("#cpu-status-text");
+
+        if (status) {
+            status.textContent = "CORE ACTIVATED";
+        }
+
         cpuLayer.classList.add("core-activated");
     }
 
