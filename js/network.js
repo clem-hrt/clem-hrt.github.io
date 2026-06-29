@@ -378,9 +378,15 @@ const Network = (() => {
             .querySelector(`[data-trace="${id}"]`)
             ?.classList.add("trace-active", "trace-locked");
 
+        document
+            .querySelector(`[data-pad="${id}"]`)
+            ?.classList.add("pad-active");
+
         CPU.activateModulePins(id);
 
         SystemMonitor.setModules(activatedModules.size, modules.length);
+        SystemMonitor.setConnection(id);
+    } else {
         SystemMonitor.setConnection(id);
     }
 
