@@ -1081,3 +1081,302 @@ The core status is now only displayed in System Monitor
 .cpu-core-status{
     display:none;
 }
+
+/* ==========================================================
+SPRINT 3.1
+CPU PREMIUM POLISH + PIN REFINEMENT
+========================================================== */
+
+/* ==========================================================
+CPU CHIP REFINEMENT
+========================================================== */
+
+.cpu-chip{
+    gap:12px;
+}
+
+/* CPU body becomes more like an embedded component */
+.cpu-core{
+    position:relative;
+
+    width:380px;
+    padding:28px 28px 24px;
+
+    border-radius:10px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(16,24,38,.96),
+            rgba(7,11,18,.96)
+        );
+
+    border:1px solid rgba(53,194,255,.34);
+
+    box-shadow:
+        var(--shadow-card),
+        inset 0 0 38px rgba(53,194,255,.045),
+        0 0 42px rgba(53,194,255,.08);
+
+    overflow:hidden;
+}
+
+/* Subtle internal technical grid */
+.cpu-core-grid{
+    position:absolute;
+    inset:0;
+
+    opacity:.14;
+
+    background-image:
+        linear-gradient(
+            rgba(53,194,255,.18) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(53,194,255,.18) 1px,
+            transparent 1px
+        );
+
+    background-size:18px 18px;
+
+    mask-image:radial-gradient(
+        circle at center,
+        black,
+        transparent 82%
+    );
+
+    pointer-events:none;
+}
+
+/* Content always stays above the internal grid */
+.cpu-core-content{
+    position:relative;
+    z-index:2;
+}
+
+/* CPU corner brackets */
+.cpu-corner{
+    position:absolute;
+
+    width:24px;
+    height:24px;
+
+    border-color:rgba(53,194,255,.65);
+
+    opacity:.75;
+
+    z-index:3;
+}
+
+.cpu-corner-tl{
+    top:10px;
+    left:10px;
+    border-top:1px solid;
+    border-left:1px solid;
+}
+
+.cpu-corner-tr{
+    top:10px;
+    right:10px;
+    border-top:1px solid;
+    border-right:1px solid;
+}
+
+.cpu-corner-bl{
+    bottom:10px;
+    left:10px;
+    border-bottom:1px solid;
+    border-left:1px solid;
+}
+
+.cpu-corner-br{
+    bottom:10px;
+    right:10px;
+    border-bottom:1px solid;
+    border-right:1px solid;
+}
+
+/* Identity block */
+.cpu-identity{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+
+    margin-bottom:16px;
+}
+
+.cpu-ref{
+    margin:0;
+
+    color:var(--clr-accent);
+
+    letter-spacing:4px;
+    font-size:.66rem;
+}
+
+.cpu-subref{
+    padding:4px 8px;
+
+    border:1px solid rgba(53,194,255,.18);
+    border-radius:999px;
+
+    color:rgba(245,248,252,.64);
+
+    font-size:.52rem;
+    letter-spacing:2px;
+}
+
+.cpu-core h2{
+    font-size:1.58rem;
+    letter-spacing:.5px;
+}
+
+.cpu-core p{
+    font-size:.86rem;
+}
+
+/* ==========================================================
+PIN REFINEMENT
+========================================================== */
+
+.cpu-pins-top,
+.cpu-pins-bottom{
+    gap:9px;
+}
+
+.cpu-pins-left,
+.cpu-pins-right{
+    gap:10px;
+}
+
+.cpu-pin{
+    position:relative;
+
+    background:rgba(53,194,255,.20);
+
+    box-shadow:
+        inset 0 0 4px rgba(255,255,255,.08),
+        0 0 8px rgba(53,194,255,.12);
+}
+
+/* Small bright contact tip */
+.cpu-pin::after{
+    content:"";
+
+    position:absolute;
+
+    border-radius:999px;
+
+    background:rgba(234,243,255,.24);
+
+    opacity:.45;
+}
+
+.cpu-pins-left .cpu-pin::after,
+.cpu-pins-right .cpu-pin::after{
+    top:50%;
+    transform:translateY(-50%);
+
+    width:8px;
+    height:2px;
+}
+
+.cpu-pins-left .cpu-pin::after{
+    right:4px;
+}
+
+.cpu-pins-right .cpu-pin::after{
+    left:4px;
+}
+
+.cpu-pins-top .cpu-pin::after,
+.cpu-pins-bottom .cpu-pin::after{
+    left:50%;
+    transform:translateX(-50%);
+
+    width:2px;
+    height:8px;
+}
+
+.cpu-pins-top .cpu-pin::after{
+    bottom:4px;
+}
+
+.cpu-pins-bottom .cpu-pin::after{
+    top:4px;
+}
+
+/* Active pin feels connected to the board */
+.cpu-pin.pin-active{
+    background:var(--clr-success);
+
+    box-shadow:
+        0 0 10px rgba(57,243,140,.95),
+        0 0 24px rgba(57,243,140,.46),
+        inset 0 0 5px rgba(255,255,255,.24);
+}
+
+.cpu-pin.pin-active::after{
+    background:#ffffff;
+    opacity:.85;
+}
+
+/* Active CPU state */
+.core-activated .cpu-core{
+    border-color:rgba(57,243,140,.70);
+
+    box-shadow:
+        var(--shadow-card),
+        0 0 60px rgba(57,243,140,.18),
+        inset 0 0 42px rgba(57,243,140,.08);
+}
+
+.core-activated .cpu-corner{
+    border-color:rgba(57,243,140,.8);
+}
+
+/* ==========================================================
+PCB PAD REFINEMENT
+========================================================== */
+
+.pcb-pad{
+    fill:rgba(53,194,255,.18);
+    stroke:rgba(53,194,255,.34);
+    stroke-width:1.5;
+
+    filter:drop-shadow(0 0 5px rgba(53,194,255,.16));
+
+    opacity:0;
+
+    transition:
+        opacity .9s ease,
+        fill var(--transition-normal),
+        stroke var(--transition-normal),
+        filter var(--transition-normal);
+}
+
+.network-visible .pcb-pad{
+    opacity:1;
+}
+
+.pcb-pad.pad-active{
+    fill:var(--clr-success);
+    stroke:rgba(57,243,140,.85);
+
+    filter:
+        drop-shadow(0 0 8px rgba(57,243,140,.85))
+        drop-shadow(0 0 18px rgba(57,243,140,.32));
+}
+
+/* PCB traces should feel more like board connections */
+.pcb-trace{
+    stroke-width:2.6;
+    stroke-dasharray:8 10;
+}
+
+.trace-active{
+    stroke-width:4.2;
+}
