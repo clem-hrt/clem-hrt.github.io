@@ -2073,3 +2073,89 @@ POWER CABLE BOOT INTERFACE
         left:73%;
     }
 }
+
+/* ==========================================================
+SPRINT 4.2
+BOOT DIAGNOSTICS + STAGED REVEAL
+========================================================== */
+
+.boot-diagnostics{
+    width:min(390px, 82vw);
+
+    margin:26px auto 16px;
+
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+
+    padding:14px;
+
+    border:1px solid rgba(53,194,255,.12);
+    border-radius:14px;
+
+    background:rgba(4,8,14,.35);
+
+    box-shadow:
+        inset 0 0 18px rgba(53,194,255,.025);
+}
+
+.boot-diagnostic-line{
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:center;
+    gap:18px;
+
+    color:rgba(141,154,175,.76);
+
+    font-size:.66rem;
+    letter-spacing:1.4px;
+
+    opacity:.55;
+
+    transition:
+        opacity var(--transition-normal),
+        color var(--transition-normal);
+}
+
+.boot-diagnostic-line span{
+    text-align:left;
+}
+
+.boot-diagnostic-line strong{
+    color:#7d899a;
+    font-weight:500;
+
+    transition:
+        color var(--transition-normal),
+        text-shadow var(--transition-normal);
+}
+
+.boot-diagnostic-line.diagnostic-active{
+    opacity:1;
+}
+
+.boot-diagnostic-line.diagnostic-active strong{
+    color:var(--clr-accent);
+    text-shadow:0 0 10px rgba(53,194,255,.35);
+}
+
+.boot-diagnostic-line.diagnostic-success strong{
+    color:var(--clr-success);
+    text-shadow:0 0 10px rgba(57,243,140,.45);
+}
+
+.boot-diagnostic-line.diagnostic-success::after{
+    content:"";
+    width:5px;
+    height:5px;
+    border-radius:50%;
+
+    background:var(--clr-success);
+
+    box-shadow:0 0 9px rgba(57,243,140,.75);
+}
+
+/* Slightly smoother launch feel */
+.boot-fade-out{
+    animation:bootFadeOut 1s ease forwards;
+}
