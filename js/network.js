@@ -20,7 +20,7 @@ const Network = (() => {
             items: [
                 {
                     title: "Alstom",
-                    meta: "VIE · Lab Test Automation Engineer",
+                    meta: "Lab Test Automation Engineer",
                     date: "Jun 2025 – Nov 2026 · Pittsburgh, US",
                     details: [
                         "Full-stack network analysis platform",
@@ -386,6 +386,11 @@ const Network = (() => {
                 showItemDetails(moduleId, itemIndex);
             });
 
+            itemButton.addEventListener("focus", event => {
+                event.stopPropagation();
+                showItemDetails(moduleId, itemIndex);
+            });
+
             itemButton.addEventListener("click", event => {
                 event.stopPropagation();
                 showItemDetails(moduleId, itemIndex);
@@ -443,7 +448,7 @@ const Network = (() => {
     function openModule(id) {
         document
             .querySelectorAll(".module-card")
-            .forEach(card => card.classList.remove("module-open"));
+            .forEach(card => {card.classList.remove("module-open", "module-inspecting");});
 
         document
             .querySelector(`[data-module="${id}"]`)
@@ -451,11 +456,21 @@ const Network = (() => {
     }
 
     function showItemDetails(moduleId, itemIndex) {
+        const module = modules.find(entry => entry.id === moduleId);
+        if (!module) return;
+        
+        const item = module.items[itemIndex];
+        if (!item) return;
+        
         activateModule(moduleId);
         openModule(moduleId);
 
-        const module = modules.find(entry => entry.id === moduleId);
-        const item = module.items[itemIndex];
+        const moduleCard = document.querySelector(`[data-module="${moduleId}"]`);
+        const detailBox = document.querySelector(`[data-detail="${moduleId}"]`);
+
+        if (!moduleCard || !detailBox) return;
+
+        moduleCard.classList.add("module-inspecting");
 
         document
             .querySelectorAll(`[data-module-item="${moduleId}"]`)
@@ -465,21 +480,19 @@ const Network = (() => {
             .querySelector(`[data-module-item="${moduleId}"][data-item-index="${itemIndex}"]`)
             ?.classList.add("item-active");
 
-        const detailBox = document.querySelector(`[data-detail="${moduleId}"]`);
+        detailBox.classList.add("detail-active");
 
         detailBox.innerHTML = `
-            <span class="detail-date">${item.date}</span>
+            <span class="detail-date">${item.meta}</span>
 
             <h4>${item.title}</h4>
 
-            <p>${item.meta}</p>
+            <p>${item.description}</p>
 
             <ul>
-                ${item.details.map(detail => `<li>${detail}</li>`).join("")}
+                ${item.points.map(detail => `<li>${point}</li>`).join("")}
             </ul>
         `;
-
-        detailBox.classList.add("detail-active");
     }
 
     function showTraces() {
