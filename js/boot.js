@@ -1,7 +1,7 @@
 /*
 ========================================
 BOOT ENGINE
-Power cable + slower diagnostic boot sequence
+Power cable + diagnostic boot sequence
 ========================================
 */
 
