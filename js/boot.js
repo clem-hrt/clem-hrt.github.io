@@ -69,9 +69,14 @@ const Boot = (() => {
                                     </span>
                                     <span class="plug-collar"></span>
                                 </span>
-                                <span class="plug-prongs">
-                                    <span class="plug-prong plug-prong-top"></span>
-                                    <span class="plug-prong plug-prong-bottom"></span>
+                                <span class="plug-head">
+                                    <span class="plug-nose">
+                                        <span class="plug-nose-line"></span>
+                                    </span>
+                                    <span class="plug-prongs">
+                                        <span class="plug-prong plug-prong-top"></span>
+                                        <span class="plug-prong plug-prong-bottom"></span>
+                                    </span>
                                 </span>
 
                             </button>
@@ -198,7 +203,7 @@ const Boot = (() => {
             const targetRect = socketMouth ? socketMouth.getBoundingClientRect() : socket.getBoundingClientRect();
             const plugWidth = plug.offsetWidth;
 
-            sliderState.maxX = targetRect.left - sliderRect.left - plugWidth;
+            sliderState.maxX = targetRect.left - sliderRect.left - sliderRect.right - plugWidth;
 
             sliderState.maxX = Math.max(sliderState.maxX, 0);
 
