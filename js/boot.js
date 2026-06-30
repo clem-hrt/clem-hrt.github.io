@@ -56,20 +56,38 @@ const Boot = (() => {
 
                             <button id="power-plug" class="power-plug" aria-label="Slide power cable into socket">
 
-                                <span class="plug-body">
-                                    <span class="plug-light"></span>
-                                    POWER
+                                <span class="plug-cable-tail"></span>
+                                <span class="plug-shell">
+                                    <span class="plug-grip">
+                                        <span></span>
+                                        <span></span>
+                                        <span></span>
+                                    </span>
+                                    <span class="plug-face">
+                                        <span class="plug-light></span>
+                                        <span class="plug-text>POWER</span>
+                                    </span>
+                                    <span class="plug-collar"></span>
                                 </span>
-
                                 <span class="plug-prongs">
-                                    <span></span>
-                                    <span></span>
+                                    <span class="plug-prong plug-prong-top"></span>
+                                    <span class="plug-prong plug-prong-bottom"></span>
                                 </span>
 
                             </button>
 
                             <div id="power-socket" class="power-socket">
-                                <span class="socket-core"></span>
+                                <span class="socket-bezel">
+                                    <span class="socket-screw socket-screw-left"></span>
+                                    <span class="socket-screw socket-screw-right"></span>
+
+                                    <span class="socket-mouth">
+                                        <span class="socket-slot socket-slot-top"></span>
+                                        <span class="socket-slot socket-slot-bottom"></span>
+                                        <span class="socket-inner-current"></span>
+                                    </span>
+                                </span>
+
                                 <span class="socket-label">POWER INPUT</span>
                             </div>
 
@@ -180,7 +198,7 @@ const Boot = (() => {
             const plugWidth = plug.offsetWidth;
 
             sliderState.maxX =
-                socketRect.left - sliderRect.left - plugWidth + 10;
+                socketRect.left - sliderRect.left - plugWidth + 20;
 
             sliderState.maxX = Math.max(sliderState.maxX, 0);
 
@@ -202,23 +220,32 @@ const Boot = (() => {
             current.style.width = `${progress * 100}%`;
 
             slider.style.setProperty("--power-progress", progress.toFixed(3));
+            slider.classList.toggle("has-power-current", progress > 0.04);
 
             if (progress > 0.72) {
                 socket.classList.add("socket-magnetic");
+                plug.classList.add("plug-near-socket");
             } else {
                 socket.classList.remove("socket-magnetic");
+                plug.classList.remove("plug-near-socket");
             }
         }
 
         function resetPlug() {
             updatePlugPosition(0);
-            socket.classList.remove("socket-magnetic");
+            socket.classList.remove("socket-magnetic", "socket-engaged");
+            slider.classList.remove("has-power-current", "power-current-locked");
+            plug.classList.remove("plug-near-socket", "plug-engaged");
         }
 
         function connectPower() {
             sliderState.connected = true;
 
             updatePlugPosition(sliderState.maxX);
+
+            socket.classList.add("socket-magnetic", "socket-engaged");
+            slider.classList.add("has-power-current", "power-current-locked");
+            plug.classList.add("plug-near-socket", "plug-engaged");
 
             document.querySelector(".boot-screen")?.classList.add("power-connected");
 
