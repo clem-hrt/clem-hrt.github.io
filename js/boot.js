@@ -1,7 +1,7 @@
 /*
 ========================================
 BOOT ENGINE
-Power cable + diagnostic boot sequence
+Power slider + diagnostic energy sequence
 ========================================
 */
 
@@ -11,12 +11,20 @@ const Boot = (() => {
 
     const timing = {
         socketOnline: 900,
-        systemOnline: 1800,
-        coreOk: 3000,
-        pcbOnline: 4300,
-        modulesReady: 5600,
-        fadeOut: 7000,
-        launchInterface: 8200
+        systemOnline: 1900,
+        coreOk: 3300,
+        pcbOnline: 4800,
+        modulesReady: 6300,
+        fadeOut: 7900,
+        launchInterface: 9200
+    };
+
+    let sliderState = {
+        dragging: false,
+        connected: false,
+        startX: 0,
+        currentX: 0,
+        maxX: 0
     };
 
     function start() {
@@ -40,25 +48,31 @@ const Boot = (() => {
 
                     <div class="power-rig">
 
-                        <button id="power-plug" class="power-plug" aria-label="Connect power cable">
+                        <div id="power-slider" class="power-slider">
 
-                            <span class="cable-line"></span>
+                            <div class="power-cable-rail">
+                                <span id="power-current" class="power-current"></span>
+                            </div>
 
-                            <span class="plug-body">
-                                <span class="plug-light"></span>
-                                POWER
-                            </span>
+                            <button id="power-plug" class="power-plug" aria-label="Slide power cable into socket">
 
-                            <span class="plug-prongs">
-                                <span></span>
-                                <span></span>
-                            </span>
+                                <span class="plug-body">
+                                    <span class="plug-light"></span>
+                                    POWER
+                                </span>
 
-                        </button>
+                                <span class="plug-prongs">
+                                    <span></span>
+                                    <span></span>
+                                </span>
 
-                        <div id="power-socket" class="power-socket">
-                            <span class="socket-core"></span>
-                            <span class="socket-label">POWER INPUT</span>
+                            </button>
+
+                            <div id="power-socket" class="power-socket">
+                                <span class="socket-core"></span>
+                                <span class="socket-label">POWER INPUT</span>
+                            </div>
+
                         </div>
 
                     </div>
@@ -66,24 +80,28 @@ const Boot = (() => {
                     <div class="boot-diagnostics" aria-live="polite">
 
                         <div class="boot-diagnostic-line" data-boot-step="power">
+                            <span class="diagnostic-energy"></span>
                             <span class="diagnostic-name">POWER LINK</span>
                             <strong>WAITING</strong>
                             <span class="diagnostic-dot"></span>
                         </div>
 
                         <div class="boot-diagnostic-line" data-boot-step="core">
+                            <span class="diagnostic-energy"></span>
                             <span class="diagnostic-name">CORE CHECK</span>
                             <strong>STANDBY</strong>
                             <span class="diagnostic-dot"></span>
                         </div>
 
                         <div class="boot-diagnostic-line" data-boot-step="pcb">
+                            <span class="diagnostic-energy"></span>
                             <span class="diagnostic-name">PCB BUS</span>
                             <strong>STANDBY</strong>
                             <span class="diagnostic-dot"></span>
                         </div>
 
                         <div class="boot-diagnostic-line" data-boot-step="modules">
+                            <span class="diagnostic-energy"></span>
                             <span class="diagnostic-name">PROFILE MODULES</span>
                             <strong>STANDBY</strong>
                             <span class="diagnostic-dot"></span>
@@ -96,21 +114,126 @@ const Boot = (() => {
             </div>
         `;
 
-        const powerPlug = document.querySelector("#power-plug");
-        powerPlug.addEventListener("click", powerOn);
+        initPowerSlider();
+    }
+
+    function initPowerSlider() {
+        const slider = document.querySelector("#power-slider");
+        const plug = document.querySelector("#power-plug");
+        const socket = document.querySelector("#power-socket");
+        const current = document.querySelector("#power-current");
+
+        if (!slider || !plug || !socket || !current) return;
+
+        computeSliderBounds();
+
+        window.addEventListener("resize", computeSliderBounds);
+
+        plug.addEventListener("pointerdown", event => {
+            if (sliderState.connected) return;
+
+            sliderState.dragging = true;
+
+            plug.setPointerCapture(event.pointerId);
+
+            plug.classList.add("is-dragging");
+
+            event.preventDefault();
+        });
+
+        plug.addEventListener("pointermove", event => {
+            if (!sliderState.dragging || sliderState.connected) return;
+
+            const sliderRect = slider.getBoundingClientRect();
+            const plugWidth = plug.offsetWidth;
+
+            let nextX = event.clientX - sliderRect.left - plugWidth / 2;
+
+            nextX = clamp(nextX, 0, sliderState.maxX);
+
+            updatePlugPosition(nextX);
+        });
+
+        plug.addEventListener("pointerup", event => {
+            if (!sliderState.dragging || sliderState.connected) return;
+
+            sliderState.dragging = false;
+
+            plug.releasePointerCapture(event.pointerId);
+
+            plug.classList.remove("is-dragging");
+
+            const progress = sliderState.maxX === 0
+                ? 0
+                : sliderState.currentX / sliderState.maxX;
+
+            if (progress >= 0.88) {
+                connectPower();
+            } else {
+                resetPlug();
+            }
+        });
+
+        function computeSliderBounds() {
+            const sliderRect = slider.getBoundingClientRect();
+            const socketRect = socket.getBoundingClientRect();
+            const plugWidth = plug.offsetWidth;
+
+            sliderState.maxX =
+                socketRect.left - sliderRect.left - plugWidth + 10;
+
+            sliderState.maxX = Math.max(sliderState.maxX, 0);
+
+            if (!sliderState.connected) {
+                updatePlugPosition(0);
+            } else {
+                updatePlugPosition(sliderState.maxX);
+            }
+        }
+
+        function updatePlugPosition(x) {
+            sliderState.currentX = x;
+
+            const progress = sliderState.maxX === 0
+                ? 0
+                : x / sliderState.maxX;
+
+            plug.style.transform = `translateY(-50%) translateX(${x}px)`;
+            current.style.width = `${progress * 100}%`;
+
+            slider.style.setProperty("--power-progress", progress.toFixed(3));
+
+            if (progress > 0.72) {
+                socket.classList.add("socket-magnetic");
+            } else {
+                socket.classList.remove("socket-magnetic");
+            }
+        }
+
+        function resetPlug() {
+            updatePlugPosition(0);
+            socket.classList.remove("socket-magnetic");
+        }
+
+        function connectPower() {
+            sliderState.connected = true;
+
+            updatePlugPosition(sliderState.maxX);
+
+            document.querySelector(".boot-screen")?.classList.add("power-connected");
+
+            plug.disabled = true;
+
+            powerOn();
+        }
     }
 
     function powerOn() {
-        const bootScreen = document.querySelector(".boot-screen");
         const statusText = document.querySelector("#boot-status-text");
         const led = document.querySelector(".boot-led");
         const message = document.querySelector(".boot-message");
-        const plug = document.querySelector("#power-plug");
         const socket = document.querySelector("#power-socket");
         const panel = document.querySelector(".boot-panel");
-
-        plug.disabled = true;
-        bootScreen.classList.add("power-connected");
 
         updateDiagnostic("power", "CONNECTING");
 
@@ -166,8 +289,10 @@ const Boot = (() => {
         bootLayer.classList.add("boot-hidden");
 
         CPU.create();
+
         SystemMonitor.create();
         Ports.create();
+
         SystemMonitor.setPowerOnline();
         SystemMonitor.setCoreStatus("STANDBY");
         SystemMonitor.setModules(0, Network.getTotalModules());
@@ -201,9 +326,18 @@ const Boot = (() => {
 
         line.classList.add("diagnostic-active");
 
-        if (success) {
-            line.classList.add("diagnostic-success");
+        if (!success) {
+            line.classList.add("diagnostic-charging");
         }
+
+        if (success) {
+            line.classList.remove("diagnostic-charging");
+            line.classList.add("diagnostic-success", "diagnostic-powered");
+        }
+    }
+
+    function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
     }
 
     return {
