@@ -64,8 +64,8 @@ const Boot = (() => {
                                         <span></span>
                                     </span>
                                     <span class="plug-face">
-                                        <span class="plug-light></span>
-                                        <span class="plug-text>POWER</span>
+                                        <span class="plug-light"></span>
+                                        <span class="plug-text">POWER</span>
                                     </span>
                                     <span class="plug-collar"></span>
                                 </span>
@@ -194,11 +194,11 @@ const Boot = (() => {
 
         function computeSliderBounds() {
             const sliderRect = slider.getBoundingClientRect();
-            const socketRect = socket.getBoundingClientRect();
+            const socketMouth = socket.querySelector(".socket-mouth");
+            const targetRect = socketMouth ? socketMouth.getBoundingClientRect() : socket.getBoundingClientRect();
             const plugWidth = plug.offsetWidth;
 
-            sliderState.maxX =
-                socketRect.left - sliderRect.left - plugWidth + 20;
+            sliderState.maxX = targetRect.left - sliderRect.left - plugWidth + 34;
 
             sliderState.maxX = Math.max(sliderState.maxX, 0);
 
