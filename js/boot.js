@@ -168,6 +168,7 @@ const Boot = (() => {
         CPU.create();
 
         SystemMonitor.create();
+        Ports.create();
         SystemMonitor.setPowerOnline();
         SystemMonitor.setCoreStatus("STANDBY");
         SystemMonitor.setModules(0, Network.getTotalModules());
