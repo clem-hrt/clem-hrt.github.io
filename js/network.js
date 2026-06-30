@@ -310,40 +310,58 @@ const Network = (() => {
     `;
 }
 
-    function createModules() {
-        moduleLayer.innerHTML = modules.map(module => `
-            <article class="module-card module-${module.position}" data-module="${module.id}">
+ function createModules() {
+    moduleLayer.innerHTML = modules.map(module => `
+        <article class="module-card module-${module.position}" data-module="${module.id}">
 
-                <div class="module-header">
+            <span class="module-corner module-corner-tl"></span>
+            <span class="module-corner module-corner-tr"></span>
+            <span class="module-corner module-corner-bl"></span>
+            <span class="module-corner module-corner-br"></span>
+
+            <div class="module-scanline"></div>
+
+            <div class="module-header">
+
+                <div class="module-header-top">
                     <span class="module-index">${module.id.toUpperCase()}</span>
-                    <h3>${module.label}</h3>
-                    <p>${module.subtitle}</p>
+
+                    <span class="module-status">
+                        <span class="module-status-dot"></span>
+                        <span class="module-status-label">STANDBY</span>
+                    </span>
                 </div>
 
-                <div class="module-content">
+                <h3>${module.label}</h3>
 
-                    <div class="module-items">
-                        ${module.items.map((item, index) => `
-                            <button class="module-item"
-                                data-module-item="${module.id}"
-                                data-item-index="${index}">
-                                <span>${item.title}</span>
-                                <small>${item.meta}</small>
-                            </button>
-                        `).join("")}
-                    </div>
+                <p>${module.subtitle}</p>
 
-                    <div class="module-detail" data-detail="${module.id}">
-                        <span class="detail-placeholder">
-                            Select an item to inspect details.
-                        </span>
-                    </div>
+            </div>
 
+            <div class="module-content">
+
+                <div class="module-items">
+                    ${module.items.map((item, index) => `
+                        <button class="module-item"
+                            data-module-item="${module.id}"
+                            data-item-index="${index}">
+                            <span>${item.title}</span>
+                            <small>${item.meta}</small>
+                        </button>
+                    `).join("")}
                 </div>
 
-            </article>
-        `).join("");
-    }
+                <div class="module-detail" data-detail="${module.id}">
+                    <span class="detail-placeholder">
+                        Select an item to inspect details.
+                    </span>
+                </div>
+
+            </div>
+
+        </article>
+    `).join("");
+}
 
     function bindInteractions() {
         document.querySelectorAll(".module-card").forEach(card => {
@@ -376,6 +394,7 @@ const Network = (() => {
         });
     }
 
+ 
     function activateModule(id) {
     if (!activatedModules.has(id)) {
         activatedModules.add(id);
@@ -383,6 +402,13 @@ const Network = (() => {
         document
             .querySelector(`[data-module="${id}"]`)
             ?.classList.add("module-active", "module-locked");
+
+        const moduleCard = document.querySelector(`[data-module="${id}"]`);
+        const statusLabel = moduleCard?.querySelector(".module-status-label");
+
+        if (statusLabel) {
+            statusLabel.textContent = "LINKED";
+        }
 
         document
             .querySelector(`[data-trace="${id}"]`)
