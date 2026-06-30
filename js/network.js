@@ -432,6 +432,8 @@ const Network = (() => {
             SystemMonitor.setModules(activatedModules.size, modules.length);
             SystemMonitor.setConnection("STABLE", { temporary: false });
 
+            Ports.unlock();
+            
             moduleLayer.classList.add("all-modules-active");
             pcbLayer.classList.add("all-traces-active");
         }
