@@ -1,13 +1,23 @@
 /*
 ========================================
 BOOT ENGINE
-Power cable + diagnostic boot sequence
+Power cable + slower diagnostic boot sequence
 ========================================
 */
 
 const Boot = (() => {
 
     const bootLayer = document.querySelector("#boot-layer");
+
+    const timing = {
+        socketOnline: 900,
+        systemOnline: 1800,
+        coreOk: 3000,
+        pcbOnline: 4300,
+        modulesReady: 5600,
+        fadeOut: 7000,
+        launchInterface: 8200
+    };
 
     function start() {
         bootLayer.innerHTML = `
@@ -56,30 +66,30 @@ const Boot = (() => {
                     <div class="boot-diagnostics" aria-live="polite">
 
                         <div class="boot-diagnostic-line" data-boot-step="power">
-                            <span>POWER LINK</span>
+                            <span class="diagnostic-name">POWER LINK</span>
                             <strong>WAITING</strong>
+                            <span class="diagnostic-dot"></span>
                         </div>
 
                         <div class="boot-diagnostic-line" data-boot-step="core">
-                            <span>CORE CHECK</span>
+                            <span class="diagnostic-name">CORE CHECK</span>
                             <strong>STANDBY</strong>
+                            <span class="diagnostic-dot"></span>
                         </div>
 
                         <div class="boot-diagnostic-line" data-boot-step="pcb">
-                            <span>PCB BUS</span>
+                            <span class="diagnostic-name">PCB BUS</span>
                             <strong>STANDBY</strong>
+                            <span class="diagnostic-dot"></span>
                         </div>
 
                         <div class="boot-diagnostic-line" data-boot-step="modules">
-                            <span>PROFILE MODULES</span>
+                            <span class="diagnostic-name">PROFILE MODULES</span>
                             <strong>STANDBY</strong>
+                            <span class="diagnostic-dot"></span>
                         </div>
 
                     </div>
-
-                    <p class="boot-hint">
-                        Click the power cable to initialize system.
-                    </p>
 
                 </div>
 
@@ -95,7 +105,6 @@ const Boot = (() => {
         const statusText = document.querySelector("#boot-status-text");
         const led = document.querySelector(".boot-led");
         const message = document.querySelector(".boot-message");
-        const hint = document.querySelector(".boot-hint");
         const plug = document.querySelector("#power-plug");
         const socket = document.querySelector("#power-socket");
         const panel = document.querySelector(".boot-panel");
@@ -108,69 +117,75 @@ const Boot = (() => {
         setTimeout(() => {
             socket.classList.add("socket-online");
             updateDiagnostic("power", "ONLINE", true);
-        }, 450);
+        }, timing.socketOnline);
 
         setTimeout(() => {
             led.classList.add("online");
+
             statusText.textContent = "ONLINE";
             statusText.classList.add("online-text");
 
             message.textContent = "Power link established.";
-            hint.textContent = "Running embedded portfolio diagnostics...";
 
             panel.classList.add("boot-online");
 
             updateDiagnostic("core", "CHECKING");
-        }, 850);
+        }, timing.systemOnline);
 
         setTimeout(() => {
             updateDiagnostic("core", "OK", true);
             updateDiagnostic("pcb", "LOADING");
+
             message.textContent = "Loading PCB bus and core communication paths...";
-        }, 1350);
+        }, timing.coreOk);
 
         setTimeout(() => {
             updateDiagnostic("pcb", "ONLINE", true);
             updateDiagnostic("modules", "LOADING");
+
             message.textContent = "Initializing profile modules...";
-        }, 1850);
+        }, timing.pcbOnline);
 
         setTimeout(() => {
             updateDiagnostic("modules", "READY", true);
-            hint.textContent = "System ready. Launching interface...";
-        }, 2350);
+
+            message.textContent = "System ready. Launching interface...";
+        }, timing.modulesReady);
 
         setTimeout(() => {
             bootLayer.classList.add("boot-fade-out");
-        }, 3000);
+        }, timing.fadeOut);
 
         setTimeout(() => {
-            bootLayer.innerHTML = "";
-            bootLayer.classList.add("boot-hidden");
+            launchInterface();
+        }, timing.launchInterface);
+    }
 
-            CPU.create();
+    function launchInterface() {
+        bootLayer.innerHTML = "";
+        bootLayer.classList.add("boot-hidden");
 
-            SystemMonitor.create();
-            SystemMonitor.setPowerOnline();
-            SystemMonitor.setCoreStatus("STANDBY");
-            SystemMonitor.setModules(0, Network.getTotalModules());
-            SystemMonitor.setConnection("IDLE", { temporary: false });
+        CPU.create();
 
-            Network.create();
+        SystemMonitor.create();
+        SystemMonitor.setPowerOnline();
+        SystemMonitor.setCoreStatus("STANDBY");
+        SystemMonitor.setModules(0, Network.getTotalModules());
+        SystemMonitor.setConnection("IDLE", { temporary: false });
 
-            setTimeout(() => {
-                Network.showTraces();
-            }, 200);
+        Network.create();
 
-            setTimeout(() => {
-                CPU.show();
-            }, 700);
+        setTimeout(() => {
+            Network.showTraces();
+        }, 350);
 
-            setTimeout(() => {
-                Network.showModules();
-            }, 1300);
+        setTimeout(() => {
+            CPU.show();
+        }, 1100);
 
-        }, 3900);
+        setTimeout(() => {
+            Network.showModules();
+        }, 2000);
     }
 
     function updateDiagnostic(step, status, success = false) {
