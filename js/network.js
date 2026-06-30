@@ -265,7 +265,7 @@ const Network = (() => {
     }
 
     function createTraces() {
-    pcbLayer.innerHTML = `
+        pcbLayer.innerHTML = `
         <svg class="pcb-svg" viewBox="0 0 1000 700" preserveAspectRatio="none">
 
             <!-- Connector pads close to the CPU -->
@@ -308,10 +308,10 @@ const Network = (() => {
 
         </svg>
     `;
-}
+    }
 
- function createModules() {
-    moduleLayer.innerHTML = modules.map(module => `
+    function createModules() {
+        moduleLayer.innerHTML = modules.map(module => `
         <article class="module-card module-${module.position}" data-module="${module.id}">
 
             <span class="module-corner module-corner-tl"></span>
@@ -361,7 +361,7 @@ const Network = (() => {
 
         </article>
     `).join("");
-}
+    }
 
     function bindInteractions() {
         document.querySelectorAll(".module-card").forEach(card => {
@@ -394,50 +394,50 @@ const Network = (() => {
         });
     }
 
- 
+
     function activateModule(id) {
-    if (!activatedModules.has(id)) {
-        activatedModules.add(id);
+        if (!activatedModules.has(id)) {
+            activatedModules.add(id);
 
-        document
-            .querySelector(`[data-module="${id}"]`)
-            ?.classList.add("module-active", "module-locked");
+            document
+                .querySelector(`[data-module="${id}"]`)
+                ?.classList.add("module-active", "module-locked");
 
-        const moduleCard = document.querySelector(`[data-module="${id}"]`);
-        const statusLabel = moduleCard?.querySelector(".module-status-label");
+            const moduleCard = document.querySelector(`[data-module="${id}"]`);
+            const statusLabel = moduleCard?.querySelector(".module-status-label");
 
-        if (statusLabel) {
-            statusLabel.textContent = "LINKED";
+            if (statusLabel) {
+                statusLabel.textContent = "LINKED";
+            }
+
+            document
+                .querySelector(`[data-trace="${id}"]`)
+                ?.classList.add("trace-active", "trace-locked");
+
+            document
+                .querySelector(`[data-pad="${id}"]`)
+                ?.classList.add("pad-active");
+
+            CPU.activateModulePins(id);
+
+            SystemMonitor.setModules(activatedModules.size, modules.length);
+            SystemMonitor.setConnection(id);
+        } else {
+            SystemMonitor.setConnection(id);
         }
 
-        document
-            .querySelector(`[data-trace="${id}"]`)
-            ?.classList.add("trace-active", "trace-locked");
+        if (activatedModules.size === modules.length) {
+            CPU.setCoreActivated();
 
-        document
-            .querySelector(`[data-pad="${id}"]`)
-            ?.classList.add("pad-active");
+            SystemMonitor.setCoreStatus("ACTIVATED");
+            SystemMonitor.setModules(activatedModules.size, modules.length);
+            SystemMonitor.setConnection("STABLE", { temporary: false });
 
-        CPU.activateModulePins(id);
-
-        SystemMonitor.setModules(activatedModules.size, modules.length);
-        SystemMonitor.setConnection(id);
-    } else {
-        SystemMonitor.setConnection(id);
+            moduleLayer.classList.add("all-modules-active");
+            pcbLayer.classList.add("all-traces-active");
+        }
     }
 
-    if (activatedModules.size === modules.length) {
-        CPU.setCoreActivated();
-
-        SystemMonitor.setCoreStatus("ACTIVATED");
-        SystemMonitor.setModules(activatedModules.size, modules.length);
-        SystemMonitor.setConnection("STABLE", { temporary: false });
-
-        moduleLayer.classList.add("all-modules-active");
-        pcbLayer.classList.add("all-traces-active");
-    }
-}
-    
 
     function openModule(id) {
         document
@@ -487,7 +487,7 @@ const Network = (() => {
     }
 
     function getTotalModules() {
-    return modules.length;
+        return modules.length;
     }
 
     return {
