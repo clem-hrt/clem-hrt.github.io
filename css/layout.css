@@ -1,7 +1,7 @@
 /* ==========================================================
    LAYOUT
    Portfolio - Clément Héritier
-   Clean version for current architecture
+   Current clean architecture
 ========================================================== */
 
 /* ==========================================================
@@ -22,10 +22,6 @@ body{
     position:relative;
 }
 
-/* ==========================================================
-   APP ROOT
-========================================================== */
-
 #app{
     position:relative;
     z-index:var(--z-content);
@@ -33,10 +29,6 @@ body{
     min-height:100vh;
     overflow:hidden;
 }
-
-/* ==========================================================
-   GLOBAL UTILITIES
-========================================================== */
 
 .container{
     width:min(1400px,92vw);
@@ -91,9 +83,496 @@ body{
     pointer-events:none;
 }
 
-/* Legacy safety: system monitor is now inside CPU */
 #system-layer{
     display:none;
+}
+
+/* ==========================================================
+   BOOT SCREEN
+========================================================== */
+
+.boot-screen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.boot-panel{
+    width:min(560px,90vw);
+    padding:46px;
+    border:1px solid rgba(53,194,255,.18);
+    border-radius:var(--radius-large);
+    background:rgba(10,16,28,.72);
+    backdrop-filter:blur(18px);
+    box-shadow:var(--shadow-card);
+    text-align:center;
+    transition:
+        border-color var(--transition-slow),
+        box-shadow var(--transition-slow),
+        transform var(--transition-slow);
+}
+
+.boot-label{
+    display:block;
+    color:var(--clr-accent);
+    letter-spacing:4px;
+    font-size:.72rem;
+    margin-bottom:18px;
+    opacity:.8;
+}
+
+.boot-panel h1{
+    font-family:var(--font-title);
+    font-size:clamp(2.4rem,6vw,4rem);
+    letter-spacing:6px;
+    margin-bottom:22px;
+}
+
+.boot-state{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    color:#7f8a9b;
+    letter-spacing:5px;
+    font-size:.9rem;
+    margin-bottom:22px;
+}
+
+.boot-led{
+    width:11px;
+    height:11px;
+    border-radius:50%;
+    background:#626b78;
+    box-shadow:0 0 0 transparent;
+    transition:all var(--transition-normal);
+}
+
+.boot-led.online{
+    background:var(--clr-success);
+    box-shadow:0 0 18px rgba(57,243,140,.85);
+}
+
+.online-text{
+    color:var(--clr-success);
+}
+
+.boot-message{
+    color:var(--clr-text-secondary);
+    font-size:.95rem;
+    margin-bottom:28px;
+}
+
+.boot-online{
+    border-color:rgba(57,243,140,.35);
+    box-shadow:
+        var(--shadow-card),
+        0 0 45px rgba(57,243,140,.08);
+    transform:scale(1.015);
+}
+
+.boot-fade-out{
+    animation:bootFadeOut 1s ease forwards;
+}
+
+.boot-hidden{
+    display:none;
+}
+
+.boot-hint{
+    display:none;
+}
+
+@keyframes bootFadeOut{
+    from{
+        opacity:1;
+        filter:blur(0);
+    }
+
+    to{
+        opacity:0;
+        filter:blur(10px);
+    }
+}
+
+/* ==========================================================
+   POWER SLIDER
+========================================================== */
+
+.power-rig{
+    width:min(470px,84vw);
+    margin:36px auto 20px;
+}
+
+.power-slider{
+    --power-progress:0;
+    position:relative;
+    width:100%;
+    height:86px;
+    display:block;
+}
+
+.power-cable-rail{
+    position:absolute;
+    left:6px;
+    right:135px;
+    top:50%;
+    height:4px;
+    transform:translateY(-50%);
+    border-radius:999px;
+    background:rgba(53,194,255,.12);
+    box-shadow:
+        inset 0 0 5px rgba(53,194,255,.12),
+        0 0 10px rgba(53,194,255,.08);
+    overflow:hidden;
+}
+
+.power-current{
+    display:block;
+    width:0%;
+    height:100%;
+    border-radius:999px;
+    background:linear-gradient(
+        90deg,
+        rgba(53,194,255,.25),
+        rgba(57,243,140,.82)
+    );
+    box-shadow:
+        0 0 10px rgba(57,243,140,.6),
+        0 0 20px rgba(57,243,140,.22);
+    transition:width .12s linear;
+}
+
+.power-plug{
+    position:absolute;
+    left:0;
+    top:50%;
+    display:flex;
+    align-items:center;
+    color:var(--clr-accent);
+    transform:translateY(-50%) translateX(0);
+    cursor:grab;
+    touch-action:none;
+    user-select:none;
+    transition:
+        transform .18s ease,
+        filter var(--transition-normal);
+}
+
+.power-plug.is-dragging{
+    cursor:grabbing;
+    transition:none;
+    filter:drop-shadow(0 0 12px rgba(53,194,255,.28));
+}
+
+.power-plug:disabled{
+    cursor:default;
+}
+
+.plug-body{
+    position:relative;
+    height:34px;
+    padding:0 13px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    border:1px solid rgba(53,194,255,.35);
+    border-radius:8px 3px 3px 8px;
+    background:linear-gradient(
+        145deg,
+        rgba(12,18,30,.96),
+        rgba(4,8,14,.96)
+    );
+    color:var(--clr-accent);
+    font-size:.62rem;
+    letter-spacing:1.8px;
+    box-shadow:
+        inset 0 0 12px rgba(53,194,255,.04),
+        0 0 18px rgba(53,194,255,.08);
+    transition:
+        border-color var(--transition-normal),
+        color var(--transition-normal),
+        box-shadow var(--transition-normal);
+}
+
+.plug-light{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#657184;
+    transition:
+        background var(--transition-normal),
+        box-shadow var(--transition-normal);
+}
+
+.plug-prongs{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+    margin-left:4px;
+}
+
+.plug-prongs span{
+    width:24px;
+    height:4px;
+    border-radius:999px;
+    background:rgba(234,243,255,.45);
+    box-shadow:0 0 8px rgba(234,243,255,.1);
+    transition:
+        background var(--transition-normal),
+        box-shadow var(--transition-normal);
+}
+
+.power-socket{
+    position:absolute;
+    right:0;
+    top:50%;
+    width:122px;
+    height:58px;
+    transform:translateY(-50%);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    border:1px solid rgba(53,194,255,.25);
+    border-radius:12px;
+    background:linear-gradient(
+        145deg,
+        rgba(10,16,28,.84),
+        rgba(4,8,14,.78)
+    );
+    box-shadow:
+        inset 0 0 18px rgba(53,194,255,.025),
+        0 0 22px rgba(53,194,255,.08);
+    transition:
+        border-color var(--transition-normal),
+        box-shadow var(--transition-normal),
+        transform var(--transition-normal);
+}
+
+.socket-core{
+    width:32px;
+    height:12px;
+    border-radius:999px;
+    border:1px solid rgba(53,194,255,.35);
+    background:rgba(53,194,255,.05);
+    transition:
+        background var(--transition-normal),
+        box-shadow var(--transition-normal),
+        border-color var(--transition-normal);
+}
+
+.socket-label{
+    color:var(--clr-text-secondary);
+    font-size:.55rem;
+    letter-spacing:1.8px;
+}
+
+.socket-magnetic{
+    transform:translateY(-50%) scale(1.025);
+    border-color:rgba(53,194,255,.48);
+    box-shadow:
+        inset 0 0 18px rgba(53,194,255,.04),
+        0 0 28px rgba(53,194,255,.14);
+}
+
+.power-connected .plug-body{
+    border-color:rgba(57,243,140,.48);
+    color:var(--clr-success);
+    box-shadow:
+        inset 0 0 12px rgba(57,243,140,.06),
+        0 0 24px rgba(57,243,140,.14);
+}
+
+.power-connected .plug-light{
+    background:var(--clr-success);
+    box-shadow:0 0 12px rgba(57,243,140,.85);
+}
+
+.power-connected .plug-prongs span{
+    background:rgba(57,243,140,.72);
+    box-shadow:0 0 9px rgba(57,243,140,.35);
+}
+
+.socket-online{
+    border-color:rgba(57,243,140,.48);
+    box-shadow:
+        inset 0 0 18px rgba(57,243,140,.04),
+        0 0 28px rgba(57,243,140,.14);
+}
+
+.socket-online .socket-core{
+    background:rgba(57,243,140,.18);
+    border-color:rgba(57,243,140,.65);
+    box-shadow:
+        0 0 12px rgba(57,243,140,.65),
+        inset 0 0 8px rgba(57,243,140,.12);
+}
+
+.power-connected .power-slider::after{
+    content:"";
+    position:absolute;
+    left:0;
+    top:50%;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--clr-success);
+    box-shadow:
+        0 0 12px rgba(57,243,140,.95),
+        0 0 28px rgba(57,243,140,.45);
+    transform:translateY(-50%);
+    animation:powerPulseSlider 1.8s ease forwards;
+}
+
+@keyframes powerPulseSlider{
+    from{
+        opacity:1;
+        left:0%;
+    }
+
+    to{
+        opacity:0;
+        left:76%;
+    }
+}
+
+/* ==========================================================
+   BOOT DIAGNOSTICS
+========================================================== */
+
+.boot-diagnostics{
+    width:min(390px,82vw);
+    margin:30px auto 16px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:14px;
+    border:1px solid rgba(53,194,255,.12);
+    border-radius:14px;
+    background:rgba(4,8,14,.35);
+    box-shadow:inset 0 0 18px rgba(53,194,255,.025);
+}
+
+.boot-diagnostic-line{
+    position:relative;
+    overflow:hidden;
+    display:grid;
+    grid-template-columns:1fr auto 9px;
+    align-items:center;
+    gap:14px;
+    color:rgba(141,154,175,.76);
+    font-size:.66rem;
+    letter-spacing:1.4px;
+    opacity:.55;
+    transition:
+        opacity var(--transition-normal),
+        color var(--transition-normal);
+}
+
+.boot-diagnostic-line.diagnostic-active{
+    opacity:1;
+}
+
+.diagnostic-name{
+    position:relative;
+    z-index:2;
+    text-align:left;
+}
+
+.boot-diagnostic-line strong{
+    position:relative;
+    z-index:2;
+    min-width:78px;
+    text-align:right;
+    color:#7d899a;
+    font-weight:500;
+    transition:
+        color var(--transition-normal),
+        text-shadow var(--transition-normal);
+}
+
+.boot-diagnostic-line.diagnostic-active strong{
+    color:var(--clr-accent);
+    text-shadow:0 0 10px rgba(53,194,255,.35);
+}
+
+.boot-diagnostic-line.diagnostic-success strong{
+    color:var(--clr-success);
+    text-shadow:0 0 10px rgba(57,243,140,.45);
+}
+
+.diagnostic-dot{
+    position:relative;
+    z-index:2;
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:rgba(101,113,132,.65);
+    box-shadow:none;
+    opacity:.55;
+    transition:
+        background var(--transition-normal),
+        box-shadow var(--transition-normal),
+        opacity var(--transition-normal);
+}
+
+.boot-diagnostic-line.diagnostic-active .diagnostic-dot{
+    background:var(--clr-accent);
+    box-shadow:0 0 10px rgba(53,194,255,.55);
+    opacity:1;
+}
+
+.boot-diagnostic-line.diagnostic-success .diagnostic-dot{
+    background:var(--clr-success);
+    box-shadow:
+        0 0 9px rgba(57,243,140,.85),
+        0 0 18px rgba(57,243,140,.35);
+    opacity:1;
+}
+
+.diagnostic-energy{
+    position:absolute;
+    left:10px;
+    right:10px;
+    top:50%;
+    height:1px;
+    transform:translateY(-50%);
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(53,194,255,.55),
+        rgba(57,243,140,.75),
+        transparent
+    );
+    opacity:0;
+    pointer-events:none;
+}
+
+.boot-diagnostic-line.diagnostic-charging .diagnostic-energy{
+    animation:diagnosticEnergyFlow 1.15s ease-in-out infinite;
+}
+
+.boot-diagnostic-line.diagnostic-powered .diagnostic-energy{
+    opacity:.32;
+}
+
+@keyframes diagnosticEnergyFlow{
+    0%{
+        opacity:0;
+        transform:translateY(-50%) translateX(-70%);
+    }
+
+    20%{
+        opacity:.8;
+    }
+
+    100%{
+        opacity:0;
+        transform:translateY(-50%) translateX(70%);
+    }
 }
 
 /* ==========================================================
@@ -103,7 +582,6 @@ body{
 .cpu-wrapper{
     width:100%;
     min-height:100vh;
-
     display:flex;
     align-items:center;
     justify-content:center;
@@ -113,11 +591,9 @@ body{
     display:grid;
     grid-template-rows:auto auto auto;
     place-items:center;
-    gap:10px;
-
+    gap:12px;
     opacity:0;
     transform:scale(.92);
-
     transition:
         opacity .9s ease,
         transform .9s ease;
@@ -135,82 +611,122 @@ body{
     gap:14px;
 }
 
-/* ==========================================================
-   CPU CORE
-========================================================== */
-
 .cpu-core{
-    width:360px;
-    padding:26px 26px 22px;
-
-    border-radius:18px;
-
-    background:rgba(12,18,30,.92);
-
-    border:1px solid rgba(53,194,255,.22);
-
+    position:relative;
+    width:380px;
+    padding:28px 28px 24px;
+    overflow:hidden;
+    text-align:center;
+    border-radius:10px;
+    border:1px solid rgba(53,194,255,.34);
+    background:linear-gradient(
+        145deg,
+        rgba(16,24,38,.96),
+        rgba(7,11,18,.96)
+    );
     box-shadow:
         var(--shadow-card),
-        inset 0 0 28px rgba(53,194,255,.035);
-
-    text-align:center;
-
+        inset 0 0 38px rgba(53,194,255,.045),
+        0 0 42px rgba(53,194,255,.08);
     transition:
         border-color var(--transition-normal),
         box-shadow var(--transition-normal);
 }
 
+.cpu-core-grid{
+    position:absolute;
+    inset:0;
+    opacity:.14;
+    background-image:
+        linear-gradient(rgba(53,194,255,.18) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(53,194,255,.18) 1px, transparent 1px);
+    background-size:18px 18px;
+    mask-image:radial-gradient(circle at center, black, transparent 82%);
+    pointer-events:none;
+}
+
+.cpu-core-content{
+    position:relative;
+    z-index:2;
+    pointer-events:auto;
+}
+
+.cpu-corner{
+    position:absolute;
+    width:24px;
+    height:24px;
+    border-color:rgba(53,194,255,.65);
+    opacity:.75;
+    z-index:3;
+    transition:border-color var(--transition-normal);
+}
+
+.cpu-corner-tl{
+    top:10px;
+    left:10px;
+    border-top:1px solid;
+    border-left:1px solid;
+}
+
+.cpu-corner-tr{
+    top:10px;
+    right:10px;
+    border-top:1px solid;
+    border-right:1px solid;
+}
+
+.cpu-corner-bl{
+    bottom:10px;
+    left:10px;
+    border-bottom:1px solid;
+    border-left:1px solid;
+}
+
+.cpu-corner-br{
+    bottom:10px;
+    right:10px;
+    border-bottom:1px solid;
+    border-right:1px solid;
+}
+
+.cpu-identity{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    margin-bottom:16px;
+}
+
 .cpu-ref{
-    display:block;
-
     color:var(--clr-accent);
-
     letter-spacing:4px;
-    font-size:.68rem;
+    font-size:.66rem;
+}
 
-    margin-bottom:14px;
+.cpu-subref{
+    padding:4px 8px;
+    border:1px solid rgba(53,194,255,.18);
+    border-radius:999px;
+    color:rgba(245,248,252,.64);
+    font-size:.52rem;
+    letter-spacing:2px;
 }
 
 .cpu-core h2{
     font-family:var(--font-title);
-    font-size:1.55rem;
+    font-size:1.58rem;
+    letter-spacing:.5px;
     margin-bottom:10px;
 }
 
 .cpu-core p{
     color:var(--clr-text-secondary);
-
     line-height:1.45;
-    font-size:.88rem;
+    font-size:.86rem;
 }
 
 .cpu-core-status{
-    margin-top:16px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-
-    color:#8995a8;
-
-    letter-spacing:2px;
-    font-size:.68rem;
-}
-
-.cpu-led{
-    width:9px;
-    height:9px;
-
-    border-radius:50%;
-
-    background:var(--clr-accent);
-
-    box-shadow:0 0 16px rgba(53,194,255,.65);
-
-    transition:
-        background var(--transition-normal),
-        box-shadow var(--transition-normal);
+    display:none;
 }
 
 /* ==========================================================
@@ -220,15 +736,15 @@ body{
 .cpu-pins-top,
 .cpu-pins-bottom{
     display:grid;
-    grid-template-columns:repeat(8, 1fr);
-    gap:10px;
+    grid-template-columns:repeat(8,1fr);
+    gap:9px;
 }
 
 .cpu-pins-left,
 .cpu-pins-right{
     display:grid;
-    grid-template-rows:repeat(8, 1fr);
-    gap:11px;
+    grid-template-rows:repeat(8,1fr);
+    gap:10px;
 }
 
 .cpu-pins-top .cpu-pin,
@@ -244,47 +760,94 @@ body{
 }
 
 .cpu-pin{
+    position:relative;
     border-radius:999px;
-
-    background:rgba(53,194,255,.24);
-
-    box-shadow:0 0 8px rgba(53,194,255,.12);
-
+    background:rgba(53,194,255,.15);
+    box-shadow:
+        inset 0 0 3px rgba(255,255,255,.06),
+        0 0 4px rgba(53,194,255,.08);
     transition:
         background var(--transition-normal),
         box-shadow var(--transition-normal),
-        transform var(--transition-normal);
+        transform var(--transition-normal),
+        width var(--transition-normal),
+        height var(--transition-normal);
+}
+
+.cpu-pin::after{
+    content:"";
+    position:absolute;
+    border-radius:999px;
+    background:rgba(234,243,255,.24);
+    opacity:.45;
+}
+
+.cpu-pins-left .cpu-pin::after,
+.cpu-pins-right .cpu-pin::after{
+    top:50%;
+    width:8px;
+    height:2px;
+    transform:translateY(-50%);
+}
+
+.cpu-pins-left .cpu-pin::after{
+    right:4px;
+}
+
+.cpu-pins-right .cpu-pin::after{
+    left:4px;
+}
+
+.cpu-pins-top .cpu-pin::after,
+.cpu-pins-bottom .cpu-pin::after{
+    left:50%;
+    width:2px;
+    height:8px;
+    transform:translateX(-50%);
+}
+
+.cpu-pins-top .cpu-pin::after{
+    bottom:4px;
+}
+
+.cpu-pins-bottom .cpu-pin::after{
+    top:4px;
 }
 
 .cpu-pin.pin-active{
+    transform:scale(1.08);
     background:var(--clr-success);
-
     box-shadow:
-        0 0 10px rgba(57,243,140,.9),
-        0 0 22px rgba(57,243,140,.45);
+        0 0 8px rgba(57,243,140,.85),
+        0 0 18px rgba(57,243,140,.35),
+        inset 0 0 5px rgba(255,255,255,.20);
 }
 
-/* ==========================================================
-   CPU CORE ACTIVATED
-========================================================== */
+.cpu-pin.pin-active::after{
+    background:#fff;
+    opacity:.75;
+}
+
+.cpu-pins-left .cpu-pin.pin-active,
+.cpu-pins-right .cpu-pin.pin-active{
+    width:44px;
+}
+
+.cpu-pins-top .cpu-pin.pin-active,
+.cpu-pins-bottom .cpu-pin.pin-active{
+    height:40px;
+}
 
 .core-activated .cpu-core{
-    border-color:rgba(57,243,140,.65);
-
+    border-color:rgba(57,243,140,.68);
     box-shadow:
         var(--shadow-card),
-        0 0 55px rgba(57,243,140,.18),
-        inset 0 0 38px rgba(57,243,140,.08);
+        0 0 34px rgba(57,243,140,.12),
+        inset 0 0 30px rgba(57,243,140,.07);
 }
 
-.core-activated .cpu-led{
-    background:var(--clr-success);
-
-    box-shadow:0 0 22px rgba(57,243,140,.95);
-}
-
-.core-activated #cpu-status-text{
-    color:var(--clr-success);
+.core-activated .cpu-corner{
+    border-color:rgba(57,243,140,.8);
 }
 
 /* ==========================================================
@@ -297,12 +860,9 @@ body{
 
 .core-monitor{
     padding:12px;
-
     border:1px solid rgba(53,194,255,.16);
     border-radius:14px;
-
     background:rgba(4,8,14,.42);
-
     box-shadow:
         inset 0 0 18px rgba(53,194,255,.025),
         0 0 18px rgba(53,194,255,.04);
@@ -313,11 +873,8 @@ body{
     align-items:center;
     justify-content:center;
     gap:8px;
-
     margin-bottom:10px;
-
     color:var(--clr-accent);
-
     letter-spacing:2.6px;
     font-size:.58rem;
 }
@@ -325,11 +882,8 @@ body{
 .core-monitor-dot{
     width:6px;
     height:6px;
-
     border-radius:50%;
-
     background:var(--clr-success);
-
     box-shadow:0 0 10px rgba(57,243,140,.9);
 }
 
@@ -343,9 +897,7 @@ body{
     display:flex;
     justify-content:space-between;
     gap:8px;
-
     color:var(--clr-text-secondary);
-
     font-size:.58rem;
     letter-spacing:1.1px;
 }
@@ -353,7 +905,6 @@ body{
 .core-monitor-row strong{
     color:#7d899a;
     font-weight:500;
-
     transition:
         color var(--transition-normal),
         text-shadow var(--transition-normal);
@@ -361,42 +912,135 @@ body{
 
 .core-monitor-row strong.is-online{
     color:var(--clr-success);
-
     text-shadow:0 0 10px rgba(57,243,140,.55);
 }
 
 .core-monitor-progress{
     position:relative;
-
     width:100%;
     height:4px;
-
     margin-top:12px;
-
     border-radius:999px;
-
     background:rgba(255,255,255,.06);
-
     overflow:hidden;
 }
 
 .core-monitor-progress span{
     display:block;
-
     width:0%;
     height:100%;
-
     border-radius:999px;
-
-    background:linear-gradient(
-        90deg,
-        var(--clr-accent),
-        var(--clr-success)
-    );
-
+    background:linear-gradient(90deg,var(--clr-accent),var(--clr-success));
     box-shadow:0 0 14px rgba(57,243,140,.5);
-
     transition:width .45s ease;
+}
+
+/* ==========================================================
+   SYSTEM PORTS INSIDE CPU
+========================================================== */
+
+#system-ports-slot{
+    position:relative;
+    z-index:20;
+    margin-top:14px;
+    pointer-events:auto;
+}
+
+.system-ports{
+    position:relative;
+    z-index:21;
+    max-height:0;
+    overflow:hidden;
+    opacity:0;
+    transform:translateY(8px);
+    pointer-events:auto;
+    transition:
+        max-height .75s ease,
+        opacity .55s ease,
+        transform .55s ease;
+}
+
+.system-ports.ports-unlocked{
+    max-height:180px;
+    opacity:1;
+    transform:translateY(0);
+}
+
+.ports-header{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:10px;
+    color:var(--clr-success);
+    letter-spacing:2.4px;
+    font-size:.56rem;
+}
+
+.ports-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--clr-success);
+    box-shadow:0 0 10px rgba(57,243,140,.85);
+}
+
+.ports-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    pointer-events:auto;
+}
+
+.system-port{
+    position:relative;
+    z-index:22;
+    padding:8px 9px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:8px;
+    border:1px solid rgba(57,243,140,.18);
+    border-radius:10px;
+    background:linear-gradient(
+        145deg,
+        rgba(57,243,140,.045),
+        rgba(4,8,14,.42)
+    );
+    color:var(--clr-text);
+    font-size:.58rem;
+    letter-spacing:1px;
+    cursor:pointer;
+    pointer-events:auto;
+    transition:
+        border-color var(--transition-normal),
+        background var(--transition-normal),
+        transform var(--transition-fast),
+        box-shadow var(--transition-normal);
+}
+
+.system-port:hover{
+    border-color:rgba(57,243,140,.48);
+    background:linear-gradient(
+        145deg,
+        rgba(57,243,140,.09),
+        rgba(53,194,255,.035)
+    );
+    transform:translateY(-2px);
+    box-shadow:0 0 16px rgba(57,243,140,.12);
+}
+
+.system-port strong{
+    color:var(--clr-success);
+    font-size:.52rem;
+    font-weight:500;
+    text-shadow:0 0 8px rgba(57,243,140,.45);
+}
+
+.system-port:focus-visible{
+    outline:1px solid var(--clr-success);
+    outline-offset:3px;
+    box-shadow:0 0 18px rgba(57,243,140,.18);
 }
 
 /* ==========================================================
@@ -406,12 +1050,9 @@ body{
 .pcb-svg{
     position:absolute;
     inset:0;
-
     width:100%;
     height:100%;
-
     opacity:0;
-
     transition:opacity 1s ease;
 }
 
@@ -421,83 +1062,75 @@ body{
 
 .pcb-trace{
     fill:none;
-
-    stroke:rgba(53,194,255,.18);
+    stroke:rgba(53,194,255,.20);
     stroke-width:3;
     stroke-linecap:round;
-
-    stroke-dasharray:10 12;
-
-    filter:drop-shadow(0 0 4px rgba(53,194,255,.12));
-
+    stroke-dasharray:none;
+    filter:none;
     transition:
-        stroke var(--transition-normal),
-        stroke-width var(--transition-normal),
-        filter var(--transition-normal);
+        stroke .25s ease,
+        stroke-width .25s ease,
+        opacity .25s ease;
 }
 
-.trace-active{
-    stroke:var(--clr-accent);
-    stroke-width:4;
-
-    stroke-dasharray:14 8;
-
-    filter:
-        drop-shadow(0 0 8px rgba(53,194,255,.75))
-        drop-shadow(0 0 18px rgba(53,194,255,.35));
-
-    animation:traceFlow 1.1s linear infinite;
-}
-
+.trace-active,
 .trace-locked{
     stroke:var(--clr-success);
+    stroke-width:4.5;
+    filter:drop-shadow(0 0 5px rgba(57,243,140,.45));
+}
 
-    filter:
-        drop-shadow(0 0 8px rgba(57,243,140,.7))
-        drop-shadow(0 0 18px rgba(57,243,140,.28));
+.pcb-pad{
+    opacity:0;
+    fill:rgba(53,194,255,.24);
+    stroke:none;
+    filter:none;
+    transition:
+        opacity .6s ease,
+        fill .25s ease,
+        filter .25s ease;
+}
+
+.network-visible .pcb-pad{
+    opacity:1;
+}
+
+.pcb-pad.pad-active{
+    fill:var(--clr-success);
+    filter:drop-shadow(0 0 6px rgba(57,243,140,.55));
 }
 
 /* ==========================================================
-   MODULE VARIABLES
+   MODULES
 ========================================================== */
 
 :root{
-    --module-closed-width:clamp(220px, 18vw, 255px);
-    --module-open-width:clamp(390px, 33vw, 500px);
+    --module-closed-width:clamp(220px,18vw,255px);
+    --module-open-width:clamp(390px,33vw,500px);
 }
-
-/* ==========================================================
-   MODULE BASE
-========================================================== */
 
 .module-card{
     position:absolute;
-
     width:var(--module-closed-width);
     max-height:calc(50vh - 80px);
-
     padding:22px;
-
     overflow:hidden;
-
     border-radius:var(--radius-medium);
-
-    background:rgba(10,16,28,.72);
-
-    border:1px solid rgba(53,194,255,.14);
-
-    box-shadow:var(--shadow-soft);
-
+    border:1px solid rgba(53,194,255,.18);
+    background:linear-gradient(
+        145deg,
+        rgba(12,18,30,.84),
+        rgba(5,9,16,.78)
+    );
+    box-shadow:
+        var(--shadow-soft),
+        inset 0 0 24px rgba(53,194,255,.025);
     backdrop-filter:blur(18px);
-
     opacity:0;
-
     transform:translateY(18px) scale(.96);
-
     pointer-events:auto;
-
     cursor:pointer;
-
+    isolation:isolate;
     transition:
         opacity .8s ease,
         transform .8s ease,
@@ -511,124 +1144,169 @@ body{
     transform:translateY(0) scale(1);
 }
 
-/* A module can be activated without staying visually open */
+.module-card::before{
+    content:"";
+    position:absolute;
+    left:18px;
+    right:18px;
+    top:0;
+    height:1px;
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(53,194,255,.55),
+        transparent
+    );
+    opacity:.5;
+}
+
 .module-card.module-locked{
     width:var(--module-closed-width);
-
-    border-color:rgba(57,243,140,.34);
+    border-color:rgba(57,243,140,.38);
+    box-shadow:
+        var(--shadow-soft),
+        0 0 26px rgba(57,243,140,.055),
+        inset 0 0 24px rgba(57,243,140,.025);
 }
 
 .module-card.module-open{
     width:var(--module-open-width);
-
     z-index:8;
-
     transform:translateY(-4px) scale(1.035);
-
-    border-color:rgba(53,194,255,.58);
-
+    border-color:rgba(53,194,255,.68);
     box-shadow:
         var(--shadow-card),
-        0 0 42px rgba(53,194,255,.16);
+        0 0 40px rgba(53,194,255,.15),
+        inset 0 0 26px rgba(53,194,255,.035);
 }
 
-.module-card.module-locked:not(.module-open) h3{
-    color:var(--clr-success);
-}
-
-.module-card.module-open h3{
-    color:var(--clr-accent);
-}
-
-/* ==========================================================
-   SIX MODULE POSITIONS
-========================================================== */
-
+/* Positions */
 .module-top-left{
-    left:clamp(22px, 3vw, 54px);
-    top:clamp(38px, 6vh, 76px);
-    right:auto;
-    bottom:auto;
-    translate:0 0;
-
+    left:clamp(22px,3vw,54px);
+    top:clamp(38px,6vh,76px);
     transform-origin:left center;
 }
 
 .module-top-center{
     left:50%;
-    top:clamp(22px, 4vh, 48px);
-    right:auto;
-    bottom:auto;
+    top:clamp(22px,4vh,48px);
     translate:-50% 0;
-
     transform-origin:center center;
 }
 
 .module-top-right{
-    right:clamp(22px, 3vw, 54px);
-    top:clamp(38px, 6vh, 76px);
-    left:auto;
-    bottom:auto;
-    translate:0 0;
-
+    right:clamp(22px,3vw,54px);
+    top:clamp(38px,6vh,76px);
     transform-origin:right center;
 }
 
 .module-bottom-left{
-    left:clamp(22px, 3vw, 54px);
-    bottom:clamp(38px, 6vh, 76px);
-    right:auto;
-    top:auto;
-    translate:0 0;
-
+    left:clamp(22px,3vw,54px);
+    bottom:clamp(38px,6vh,76px);
     transform-origin:left center;
 }
 
 .module-bottom-center{
     left:50%;
-    bottom:clamp(22px, 4vh, 48px);
-    right:auto;
-    top:auto;
+    bottom:clamp(22px,4vh,48px);
     translate:-50% 0;
-
     transform-origin:center center;
 }
 
 .module-bottom-right{
-    right:clamp(22px, 3vw, 54px);
-    bottom:clamp(38px, 6vh, 76px);
-    left:auto;
-    top:auto;
-    translate:0 0;
-
+    right:clamp(22px,3vw,54px);
+    bottom:clamp(38px,6vh,76px);
     transform-origin:right center;
 }
 
-/* Center modules must stay compact to protect CPU area */
 .module-top-center.module-open,
 .module-bottom-center.module-open{
     max-height:calc(50vh - 145px);
 }
 
-/* ==========================================================
-   MODULE HEADER
-========================================================== */
+/* Module decorations */
+.module-scanline{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(53,194,255,.035) 48%,
+        transparent 52%
+    );
+    opacity:.35;
+    pointer-events:none;
+    transform:translateY(-100%);
+    transition:transform .9s ease;
+}
 
+.module-card.module-open .module-scanline{
+    transform:translateY(100%);
+}
+
+.module-corner{
+    position:absolute;
+    width:18px;
+    height:18px;
+    border-color:rgba(53,194,255,.48);
+    z-index:3;
+    transition:border-color var(--transition-normal);
+}
+
+.module-corner-tl{
+    top:9px;
+    left:9px;
+    border-top:1px solid;
+    border-left:1px solid;
+}
+
+.module-corner-tr{
+    top:9px;
+    right:9px;
+    border-top:1px solid;
+    border-right:1px solid;
+}
+
+.module-corner-bl{
+    bottom:9px;
+    left:9px;
+    border-bottom:1px solid;
+    border-left:1px solid;
+}
+
+.module-corner-br{
+    bottom:9px;
+    right:9px;
+    border-bottom:1px solid;
+    border-right:1px solid;
+}
+
+.module-card.module-locked .module-corner{
+    border-color:rgba(57,243,140,.62);
+}
+
+.module-card.module-open .module-corner{
+    border-color:rgba(53,194,255,.82);
+}
+
+/* Module header */
 .module-header{
     position:relative;
     z-index:2;
 }
 
+.module-header-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:14px;
+}
+
 .module-index{
-    display:block;
-
     color:var(--clr-accent);
-
     letter-spacing:3px;
     font-size:.62rem;
-
-    margin-bottom:14px;
-
     opacity:.75;
 }
 
@@ -637,39 +1315,73 @@ body{
     opacity:1;
 }
 
+.module-status{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:#7f8a9b;
+    font-size:.56rem;
+    letter-spacing:1.8px;
+}
+
+.module-status-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#657184;
+    transition:
+        background var(--transition-normal),
+        box-shadow var(--transition-normal);
+}
+
+.module-status-label{
+    white-space:nowrap;
+}
+
+.module-card.module-locked .module-status{
+    color:var(--clr-success);
+}
+
+.module-card.module-locked .module-status-dot{
+    background:var(--clr-success);
+    box-shadow:0 0 12px rgba(57,243,140,.75);
+}
+
 .module-card h3{
     font-family:var(--font-title);
     font-size:1.2rem;
-
+    letter-spacing:.2px;
     margin-bottom:10px;
+    transition:
+        color var(--transition-normal),
+        text-shadow var(--transition-normal);
+}
 
-    transition:color var(--transition-normal);
+.module-card.module-locked:not(.module-open) h3{
+    color:var(--clr-success);
+}
+
+.module-card.module-open h3{
+    color:var(--clr-accent);
+    text-shadow:0 0 14px rgba(53,194,255,.25);
 }
 
 .module-card p{
     color:var(--clr-text-secondary);
-
     font-size:.85rem;
     line-height:1.5;
 }
 
-/* ==========================================================
-   MODULE CONTENT
-========================================================== */
-
+/* Module content */
 .module-content{
     display:grid;
     grid-template-columns:minmax(135px,.85fr) minmax(180px,1.15fr);
     gap:14px;
-
     max-height:0;
-
     margin-top:0;
-
     opacity:0;
-
+    overflow:hidden;
     transform:translateY(10px);
-
     transition:
         max-height .65s ease,
         opacity .45s ease,
@@ -678,60 +1390,95 @@ body{
 }
 
 .module-open .module-content{
-    max-height:310px;
-
+    max-height:min(330px,calc(50vh - 150px));
     margin-top:18px;
-
     opacity:1;
-
     transform:translateY(0);
 }
 
-/* ==========================================================
-   MODULE ITEMS
-========================================================== */
+.module-top-center.module-open .module-content,
+.module-bottom-center.module-open .module-content{
+    max-height:min(230px,calc(50vh - 170px));
+}
 
 .module-items{
     display:flex;
     flex-direction:column;
     gap:8px;
-
     min-width:0;
+    max-height:245px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding-right:4px;
+}
+
+.module-top-center .module-items,
+.module-bottom-center .module-items{
+    max-height:165px;
 }
 
 .module-item{
+    position:relative;
     width:100%;
     min-height:52px;
-
     padding:10px 12px;
-
     display:flex;
     flex-direction:column;
     align-items:flex-start;
     gap:3px;
-
-    border:1px solid rgba(53,194,255,.12);
+    border:1px solid rgba(53,194,255,.14);
     border-radius:10px;
-
     color:var(--clr-text);
-
-    background:rgba(255,255,255,.025);
-
+    background:linear-gradient(
+        90deg,
+        rgba(53,194,255,.035),
+        rgba(255,255,255,.018)
+    );
     cursor:pointer;
-
     transition:
         border-color var(--transition-normal),
         background var(--transition-normal),
         transform var(--transition-fast);
 }
 
+.module-item::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:50%;
+    width:3px;
+    height:55%;
+    border-radius:999px;
+    background:rgba(53,194,255,.28);
+    transform:translateY(-50%);
+    transition:
+        background var(--transition-normal),
+        box-shadow var(--transition-normal);
+}
+
 .module-item:hover,
 .module-item.item-active{
     border-color:rgba(53,194,255,.55);
-
-    background:rgba(53,194,255,.08);
-
     transform:translateX(4px);
+}
+
+.module-item:hover::before{
+    background:var(--clr-accent);
+    box-shadow:0 0 10px rgba(53,194,255,.65);
+}
+
+.module-item.item-active{
+    border-color:rgba(57,243,140,.38);
+    background:linear-gradient(
+        90deg,
+        rgba(57,243,140,.08),
+        rgba(53,194,255,.035)
+    );
+}
+
+.module-item.item-active::before{
+    background:var(--clr-success);
+    box-shadow:0 0 10px rgba(57,243,140,.7);
 }
 
 .module-item span{
@@ -741,81 +1488,75 @@ body{
 
 .module-item small{
     color:var(--clr-text-secondary);
-
     font-size:.72rem;
 }
 
-/* ==========================================================
-   MODULE DETAIL PANEL
-========================================================== */
-
+/* Detail panel */
 .module-detail{
     min-height:100%;
     max-height:245px;
-
-    padding:14px;
-
-    overflow:auto;
-
-    border:1px solid rgba(57,243,140,.12);
+    padding:14px 12px 14px 14px;
+    overflow-y:auto;
+    overflow-x:hidden;
+    border:1px solid rgba(53,194,255,.12);
     border-radius:12px;
-
-    background:rgba(4,8,14,.45);
-
+    background:linear-gradient(
+        145deg,
+        rgba(4,8,14,.62),
+        rgba(10,16,28,.45)
+    );
     opacity:.75;
-
     transition:
         border-color var(--transition-normal),
         background var(--transition-normal),
         opacity var(--transition-normal);
 }
 
-.module-detail.detail-active{
-    opacity:1;
-
-    border-color:rgba(57,243,140,.35);
-
-    background:rgba(57,243,140,.035);
-}
-
-/* Center modules need smaller detail zone */
 .module-top-center .module-detail,
 .module-bottom-center .module-detail{
-    max-height:150px;
+    max-height:165px;
+}
+
+.module-detail.detail-active{
+    opacity:1;
+    border-color:rgba(57,243,140,.38);
+    background:linear-gradient(
+        145deg,
+        rgba(57,243,140,.04),
+        rgba(4,8,14,.58)
+    );
 }
 
 .detail-placeholder{
     display:block;
-
     color:var(--clr-text-secondary);
-
     font-size:.78rem;
     line-height:1.5;
 }
 
 .detail-date{
     display:block;
-
+    width:max-content;
+    max-width:100%;
+    padding:4px 7px;
+    margin-bottom:10px;
+    border:1px solid rgba(57,243,140,.22);
+    border-radius:999px;
+    background:rgba(57,243,140,.035);
     color:var(--clr-success);
-
     font-size:.68rem;
     letter-spacing:1.5px;
-
-    margin-bottom:8px;
 }
 
 .module-detail h4{
     font-family:var(--font-title);
     font-size:.95rem;
-
     margin-bottom:5px;
 }
 
 .module-detail p{
     color:var(--clr-text-secondary);
-
     font-size:.76rem;
-
     margin-bottom:10px;
 }
 
@@ -823,68 +1564,68 @@ body{
     display:flex;
     flex-direction:column;
     gap:5px;
-
     padding-bottom:4px;
 }
 
 .module-detail li{
     position:relative;
-
     padding-left:14px;
-
     color:rgba(245,248,252,.78);
-
     font-size:.74rem;
     line-height:1.35;
 }
 
 .module-detail li::before{
     content:"";
-
     position:absolute;
-
     left:0;
     top:.45rem;
-
     width:5px;
     height:5px;
-
     border-radius:50%;
-
     background:var(--clr-success);
-
     box-shadow:0 0 8px rgba(57,243,140,.65);
 }
 
-/* Detail scrollbar */
+/* Scrollbars */
+.module-items::-webkit-scrollbar,
 .module-detail::-webkit-scrollbar{
     width:5px;
 }
 
+.module-items::-webkit-scrollbar-track,
 .module-detail::-webkit-scrollbar-track{
     background:rgba(255,255,255,.03);
     border-radius:999px;
 }
 
+.module-items::-webkit-scrollbar-thumb,
 .module-detail::-webkit-scrollbar-thumb{
     background:rgba(53,194,255,.35);
     border-radius:999px;
 }
 
-/* ==========================================================
-   ALL MODULES ACTIVE
-========================================================== */
+.module-items::-webkit-scrollbar-thumb:hover,
+.module-detail::-webkit-scrollbar-thumb:hover{
+    background:rgba(53,194,255,.6);
+}
 
-.all-modules-active .module-card:not(.module-open){
+.module-items,
+.module-detail{
+    scrollbar-width:thin;
+    scrollbar-color:rgba(53,194,255,.45) rgba(255,255,255,.03);
+}
+
+.all-modules-active .module-card.module-locked:not(.module-open){
     border-color:rgba(57,243,140,.48);
-}
-
-.all-modules-active .module-card.module-open{
-    transform:translateY(-4px) scale(1.035);
+    box-shadow:
+        var(--shadow-soft),
+        0 0 22px rgba(57,243,140,.07),
+        inset 0 0 22px rgba(57,243,140,.025);
 }
 
 /* ==========================================================
-   RESPONSIVE SAFETY
+   RESPONSIVE
 ========================================================== */
 
 @media (max-width:1200px){
@@ -925,10 +1666,7 @@ body{
         padding:80px 20px 40px;
     }
 
-    .cpu-chip{
-        transform:scale(.9);
-    }
-
+    .cpu-chip,
     .cpu-visible .cpu-chip{
         transform:scale(.9);
     }
@@ -937,10 +1675,8 @@ body{
         display:grid;
         grid-template-columns:1fr;
         gap:18px;
-
-        padding:20px 20px 60px;
-
         height:auto;
+        padding:20px 20px 60px;
     }
 
     .module-card,
@@ -953,13 +1689,9 @@ body{
     .module-bottom-center,
     .module-bottom-right{
         position:relative;
-
         inset:auto;
-
         translate:0 0;
-
         width:100%;
-
         max-height:none;
     }
 
@@ -980,6 +1712,22 @@ body{
 
 @media (max-width:520px){
 
+    .boot-panel{
+        padding:34px 22px;
+    }
+
+    .power-rig{
+        width:100%;
+    }
+
+    .power-cable-rail{
+        right:118px;
+    }
+
+    .power-socket{
+        width:108px;
+    }
+
     .cpu-core{
         width:300px;
         padding:22px 20px 20px;
@@ -989,7 +1737,8 @@ body{
         font-size:1.32rem;
     }
 
-    .core-monitor-grid{
+    .core-monitor-grid,
+    .ports-grid{
         grid-template-columns:1fr;
     }
 
@@ -1002,1416 +1751,14 @@ body{
     .cpu-pins-bottom .cpu-pin{
         height:26px;
     }
-}
-/* ==========================================================
-SCROLLABLE MODULE CONTENT
-Keeps cards clean when items or details are too long
-========================================================== */
 
-/* The open module keeps a fixed readable height */
-.module-open .module-content{
-    max-height:min(330px, calc(50vh - 150px));
-    overflow:hidden;
-}
-
-/* Left column: list of fields/items */
-.module-items{
-    max-height:245px;
-    overflow-y:auto;
-    overflow-x:hidden;
-    padding-right:4px;
-}
-
-/* Right column: selected item details */
-.module-detail{
-    max-height:245px;
-    overflow-y:auto;
-    overflow-x:hidden;
-    padding-right:12px;
-}
-
-/* Center modules are closer to the CPU, so they stay more compact */
-.module-top-center.module-open .module-content,
-.module-bottom-center.module-open .module-content{
-    max-height:min(230px, calc(50vh - 170px));
-}
-
-.module-top-center .module-items,
-.module-bottom-center .module-items,
-.module-top-center .module-detail,
-.module-bottom-center .module-detail{
-    max-height:165px;
-}
-
-/* Clean scrollbar for both columns */
-.module-items::-webkit-scrollbar,
-.module-detail::-webkit-scrollbar{
-    width:5px;
-}
-
-.module-items::-webkit-scrollbar-track,
-.module-detail::-webkit-scrollbar-track{
-    background:rgba(255,255,255,.03);
-    border-radius:999px;
-}
-
-.module-items::-webkit-scrollbar-thumb,
-.module-detail::-webkit-scrollbar-thumb{
-    background:rgba(53,194,255,.35);
-    border-radius:999px;
-}
-
-.module-items::-webkit-scrollbar-thumb:hover,
-.module-detail::-webkit-scrollbar-thumb:hover{
-    background:rgba(53,194,255,.6);
-}
-
-/* Firefox support */
-.module-items,
-.module-detail{
-    scrollbar-width:thin;
-    scrollbar-color:rgba(53,194,255,.45) rgba(255,255,255,.03);
-}
-
-/* ==========================================================
-CPU STATUS CLEANUP
-The core status is now only displayed in System Monitor
-========================================================== */
-
-.cpu-core-status{
-    display:none;
-}
-
-/* ==========================================================
-SPRINT 3.1
-CPU PREMIUM POLISH + PIN REFINEMENT
-========================================================== */
-
-/* ==========================================================
-CPU CHIP REFINEMENT
-========================================================== */
-
-.cpu-chip{
-    gap:12px;
-}
-
-/* CPU body becomes more like an embedded component */
-.cpu-core{
-    position:relative;
-
-    width:380px;
-    padding:28px 28px 24px;
-
-    border-radius:10px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(16,24,38,.96),
-            rgba(7,11,18,.96)
-        );
-
-    border:1px solid rgba(53,194,255,.34);
-
-    box-shadow:
-        var(--shadow-card),
-        inset 0 0 38px rgba(53,194,255,.045),
-        0 0 42px rgba(53,194,255,.08);
-
-    overflow:hidden;
-}
-
-/* Subtle internal technical grid */
-.cpu-core-grid{
-    position:absolute;
-    inset:0;
-
-    opacity:.14;
-
-    background-image:
-        linear-gradient(
-            rgba(53,194,255,.18) 1px,
-            transparent 1px
-        ),
-        linear-gradient(
-            90deg,
-            rgba(53,194,255,.18) 1px,
-            transparent 1px
-        );
-
-    background-size:18px 18px;
-
-    mask-image:radial-gradient(
-        circle at center,
-        black,
-        transparent 82%
-    );
-
-    pointer-events:none;
-}
-
-/* Content always stays above the internal grid */
-.cpu-core-content{
-    position:relative;
-    z-index:2;
-}
-
-/* CPU corner brackets */
-.cpu-corner{
-    position:absolute;
-
-    width:24px;
-    height:24px;
-
-    border-color:rgba(53,194,255,.65);
-
-    opacity:.75;
-
-    z-index:3;
-}
-
-.cpu-corner-tl{
-    top:10px;
-    left:10px;
-    border-top:1px solid;
-    border-left:1px solid;
-}
-
-.cpu-corner-tr{
-    top:10px;
-    right:10px;
-    border-top:1px solid;
-    border-right:1px solid;
-}
-
-.cpu-corner-bl{
-    bottom:10px;
-    left:10px;
-    border-bottom:1px solid;
-    border-left:1px solid;
-}
-
-.cpu-corner-br{
-    bottom:10px;
-    right:10px;
-    border-bottom:1px solid;
-    border-right:1px solid;
-}
-
-/* Identity block */
-.cpu-identity{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:10px;
-
-    margin-bottom:16px;
-}
-
-.cpu-ref{
-    margin:0;
-
-    color:var(--clr-accent);
-
-    letter-spacing:4px;
-    font-size:.66rem;
-}
-
-.cpu-subref{
-    padding:4px 8px;
-
-    border:1px solid rgba(53,194,255,.18);
-    border-radius:999px;
-
-    color:rgba(245,248,252,.64);
-
-    font-size:.52rem;
-    letter-spacing:2px;
-}
-
-.cpu-core h2{
-    font-size:1.58rem;
-    letter-spacing:.5px;
-}
-
-.cpu-core p{
-    font-size:.86rem;
-}
-
-/* ==========================================================
-PIN REFINEMENT
-========================================================== */
-
-.cpu-pins-top,
-.cpu-pins-bottom{
-    gap:9px;
-}
-
-.cpu-pins-left,
-.cpu-pins-right{
-    gap:10px;
-}
-
-.cpu-pin{
-    position:relative;
-
-    background:rgba(53,194,255,.20);
-
-    box-shadow:
-        inset 0 0 4px rgba(255,255,255,.08),
-        0 0 8px rgba(53,194,255,.12);
-}
-
-/* Small bright contact tip */
-.cpu-pin::after{
-    content:"";
-
-    position:absolute;
-
-    border-radius:999px;
-
-    background:rgba(234,243,255,.24);
-
-    opacity:.45;
-}
-
-.cpu-pins-left .cpu-pin::after,
-.cpu-pins-right .cpu-pin::after{
-    top:50%;
-    transform:translateY(-50%);
-
-    width:8px;
-    height:2px;
-}
-
-.cpu-pins-left .cpu-pin::after{
-    right:4px;
-}
-
-.cpu-pins-right .cpu-pin::after{
-    left:4px;
-}
-
-.cpu-pins-top .cpu-pin::after,
-.cpu-pins-bottom .cpu-pin::after{
-    left:50%;
-    transform:translateX(-50%);
-
-    width:2px;
-    height:8px;
-}
-
-.cpu-pins-top .cpu-pin::after{
-    bottom:4px;
-}
-
-.cpu-pins-bottom .cpu-pin::after{
-    top:4px;
-}
-
-/* Active pin feels connected to the board */
-.cpu-pin.pin-active{
-    background:var(--clr-success);
-
-    box-shadow:
-        0 0 10px rgba(57,243,140,.95),
-        0 0 24px rgba(57,243,140,.46),
-        inset 0 0 5px rgba(255,255,255,.24);
-}
-
-.cpu-pin.pin-active::after{
-    background:#ffffff;
-    opacity:.85;
-}
-
-/* Active CPU state */
-.core-activated .cpu-core{
-    border-color:rgba(57,243,140,.70);
-
-    box-shadow:
-        var(--shadow-card),
-        0 0 60px rgba(57,243,140,.18),
-        inset 0 0 42px rgba(57,243,140,.08);
-}
-
-.core-activated .cpu-corner{
-    border-color:rgba(57,243,140,.8);
-}
-
-/* ==========================================================
-PCB PAD REFINEMENT
-========================================================== */
-
-.pcb-pad{
-    fill:rgba(53,194,255,.18);
-    stroke:rgba(53,194,255,.34);
-    stroke-width:1.5;
-
-    filter:drop-shadow(0 0 5px rgba(53,194,255,.16));
-
-    opacity:0;
-
-    transition:
-        opacity .9s ease,
-        fill var(--transition-normal),
-        stroke var(--transition-normal),
-        filter var(--transition-normal);
-}
-
-.network-visible .pcb-pad{
-    opacity:1;
-}
-
-.pcb-pad.pad-active{
-    fill:var(--clr-success);
-    stroke:rgba(57,243,140,.85);
-
-    filter:
-        drop-shadow(0 0 8px rgba(57,243,140,.85))
-        drop-shadow(0 0 18px rgba(57,243,140,.32));
-}
-
-/* PCB traces should feel more like board connections */
-.pcb-trace{
-    stroke-width:2.6;
-    stroke-dasharray:8 10;
-}
-
-.trace-active{
-    stroke-width:4.2;
-}
-/* ==========================================================
-SPRINT 3.2
-LOW-LAG PCB TRACES + FULL PIN GROUP ACTIVATION
-========================================================== */
-
-/* Remove expensive infinite SVG animation */
-.trace-active{
-    animation:none;
-}
-
-/* Base traces: clean, solid, hardware-like */
-.pcb-trace{
-    stroke:rgba(53,194,255,.20);
-    stroke-width:3;
-    stroke-linecap:round;
-    stroke-dasharray:none;
-
-    filter:none;
-
-    transition:
-        stroke .25s ease,
-        stroke-width .25s ease,
-        opacity .25s ease;
-}
-
-/* Active trace: solid connection, no laggy dash movement */
-.trace-active,
-.trace-locked{
-    stroke:var(--clr-success);
-    stroke-width:4.5;
-
-    filter:
-        drop-shadow(0 0 5px rgba(57,243,140,.45));
-}
-
-/* Connector pads are now pin extensions, not dots */
-.pcb-pad{
-    opacity:0;
-
-    fill:rgba(53,194,255,.24);
-    stroke:none;
-
-    filter:none;
-
-    transition:
-        opacity .6s ease,
-        fill .25s ease,
-        filter .25s ease;
-}
-
-.network-visible .pcb-pad{
-    opacity:1;
-}
-
-/* Active connector pad matches the active CPU pins */
-.pcb-pad.pad-active{
-    fill:var(--clr-success);
-
-    filter:
-        drop-shadow(0 0 6px rgba(57,243,140,.55));
-}
-
-/* Make active CPU pins feel physically connected */
-.cpu-pin.pin-active{
-    transform:scale(1.08);
-
-    background:var(--clr-success);
-
-    box-shadow:
-        0 0 8px rgba(57,243,140,.85),
-        0 0 18px rgba(57,243,140,.35),
-        inset 0 0 5px rgba(255,255,255,.20);
-}
-
-/* Stronger section-group feeling */
-.cpu-pins-left .cpu-pin.pin-active,
-.cpu-pins-right .cpu-pin.pin-active{
-    width:44px;
-}
-
-.cpu-pins-top .cpu-pin.pin-active,
-.cpu-pins-bottom .cpu-pin.pin-active{
-    height:40px;
-}
-
-/* Reduce visual noise from inactive pins */
-.cpu-pin:not(.pin-active){
-    background:rgba(53,194,255,.15);
-    box-shadow:
-        inset 0 0 3px rgba(255,255,255,.06),
-        0 0 4px rgba(53,194,255,.08);
-}
-
-/* Keep active tips bright but not over-glowing */
-.cpu-pin.pin-active::after{
-    background:#ffffff;
-    opacity:.75;
-}
-
-/* CPU reacts to any active trace without heavy shadows */
-.core-activated .cpu-core{
-    border-color:rgba(57,243,140,.68);
-
-    box-shadow:
-        var(--shadow-card),
-        0 0 34px rgba(57,243,140,.12),
-        inset 0 0 30px rgba(57,243,140,.07);
-}
-
-/* ==========================================================
-SPRINT 3.3
-PREMIUM MODULE PANEL POLISH
-========================================================== */
-
-/* Make modules feel like technical subsystem panels */
-.module-card{
-    position:absolute;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(12,18,30,.84),
-            rgba(5,9,16,.78)
-        );
-
-    border:1px solid rgba(53,194,255,.18);
-
-    box-shadow:
-        var(--shadow-soft),
-        inset 0 0 24px rgba(53,194,255,.025);
-
-    isolation:isolate;
-}
-
-/* Subtle top light */
-.module-card::before{
-    content:"";
-
-    position:absolute;
-    left:18px;
-    right:18px;
-    top:0;
-
-    height:1px;
-
-    background:linear-gradient(
-        90deg,
-        transparent,
-        rgba(53,194,255,.55),
-        transparent
-    );
-
-    opacity:.5;
-}
-
-/* Internal scan line, very subtle */
-.module-scanline{
-    position:absolute;
-    inset:0;
-
-    background:linear-gradient(
-        180deg,
-        transparent 0%,
-        rgba(53,194,255,.035) 48%,
-        transparent 52%
-    );
-
-    opacity:.35;
-
-    pointer-events:none;
-
-    transform:translateY(-100%);
-
-    transition:
-        transform .9s ease,
-        opacity .4s ease;
-}
-
-.module-card.module-open .module-scanline{
-    transform:translateY(100%);
-}
-
-/* HUD-style corners */
-.module-corner{
-    position:absolute;
-
-    width:18px;
-    height:18px;
-
-    border-color:rgba(53,194,255,.48);
-
-    z-index:3;
-
-    transition:
-        border-color var(--transition-normal),
-        opacity var(--transition-normal);
-}
-
-.module-corner-tl{
-    top:9px;
-    left:9px;
-    border-top:1px solid;
-    border-left:1px solid;
-}
-
-.module-corner-tr{
-    top:9px;
-    right:9px;
-    border-top:1px solid;
-    border-right:1px solid;
-}
-
-.module-corner-bl{
-    bottom:9px;
-    left:9px;
-    border-bottom:1px solid;
-    border-left:1px solid;
-}
-
-.module-corner-br{
-    bottom:9px;
-    right:9px;
-    border-bottom:1px solid;
-    border-right:1px solid;
-}
-
-/* Header layout */
-.module-header-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:12px;
-
-    margin-bottom:14px;
-}
-
-.module-index{
-    margin-bottom:0;
-}
-
-/* Module status indicator */
-.module-status{
-    display:flex;
-    align-items:center;
-    gap:7px;
-
-    color:#7f8a9b;
-
-    font-size:.56rem;
-    letter-spacing:1.8px;
-}
-
-.module-status-dot{
-    width:6px;
-    height:6px;
-
-    border-radius:50%;
-
-    background:#657184;
-
-    box-shadow:0 0 0 transparent;
-
-    transition:
-        background var(--transition-normal),
-        box-shadow var(--transition-normal);
-}
-
-.module-status-label{
-    white-space:nowrap;
-}
-
-/* Linked state */
-.module-card.module-locked{
-    border-color:rgba(57,243,140,.38);
-
-    box-shadow:
-        var(--shadow-soft),
-        0 0 26px rgba(57,243,140,.055),
-        inset 0 0 24px rgba(57,243,140,.025);
-}
-
-.module-card.module-locked .module-status{
-    color:var(--clr-success);
-}
-
-.module-card.module-locked .module-status-dot{
-    background:var(--clr-success);
-
-    box-shadow:0 0 12px rgba(57,243,140,.75);
-}
-
-.module-card.module-locked .module-corner{
-    border-color:rgba(57,243,140,.62);
-}
-
-/* Open/inspecting state */
-.module-card.module-open{
-    border-color:rgba(53,194,255,.68);
-
-    box-shadow:
-        var(--shadow-card),
-        0 0 40px rgba(53,194,255,.15),
-        inset 0 0 26px rgba(53,194,255,.035);
-}
-
-.module-card.module-open .module-corner{
-    border-color:rgba(53,194,255,.82);
-}
-
-/* Cleaner titles */
-.module-card h3{
-    letter-spacing:.2px;
-}
-
-.module-card.module-open h3{
-    text-shadow:0 0 14px rgba(53,194,255,.25);
-}
-
-/* Item buttons become smaller technical entries */
-.module-item{
-    position:relative;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(53,194,255,.035),
-            rgba(255,255,255,.018)
-        );
-
-    border-color:rgba(53,194,255,.14);
-}
-
-.module-item::before{
-    content:"";
-
-    position:absolute;
-    left:0;
-    top:50%;
-
-    width:3px;
-    height:55%;
-
-    border-radius:999px;
-
-    background:rgba(53,194,255,.28);
-
-    transform:translateY(-50%);
-
-    transition:
-        background var(--transition-normal),
-        box-shadow var(--transition-normal);
-}
-
-.module-item:hover::before,
-.module-item.item-active::before{
-    background:var(--clr-accent);
-
-    box-shadow:0 0 10px rgba(53,194,255,.65);
-}
-
-.module-item.item-active{
-    border-color:rgba(57,243,140,.38);
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(57,243,140,.08),
-            rgba(53,194,255,.035)
-        );
-}
-
-.module-item.item-active::before{
-    background:var(--clr-success);
-
-    box-shadow:0 0 10px rgba(57,243,140,.7);
-}
-
-/* Detail panel more technical */
-.module-detail{
-    background:
-        linear-gradient(
-            145deg,
-            rgba(4,8,14,.62),
-            rgba(10,16,28,.45)
-        );
-
-    border-color:rgba(53,194,255,.12);
-}
-
-.module-detail.detail-active{
-    border-color:rgba(57,243,140,.38);
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(57,243,140,.04),
-            rgba(4,8,14,.58)
-        );
-}
-
-/* Detail date as a technical label */
-.detail-date{
-    width:max-content;
-
-    padding:4px 7px;
-
-    border:1px solid rgba(57,243,140,.22);
-    border-radius:999px;
-
-    background:rgba(57,243,140,.035);
-
-    margin-bottom:10px;
-}
-
-/* Make completed system feel coherent */
-.all-modules-active .module-card.module-locked:not(.module-open){
-    box-shadow:
-        var(--shadow-soft),
-        0 0 22px rgba(57,243,140,.07),
-        inset 0 0 22px rgba(57,243,140,.025);
-}
-/* ==========================================================
-SPRINT 4.1
-POWER CABLE BOOT INTERFACE
-========================================================== */
-
-.power-rig{
-    position:relative;
-
-    width:min(440px, 82vw);
-
-    margin:34px auto 18px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:26px;
-}
-
-/* Cable + plug button */
-.power-plug{
-    position:relative;
-
-    display:flex;
-    align-items:center;
-
-    cursor:pointer;
-
-    color:var(--clr-accent);
-
-    transition:
-        transform .6s ease,
-        opacity .3s ease;
-}
-
-.power-plug:hover{
-    transform:translateX(4px);
-}
-
-.power-plug:disabled{
-    cursor:default;
-}
-
-/* Cable line going out of screen */
-.cable-line{
-    width:120px;
-    height:4px;
-
-    border-radius:999px;
-
-    background:linear-gradient(
-        90deg,
-        rgba(53,194,255,.05),
-        rgba(53,194,255,.35)
-    );
-
-    box-shadow:0 0 12px rgba(53,194,255,.12);
-}
-
-/* Plug body */
-.plug-body{
-    position:relative;
-
-    height:34px;
-
-    padding:0 13px;
-
-    display:flex;
-    align-items:center;
-    gap:8px;
-
-    border:1px solid rgba(53,194,255,.35);
-    border-radius:8px 3px 3px 8px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(12,18,30,.95),
-            rgba(4,8,14,.95)
-        );
-
-    color:var(--clr-accent);
-
-    font-size:.62rem;
-    letter-spacing:1.8px;
-
-    box-shadow:
-        inset 0 0 12px rgba(53,194,255,.04),
-        0 0 18px rgba(53,194,255,.08);
-}
-
-/* LED on plug */
-.plug-light{
-    width:6px;
-    height:6px;
-
-    border-radius:50%;
-
-    background:#657184;
-
-    transition:
-        background var(--transition-normal),
-        box-shadow var(--transition-normal);
-}
-
-/* Metal prongs */
-.plug-prongs{
-    display:flex;
-    flex-direction:column;
-    gap:7px;
-
-    margin-left:4px;
-}
-
-.plug-prongs span{
-    width:24px;
-    height:4px;
-
-    border-radius:999px;
-
-    background:rgba(234,243,255,.45);
-
-    box-shadow:0 0 8px rgba(234,243,255,.1);
-}
-
-/* Power socket */
-.power-socket{
-    position:relative;
-
-    width:120px;
-    height:58px;
-
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:6px;
-
-    border:1px solid rgba(53,194,255,.25);
-    border-radius:12px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(10,16,28,.84),
-            rgba(4,8,14,.78)
-        );
-
-    box-shadow:
-        inset 0 0 18px rgba(53,194,255,.025),
-        0 0 22px rgba(53,194,255,.08);
-
-    transition:
-        border-color var(--transition-normal),
-        box-shadow var(--transition-normal);
-}
-
-.socket-core{
-    width:32px;
-    height:12px;
-
-    border-radius:999px;
-
-    border:1px solid rgba(53,194,255,.35);
-
-    background:rgba(53,194,255,.05);
-
-    transition:
-        background var(--transition-normal),
-        box-shadow var(--transition-normal),
-        border-color var(--transition-normal);
-}
-
-.socket-label{
-    color:var(--clr-text-secondary);
-
-    font-size:.55rem;
-    letter-spacing:1.8px;
-}
-
-/* Hint */
-.boot-hint{
-    color:rgba(141,154,175,.7);
-
-    font-size:.72rem;
-    letter-spacing:1.2px;
-}
-
-/* Connected state */
-.power-connected .power-plug{
-    transform:translateX(24px);
-}
-
-.power-connected .plug-body{
-    border-color:rgba(57,243,140,.48);
-
-    color:var(--clr-success);
-
-    box-shadow:
-        inset 0 0 12px rgba(57,243,140,.06),
-        0 0 24px rgba(57,243,140,.14);
-}
-
-.power-connected .plug-light{
-    background:var(--clr-success);
-
-    box-shadow:0 0 12px rgba(57,243,140,.85);
-}
-
-.power-connected .cable-line{
-    background:linear-gradient(
-        90deg,
-        rgba(57,243,140,.12),
-        rgba(57,243,140,.75)
-    );
-
-    box-shadow:0 0 18px rgba(57,243,140,.26);
-}
-
-.socket-online{
-    border-color:rgba(57,243,140,.48);
-
-    box-shadow:
-        inset 0 0 18px rgba(57,243,140,.04),
-        0 0 28px rgba(57,243,140,.14);
-}
-
-.socket-online .socket-core{
-    background:rgba(57,243,140,.18);
-
-    border-color:rgba(57,243,140,.65);
-
-    box-shadow:
-        0 0 12px rgba(57,243,140,.65),
-        inset 0 0 8px rgba(57,243,140,.12);
-}
-
-/* Small power pulse after connection */
-.power-connected .power-rig::after{
-    content:"";
-
-    position:absolute;
-
-    left:26%;
-    top:50%;
-
-    width:8px;
-    height:8px;
-
-    border-radius:50%;
-
-    background:var(--clr-success);
-
-    box-shadow:
-        0 0 12px rgba(57,243,140,.95),
-        0 0 28px rgba(57,243,140,.45);
-
-    transform:translateY(-50%);
-
-    animation:powerPulse 1.1s ease forwards;
-}
-
-@keyframes powerPulse{
-    from{
-        opacity:1;
-        left:26%;
+    .cpu-pins-left .cpu-pin.pin-active,
+    .cpu-pins-right .cpu-pin.pin-active{
+        width:30px;
     }
 
-    to{
-        opacity:0;
-        left:73%;
+    .cpu-pins-top .cpu-pin.pin-active,
+    .cpu-pins-bottom .cpu-pin.pin-active{
+        height:30px;
     }
-}
-
-/* ==========================================================
-SPRINT 4.2
-BOOT DIAGNOSTICS + STAGED REVEAL
-========================================================== */
-
-.boot-diagnostics{
-    width:min(390px, 82vw);
-
-    margin:26px auto 16px;
-
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-
-    padding:14px;
-
-    border:1px solid rgba(53,194,255,.12);
-    border-radius:14px;
-
-    background:rgba(4,8,14,.35);
-
-    box-shadow:
-        inset 0 0 18px rgba(53,194,255,.025);
-}
-
-.boot-diagnostic-line{
-    display:grid;
-    grid-template-columns:1fr auto;
-    align-items:center;
-    gap:18px;
-
-    color:rgba(141,154,175,.76);
-
-    font-size:.66rem;
-    letter-spacing:1.4px;
-
-    opacity:.55;
-
-    transition:
-        opacity var(--transition-normal),
-        color var(--transition-normal);
-}
-
-.boot-diagnostic-line span{
-    text-align:left;
-}
-
-.boot-diagnostic-line strong{
-    color:#7d899a;
-    font-weight:500;
-
-    transition:
-        color var(--transition-normal),
-        text-shadow var(--transition-normal);
-}
-
-.boot-diagnostic-line.diagnostic-active{
-    opacity:1;
-}
-
-.boot-diagnostic-line.diagnostic-active strong{
-    color:var(--clr-accent);
-    text-shadow:0 0 10px rgba(53,194,255,.35);
-}
-
-.boot-diagnostic-line.diagnostic-success strong{
-    color:var(--clr-success);
-    text-shadow:0 0 10px rgba(57,243,140,.45);
-}
-
-.boot-diagnostic-line.diagnostic-success::after{
-    content:"";
-    width:5px;
-    height:5px;
-    border-radius:50%;
-
-    background:var(--clr-success);
-
-    box-shadow:0 0 9px rgba(57,243,140,.75);
-}
-
-/* Slightly smoother launch feel */
-.boot-fade-out{
-    animation:bootFadeOut 1s ease forwards;
-}
-/* ==========================================================
-SPRINT 4.3
-BOOT SEQUENCE TWEAKS
-Slower diagnostics + clean LED alignment
-========================================================== */
-
-/* Remove hint area if any previous version still created it */
-.boot-hint{
-    display:none;
-}
-
-/* Diagnostic panel spacing */
-.boot-diagnostics{
-    margin-top:30px;
-}
-
-/* New diagnostic row layout:
-   name | status | led
-*/
-.boot-diagnostic-line{
-    grid-template-columns:1fr auto 9px;
-    gap:14px;
-}
-
-/* Remove old pseudo LED from previous version */
-.boot-diagnostic-line.diagnostic-success::after{
-    content:none;
-    display:none;
-}
-
-/* Label */
-.diagnostic-name{
-    text-align:left;
-}
-
-/* Status */
-.boot-diagnostic-line strong{
-    min-width:78px;
-    text-align:right;
-}
-
-/* LED at the far right */
-.diagnostic-dot{
-    width:6px;
-    height:6px;
-
-    border-radius:50%;
-
-    background:rgba(101,113,132,.65);
-
-    box-shadow:none;
-
-    opacity:.55;
-
-    transition:
-        background var(--transition-normal),
-        box-shadow var(--transition-normal),
-        opacity var(--transition-normal);
-}
-
-/* Active step */
-.boot-diagnostic-line.diagnostic-active .diagnostic-dot{
-    background:var(--clr-accent);
-
-    box-shadow:0 0 10px rgba(53,194,255,.55);
-
-    opacity:1;
-}
-
-/* Completed step */
-.boot-diagnostic-line.diagnostic-success .diagnostic-dot{
-    background:var(--clr-success);
-
-    box-shadow:
-        0 0 9px rgba(57,243,140,.85),
-        0 0 18px rgba(57,243,140,.35);
-
-    opacity:1;
-}
-
-/* Make the power transition feel a little smoother */
-.power-connected .power-plug{
-    transform:translateX(30px);
-    transition:transform .85s cubic-bezier(.2,.8,.2,1);
-}
-
-/* Slower power pulse */
-.power-connected .power-rig::after{
-    animation:powerPulse 1.8s ease forwards;
-}
-
-/* ==========================================================
-SPRINT 5.1
-SYSTEM PORTS
-Unlocked after full profile scan
-========================================================== */
-
-#system-ports-slot{
-    margin-top:14px;
-}
-
-.system-ports{
-    max-height:0;
-    overflow:hidden;
-
-    opacity:0;
-    transform:translateY(8px);
-
-    transition:
-        max-height .75s ease,
-        opacity .55s ease,
-        transform .55s ease;
-}
-
-.system-ports.ports-unlocked{
-    max-height:180px;
-    opacity:1;
-    transform:translateY(0);
-}
-
-.ports-header{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
-
-    margin-bottom:10px;
-
-    color:var(--clr-success);
-
-    letter-spacing:2.4px;
-    font-size:.56rem;
-}
-
-.ports-dot{
-    width:6px;
-    height:6px;
-
-    border-radius:50%;
-
-    background:var(--clr-success);
-
-    box-shadow:0 0 10px rgba(57,243,140,.85);
-}
-
-.ports-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:7px;
-}
-
-.system-port{
-    padding:8px 9px;
-
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:8px;
-
-    border:1px solid rgba(57,243,140,.18);
-    border-radius:10px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(57,243,140,.045),
-            rgba(4,8,14,.42)
-        );
-
-    color:var(--clr-text);
-
-    font-size:.58rem;
-    letter-spacing:1px;
-
-    transition:
-        border-color var(--transition-normal),
-        background var(--transition-normal),
-        transform var(--transition-fast),
-        box-shadow var(--transition-normal);
-}
-
-.system-port:hover{
-    border-color:rgba(57,243,140,.48);
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(57,243,140,.09),
-            rgba(53,194,255,.035)
-        );
-
-    transform:translateY(-2px);
-
-    box-shadow:0 0 16px rgba(57,243,140,.12);
-}
-
-.system-port span{
-    color:var(--clr-text);
-}
-
-.system-port strong{
-    color:var(--clr-success);
-
-    font-size:.52rem;
-    font-weight:500;
-
-    text-shadow:0 0 8px rgba(57,243,140,.45);
-}
-/* ==========================================================
-FIX
-MAKE SYSTEM PORTS CLICKABLE
-========================================================== */
-
-/* CPU layer stays mostly non-interactive so it does not block modules */
-#cpu-layer{
-    pointer-events:none;
-}
-
-/* But the CPU core content can receive interactions */
-.cpu-core,
-.cpu-core-content,
-#system-ports-slot,
-.system-ports,
-.ports-grid,
-.system-port{
-    pointer-events:auto;
-}
-
-/* Make sure ports sit above the CPU visual layers */
-#system-ports-slot{
-    position:relative;
-    z-index:20;
-}
-
-.system-ports{
-    position:relative;
-    z-index:21;
-}
-
-.system-port{
-    position:relative;
-    z-index:22;
-    cursor:pointer;
-}
-
-/* Better feedback when the links are usable */
-.system-port:hover{
-    cursor:pointer;
-}
-
-/* Keyboard accessibility */
-.system-port:focus-visible{
-    outline:1px solid var(--clr-success);
-    outline-offset:3px;
-    box-shadow:0 0 18px rgba(57,243,140,.18);
 }
