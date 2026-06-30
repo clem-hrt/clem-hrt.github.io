@@ -201,8 +201,9 @@ body{
 ========================================================== */
 
 .power-rig{
-    width:min(500px,84vw);
-    margin:36px auto 20px;
+    width:100%;
+    max-width:430px:
+    margin:30px auto 18px;
 }
 
 .power-slider{
@@ -211,7 +212,7 @@ body{
     position:relative;
 
     width:100%;
-    height:96px;
+    height:88px;
 
     display:block;
 }
@@ -224,7 +225,7 @@ body{
     position:absolute;
 
     left:8px;
-    right:146px;
+    right:118px;
     top:50%;
 
     height:6px;
@@ -640,7 +641,7 @@ body{
 }
 
 .power-plug.plug-engaged .plug-prongs{
-    transform:translateX(3px);
+    transform:translateX(0);
 }
 
 .power-connected .plug-shell{
@@ -706,24 +707,24 @@ body{
 .power-socket{
     position:absolute;
 
-    right:0;
+    right:6px;
     top:50%;
 
-    width:132px;
-    height:72px;
+    width:108px;
+    height:64px;
 
-    padding:8px 10px;
+    padding:7px 8px;
 
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:5px;
+    gap:4px;
 
     transform:translateY(-50%);
 
     border:1px solid rgba(53,194,255,.25);
-    border-radius:16px;
+    border-radius:15px;
 
     background:
         radial-gradient(
@@ -751,15 +752,15 @@ body{
 .socket-bezel{
     position:relative;
 
-    width:76px;
-    height:36px;
+    width:66px;
+    height:32px;
 
     display:flex;
     align-items:center;
     justify-content:center;
 
     border:1px solid rgba(53,194,255,.24);
-    border-radius:12px;
+    border-radius:11px;
 
     background:
         linear-gradient(
@@ -820,13 +821,13 @@ body{
 .socket-mouth{
     position:relative;
 
-    width:42px;
-    height:23px;
+    width:36px;
+    height:20px;
 
     overflow:hidden;
 
     border:1px solid rgba(53,194,255,.26);
-    border-radius:8px;
+    border-radius:7px;
 
     background:
         linear-gradient(
@@ -900,12 +901,12 @@ body{
 }
 
 .socket-label{
-    margin-top:2px;
+    margin-top:1px;
 
     color:rgba(141,154,175,.78);
 
-    font-size:.55rem;
-    letter-spacing:1.8px;
+    font-size:.48rem;
+    letter-spacing:1.45px;
 
     text-shadow:0 0 8px rgba(53,194,255,.10);
 }
@@ -1041,10 +1042,10 @@ body{
 
 .boot-diagnostics{
     width:min(390px,82vw);
-    margin:30px auto 16px;
+    margin:28px auto 16px;
     display:flex;
     flex-direction:column;
-    gap:8px;
+    gap:9px;
     padding:14px;
     border:1px solid rgba(53,194,255,.12);
     border-radius:14px;
@@ -1056,9 +1057,9 @@ body{
     position:relative;
     overflow:hidden;
     display:grid;
-    grid-template-columns:1fr auto 9px;
+    grid-template-columns:auto minmax(54px,1fr) auto 9px;
     align-items:center;
-    gap:14px;
+    gap:10px;
     color:rgba(141,154,175,.76);
     font-size:.66rem;
     letter-spacing:1.4px;
