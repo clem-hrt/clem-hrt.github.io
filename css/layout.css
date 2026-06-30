@@ -1042,28 +1042,36 @@ body{
 
 .boot-diagnostics{
     width:min(390px,82vw);
+
     margin:28px auto 16px;
+
     display:flex;
     flex-direction:column;
     gap:9px;
+
     padding:14px;
+
     border:1px solid rgba(53,194,255,.12);
     border-radius:14px;
+
     background:rgba(4,8,14,.35);
+
     box-shadow:inset 0 0 18px rgba(53,194,255,.025);
 }
 
 .boot-diagnostic-line{
-    position:relative;
-    overflow:hidden;
     display:grid;
     grid-template-columns:auto minmax(54px,1fr) auto 9px;
     align-items:center;
     gap:10px;
+
     color:rgba(141,154,175,.76);
+
     font-size:.66rem;
     letter-spacing:1.4px;
+
     opacity:.55;
+
     transition:
         opacity var(--transition-normal),
         color var(--transition-normal);
@@ -1074,18 +1082,87 @@ body{
 }
 
 .diagnostic-name{
-    position:relative;
-    z-index:2;
+    white-space:nowrap;
+
+    color:rgba(141,154,175,.84);
+
     text-align:left;
 }
 
-.boot-diagnostic-line strong{
+/* The current trace now lives between the name and status */
+.diagnostic-energy{
     position:relative;
-    z-index:2;
+
+    height:2px;
+
+    overflow:hidden;
+
+    border-radius:999px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(53,194,255,.08),
+            rgba(53,194,255,.22),
+            rgba(53,194,255,.08)
+        );
+
+    opacity:.55;
+}
+
+.diagnostic-energy::before{
+    content:"";
+
+    position:absolute;
+
+    left:-45%;
+    top:50%;
+
+    width:42%;
+    height:8px;
+
+    border-radius:999px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.95) 0%,
+            rgba(57,243,140,.85) 34%,
+            rgba(53,194,255,.28) 66%,
+            transparent 78%
+        );
+
+    transform:translateY(-50%);
+
+    opacity:0;
+}
+
+.boot-diagnostic-line.diagnostic-charging .diagnostic-energy::before{
+    animation:diagnosticInlineCurrent 1.05s ease-in-out infinite;
+}
+
+.boot-diagnostic-line.diagnostic-powered .diagnostic-energy{
+    opacity:.9;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(53,194,255,.12),
+            rgba(57,243,140,.42),
+            rgba(53,194,255,.12)
+        );
+
+    box-shadow:0 0 8px rgba(57,243,140,.18);
+}
+
+.boot-diagnostic-line strong{
     min-width:78px;
-    text-align:right;
+
     color:#7d899a;
+
     font-weight:500;
+    text-align:right;
+
     transition:
         color var(--transition-normal),
         text-shadow var(--transition-normal);
@@ -1093,23 +1170,28 @@ body{
 
 .boot-diagnostic-line.diagnostic-active strong{
     color:var(--clr-accent);
+
     text-shadow:0 0 10px rgba(53,194,255,.35);
 }
 
 .boot-diagnostic-line.diagnostic-success strong{
     color:var(--clr-success);
+
     text-shadow:0 0 10px rgba(57,243,140,.45);
 }
 
 .diagnostic-dot{
-    position:relative;
-    z-index:2;
     width:6px;
     height:6px;
+
     border-radius:50%;
+
     background:rgba(101,113,132,.65);
+
     box-shadow:none;
+
     opacity:.55;
+
     transition:
         background var(--transition-normal),
         box-shadow var(--transition-normal),
@@ -1118,57 +1200,39 @@ body{
 
 .boot-diagnostic-line.diagnostic-active .diagnostic-dot{
     background:var(--clr-accent);
+
     box-shadow:0 0 10px rgba(53,194,255,.55);
+
     opacity:1;
 }
 
 .boot-diagnostic-line.diagnostic-success .diagnostic-dot{
     background:var(--clr-success);
+
     box-shadow:
         0 0 9px rgba(57,243,140,.85),
         0 0 18px rgba(57,243,140,.35);
+
     opacity:1;
 }
 
-.diagnostic-energy{
-    position:absolute;
-    left:10px;
-    right:10px;
-    top:50%;
-    height:1px;
-    transform:translateY(-50%);
-    background:linear-gradient(
-        90deg,
-        transparent,
-        rgba(53,194,255,.55),
-        rgba(57,243,140,.75),
-        transparent
-    );
-    opacity:0;
-    pointer-events:none;
-}
-
-.boot-diagnostic-line.diagnostic-charging .diagnostic-energy{
-    animation:diagnosticEnergyFlow 1.15s ease-in-out infinite;
-}
-
-.boot-diagnostic-line.diagnostic-powered .diagnostic-energy{
-    opacity:.32;
-}
-
-@keyframes diagnosticEnergyFlow{
+@keyframes diagnosticInlineCurrent{
     0%{
+        left:-45%;
         opacity:0;
-        transform:translateY(-50%) translateX(-70%);
     }
 
     20%{
-        opacity:.8;
+        opacity:1;
+    }
+
+    78%{
+        opacity:1;
     }
 
     100%{
+        left:110%;
         opacity:0;
-        transform:translateY(-50%) translateX(70%);
     }
 }
 
