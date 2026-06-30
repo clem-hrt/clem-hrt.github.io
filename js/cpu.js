@@ -125,7 +125,6 @@ const CPU = (() => {
     function setCoreActivated() {
         cpuLayer.classList.add("core-activated");
     }
-
     return {
         create,
         show,
