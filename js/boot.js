@@ -203,7 +203,7 @@ const Boot = (() => {
             const targetRect = socketMouth ? socketMouth.getBoundingClientRect() : socket.getBoundingClientRect();
             const plugWidth = plug.offsetWidth;
 
-            sliderState.maxX = targetRect.left - sliderRect.left - sliderRect.right - plugWidth;
+            sliderState.maxX = targetRect.left - sliderRect.left - plugWidth;
 
             sliderState.maxX = Math.max(sliderState.maxX, 0);
 
