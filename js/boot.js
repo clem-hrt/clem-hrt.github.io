@@ -1,7 +1,7 @@
 /*
 ========================================
 BOOT ENGINE
-Power cable boot sequence
+Power cable + diagnostic boot sequence
 ========================================
 */
 
@@ -53,6 +53,30 @@ const Boot = (() => {
 
                     </div>
 
+                    <div class="boot-diagnostics" aria-live="polite">
+
+                        <div class="boot-diagnostic-line" data-boot-step="power">
+                            <span>POWER LINK</span>
+                            <strong>WAITING</strong>
+                        </div>
+
+                        <div class="boot-diagnostic-line" data-boot-step="core">
+                            <span>CORE CHECK</span>
+                            <strong>STANDBY</strong>
+                        </div>
+
+                        <div class="boot-diagnostic-line" data-boot-step="pcb">
+                            <span>PCB BUS</span>
+                            <strong>STANDBY</strong>
+                        </div>
+
+                        <div class="boot-diagnostic-line" data-boot-step="modules">
+                            <span>PROFILE MODULES</span>
+                            <strong>STANDBY</strong>
+                        </div>
+
+                    </div>
+
                     <p class="boot-hint">
                         Click the power cable to initialize system.
                     </p>
@@ -77,12 +101,14 @@ const Boot = (() => {
         const panel = document.querySelector(".boot-panel");
 
         plug.disabled = true;
-
         bootScreen.classList.add("power-connected");
+
+        updateDiagnostic("power", "CONNECTING");
 
         setTimeout(() => {
             socket.classList.add("socket-online");
-        }, 350);
+            updateDiagnostic("power", "ONLINE", true);
+        }, 450);
 
         setTimeout(() => {
             led.classList.add("online");
@@ -90,18 +116,33 @@ const Boot = (() => {
             statusText.classList.add("online-text");
 
             message.textContent = "Power link established.";
-            hint.textContent = "Initializing embedded portfolio core...";
+            hint.textContent = "Running embedded portfolio diagnostics...";
 
             panel.classList.add("boot-online");
-        }, 700);
+
+            updateDiagnostic("core", "CHECKING");
+        }, 850);
 
         setTimeout(() => {
-            message.textContent = "Loading CPU, PCB traces and profile modules...";
-        }, 1300);
+            updateDiagnostic("core", "OK", true);
+            updateDiagnostic("pcb", "LOADING");
+            message.textContent = "Loading PCB bus and core communication paths...";
+        }, 1350);
+
+        setTimeout(() => {
+            updateDiagnostic("pcb", "ONLINE", true);
+            updateDiagnostic("modules", "LOADING");
+            message.textContent = "Initializing profile modules...";
+        }, 1850);
+
+        setTimeout(() => {
+            updateDiagnostic("modules", "READY", true);
+            hint.textContent = "System ready. Launching interface...";
+        }, 2350);
 
         setTimeout(() => {
             bootLayer.classList.add("boot-fade-out");
-        }, 2100);
+        }, 3000);
 
         setTimeout(() => {
             bootLayer.innerHTML = "";
@@ -118,14 +159,36 @@ const Boot = (() => {
             Network.create();
 
             setTimeout(() => {
-                CPU.show();
+                Network.showTraces();
             }, 200);
 
             setTimeout(() => {
-                Network.show();
-            }, 900);
+                CPU.show();
+            }, 700);
 
-        }, 3000);
+            setTimeout(() => {
+                Network.showModules();
+            }, 1300);
+
+        }, 3900);
+    }
+
+    function updateDiagnostic(step, status, success = false) {
+        const line = document.querySelector(`[data-boot-step="${step}"]`);
+
+        if (!line) return;
+
+        const value = line.querySelector("strong");
+
+        if (!value) return;
+
+        value.textContent = status;
+
+        line.classList.add("diagnostic-active");
+
+        if (success) {
+            line.classList.add("diagnostic-success");
+        }
     }
 
     return {
