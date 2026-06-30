@@ -1969,6 +1969,7 @@ body{
 :root{
     --module-closed-width:clamp(220px,18vw,255px);
     --module-open-width:clamp(390px,33vw,500px);
+    --module-inspect-width:clamp(540px,44vw,680px);
 }
 
 .module-card{
@@ -2042,6 +2043,15 @@ body{
         inset 0 0 26px rgba(53,194,255,.035);
 }
 
+.module-card.module-open.module-inspecting{
+    width:var(--module-open-width);
+    max-height:min(440px, calc(100vh - 160px));
+    z-index:14;
+    box-shadow:
+        var(--shadow-card),
+        0 0 46px rgba(53,194,255,.18),
+        inset 0 0 30px rgba(53,194,255,.04);
+}
 /* Positions */
 .module-top-left{
     left:clamp(22px,3vw,54px);
@@ -2084,6 +2094,12 @@ body{
 .module-top-center.module-open,
 .module-bottom-center.module-open{
     max-height:calc(50vh - 145px);
+}
+.module-top-center.module-open.module-inspecting,
+.module-bottom-center.module-open.module-inspecting{
+    width:min(var(--module-inspect-width), 560px);
+
+    max-height:calc(50vh - 120px);
 }
 
 /* Module decorations */
@@ -2258,6 +2274,11 @@ body{
     transform:translateY(0);
 }
 
+.module-open.module-inspecting .module-content{
+   grid-template-columns:minmax(165px,.72fr) minmax(300px,1.28fr);
+   max-height:min(360px, calc(100vh - 220px));
+}
+
 .module-top-center.module-open .module-content,
 .module-bottom-center.module-open .module-content{
     max-height:min(230px,calc(50vh - 170px));
@@ -2372,6 +2393,43 @@ body{
         border-color var(--transition-normal),
         background var(--transition-normal),
         opacity var(--transition-normal);
+}
+
+/* Bigger reading area in inspection mode */
+.module-inspecting .module-items,
+.module-inspecting .module-detail{
+    max-height:310px;
+}
+
+.module-inspecting .module-detail{
+    padding:17px 16px;
+
+    border-color:rgba(57,243,140,.42);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(57,243,140,.045),
+            rgba(4,8,14,.62)
+        );
+}
+
+.module-inspecting .module-detail h4{
+    font-size:1.05rem;
+
+    margin-bottom:8px;
+}
+
+.module-inspecting .module-detail p{
+    font-size:.82rem;
+
+    line-height:1.45;
+}
+
+.module-inspecting .module-detail li{
+    font-size:.78rem;
+
+    line-height:1.42;
 }
 
 .module-top-center .module-detail,
