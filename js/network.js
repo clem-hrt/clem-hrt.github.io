@@ -4,7 +4,6 @@ NETWORK ENGINE
 Six-module PCB layout + persistent activation
 ========================================
 */
-
 const Network = (() => {
 
     const pcbLayer = document.querySelector("#pcb-layer");
