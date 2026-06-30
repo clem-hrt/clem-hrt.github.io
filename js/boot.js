@@ -1,7 +1,7 @@
 /*
 ========================================
 BOOT ENGINE
-Handles initial power sequence
+Power cable boot sequence
 ========================================
 */
 
@@ -12,6 +12,7 @@ const Boot = (() => {
     function start() {
         bootLayer.innerHTML = `
             <div class="boot-screen">
+
                 <div class="boot-panel">
 
                     <span class="boot-label">SYSTEM STATUS</span>
@@ -27,53 +28,93 @@ const Boot = (() => {
                         Waiting for external power...
                     </p>
 
-                    <button id="power-button" class="power-button">
-                        CONNECT POWER
-                    </button>
+                    <div class="power-rig">
+
+                        <button id="power-plug" class="power-plug" aria-label="Connect power cable">
+
+                            <span class="cable-line"></span>
+
+                            <span class="plug-body">
+                                <span class="plug-light"></span>
+                                POWER
+                            </span>
+
+                            <span class="plug-prongs">
+                                <span></span>
+                                <span></span>
+                            </span>
+
+                        </button>
+
+                        <div id="power-socket" class="power-socket">
+                            <span class="socket-core"></span>
+                            <span class="socket-label">POWER INPUT</span>
+                        </div>
+
+                    </div>
+
+                    <p class="boot-hint">
+                        Click the power cable to initialize system.
+                    </p>
 
                 </div>
+
             </div>
         `;
 
-        const powerButton = document.querySelector("#power-button");
-        powerButton.addEventListener("click", powerOn);
+        const powerPlug = document.querySelector("#power-plug");
+        powerPlug.addEventListener("click", powerOn);
     }
 
     function powerOn() {
+        const bootScreen = document.querySelector(".boot-screen");
         const statusText = document.querySelector("#boot-status-text");
         const led = document.querySelector(".boot-led");
         const message = document.querySelector(".boot-message");
-        const button = document.querySelector("#power-button");
+        const hint = document.querySelector(".boot-hint");
+        const plug = document.querySelector("#power-plug");
+        const socket = document.querySelector("#power-socket");
         const panel = document.querySelector(".boot-panel");
 
-        button.disabled = true;
-        button.textContent = "POWER CONNECTED";
+        plug.disabled = true;
 
-        led.classList.add("online");
-        statusText.textContent = "ONLINE";
-        statusText.classList.add("online-text");
+        bootScreen.classList.add("power-connected");
 
-        message.textContent = "Power link established. Initializing core modules...";
+        setTimeout(() => {
+            socket.classList.add("socket-online");
+        }, 350);
 
-        panel.classList.add("boot-online");
+        setTimeout(() => {
+            led.classList.add("online");
+            statusText.textContent = "ONLINE";
+            statusText.classList.add("online-text");
+
+            message.textContent = "Power link established.";
+            hint.textContent = "Initializing embedded portfolio core...";
+
+            panel.classList.add("boot-online");
+        }, 700);
+
+        setTimeout(() => {
+            message.textContent = "Loading CPU, PCB traces and profile modules...";
+        }, 1300);
 
         setTimeout(() => {
             bootLayer.classList.add("boot-fade-out");
-        }, 1300);
+        }, 2100);
 
         setTimeout(() => {
             bootLayer.innerHTML = "";
             bootLayer.classList.add("boot-hidden");
 
             CPU.create();
-            
+
             SystemMonitor.create();
             SystemMonitor.setPowerOnline();
             SystemMonitor.setCoreStatus("STANDBY");
             SystemMonitor.setModules(0, Network.getTotalModules());
-            SystemMonitor.setConnection("IDLE", { temporary: false});
-            
-            
+            SystemMonitor.setConnection("IDLE", { temporary: false });
+
             Network.create();
 
             setTimeout(() => {
@@ -83,8 +124,8 @@ const Boot = (() => {
             setTimeout(() => {
                 Network.show();
             }, 900);
-            
-        }, 2200);
+
+        }, 3000);
     }
 
     return {
