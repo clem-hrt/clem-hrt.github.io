@@ -385,7 +385,7 @@ body{
     left:0;
     top:50%;
 
-    min-width:118px;
+    min-width:132px;
 
     display:flex;
     align-items:center;
@@ -417,9 +417,10 @@ body{
     cursor:default;
 }
 
+/* Rear cable entering the plug */
 .plug-cable-tail{
-    width:20px;
-    height:16px;
+    width:22px;
+    height:17px;
 
     border:1px solid rgba(53,194,255,.16);
     border-right:none;
@@ -439,6 +440,7 @@ body{
         0 0 8px rgba(53,194,255,.08);
 }
 
+/* Main plug shell */
 .plug-shell{
     position:relative;
 
@@ -447,10 +449,8 @@ body{
     display:flex;
     align-items:center;
 
-    overflow:hidden;
-
     border:1px solid rgba(53,194,255,.34);
-    border-radius:12px 5px 5px 12px;
+    border-radius:12px 4px 4px 12px;
 
     background:
         linear-gradient(
@@ -463,6 +463,8 @@ body{
         inset 0 1px 0 rgba(255,255,255,.055),
         inset 0 0 18px rgba(53,194,255,.035),
         0 0 18px rgba(53,194,255,.10);
+
+    overflow:hidden;
 
     transition:
         border-color var(--transition-normal),
@@ -491,6 +493,7 @@ body{
     pointer-events:none;
 }
 
+/* Grip ridges */
 .plug-grip{
     width:26px;
     height:100%;
@@ -519,6 +522,7 @@ body{
     box-shadow:0 0 4px rgba(53,194,255,.08);
 }
 
+/* POWER face */
 .plug-face{
     height:100%;
 
@@ -554,14 +558,16 @@ body{
         box-shadow var(--transition-normal);
 }
 
+/* Collar now becomes the mechanical transition to the head */
 .plug-collar{
     width:10px;
     height:30px;
 
-    margin-right:4px;
+    margin-right:0;
 
     border:1px solid rgba(53,194,255,.22);
-    border-radius:3px;
+    border-right:none;
+    border-radius:3px 0 0 3px;
 
     background:
         linear-gradient(
@@ -574,37 +580,188 @@ body{
     box-shadow:inset 0 0 8px rgba(0,0,0,.24);
 }
 
-.plug-prongs{
-    display:flex;
-    flex-direction:column;
-    gap:7px;
+/* New front head: makes prongs part of the plug */
+.plug-head{
+    position:relative;
 
-    margin-left:4px;
+    height:42px;
+
+    display:flex;
+    align-items:center;
+
+    margin-left:-1px;
 
     transition:
         transform var(--transition-normal),
         filter var(--transition-normal);
 }
 
+/* Connector nose before the metal prongs */
+.plug-nose{
+    position:relative;
+
+    width:17px;
+    height:31px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border:1px solid rgba(53,194,255,.28);
+    border-left:none;
+    border-radius:0 6px 6px 0;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(18,27,42,.96),
+            rgba(5,9,16,.96)
+        );
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.045),
+        inset 0 0 10px rgba(53,194,255,.035),
+        0 0 10px rgba(53,194,255,.08);
+
+    z-index:2;
+}
+
+.plug-nose::before,
+.plug-nose::after{
+    content:"";
+
+    position:absolute;
+
+    right:-3px;
+
+    width:6px;
+    height:8px;
+
+    border-radius:2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(7,11,18,.98),
+            rgba(53,194,255,.12)
+        );
+
+    border:1px solid rgba(53,194,255,.18);
+    border-left:none;
+
+    box-shadow:
+        inset 0 0 4px rgba(0,0,0,.38);
+}
+
+.plug-nose::before{
+    top:6px;
+}
+
+.plug-nose::after{
+    bottom:6px;
+}
+
+/* Small vertical seam on the nose */
+.plug-nose-line{
+    width:1px;
+    height:20px;
+
+    border-radius:999px;
+
+    background:rgba(234,243,255,.14);
+
+    box-shadow:0 0 5px rgba(53,194,255,.10);
+}
+
+/* Prongs now visually grow from the nose */
+.plug-prongs{
+    position:relative;
+
+    height:31px;
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    gap:8px;
+
+    margin-left:0;
+
+    z-index:1;
+
+    transition:
+        transform var(--transition-normal),
+        filter var(--transition-normal);
+}
+
+.plug-prongs::before{
+    content:"";
+
+    position:absolute;
+
+    left:-2px;
+    top:50%;
+
+    width:10px;
+    height:24px;
+
+    border-radius:0 5px 5px 0;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(53,194,255,.10),
+            rgba(234,243,255,.10),
+            transparent
+        );
+
+    transform:translateY(-50%);
+
+    pointer-events:none;
+}
+
+/* Metal contacts */
 .plug-prong{
     position:relative;
 
-    width:26px;
+    width:28px;
     height:4px;
+
+    margin-left:1px;
 
     border-radius:999px;
 
     background:
         linear-gradient(
-            90deg,
-            rgba(234,243,255,.42),
-            rgba(234,243,255,.82),
-            rgba(234,243,255,.45)
+            180deg,
+            rgba(255,255,255,.82),
+            rgba(140,153,169,.65) 48%,
+            rgba(255,255,255,.72)
         );
 
     box-shadow:
-        inset 0 0 3px rgba(0,0,0,.25),
-        0 0 8px rgba(234,243,255,.10);
+        inset 0 0 3px rgba(0,0,0,.32),
+        0 0 7px rgba(234,243,255,.10);
+
+    overflow:hidden;
+}
+
+.plug-prong::before{
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    top:0;
+    bottom:0;
+
+    width:9px;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(53,194,255,.18),
+            transparent
+        );
 }
 
 .plug-prong::after{
@@ -615,19 +772,21 @@ body{
     right:2px;
     top:50%;
 
-    width:4px;
-    height:4px;
+    width:5px;
+    height:2px;
 
-    border-radius:50%;
+    border-radius:999px;
 
-    background:rgba(255,255,255,.65);
+    background:rgba(255,255,255,.72);
 
     transform:translateY(-50%);
 
-    opacity:.7;
+    opacity:.8;
 }
 
-.power-plug.is-dragging .plug-shell{
+/* Approach state */
+.power-plug.is-dragging .plug-shell,
+.power-plug.is-dragging .plug-nose{
     border-color:rgba(53,194,255,.58);
 
     box-shadow:
@@ -636,15 +795,24 @@ body{
         0 0 24px rgba(53,194,255,.18);
 }
 
-.power-plug.plug-near-socket .plug-prongs{
-    filter:drop-shadow(0 0 8px rgba(53,194,255,.28));
+.power-plug.plug-near-socket .plug-head{
+    filter:drop-shadow(0 0 9px rgba(53,194,255,.30));
 }
 
-.power-plug.plug-engaged .plug-prongs{
-    transform:translateX(0);
+.power-plug.plug-near-socket .plug-prong{
+    box-shadow:
+        inset 0 0 3px rgba(0,0,0,.26),
+        0 0 9px rgba(53,194,255,.18);
 }
 
-.power-connected .plug-shell{
+/* Engaged: subtle only, no excessive over-insertion */
+.power-plug.plug-engaged .plug-head{
+    transform:translateX(1px);
+}
+
+/* Powered state */
+.power-connected .plug-shell,
+.power-connected .plug-nose{
     border-color:rgba(57,243,140,.48);
 
     box-shadow:
@@ -665,13 +833,25 @@ body{
         inset 0 0 2px rgba(255,255,255,.35);
 }
 
-.power-connected .plug-prong{
+.power-connected .plug-nose::before,
+.power-connected .plug-nose::after{
+    border-color:rgba(57,243,140,.32);
+
     background:
         linear-gradient(
             90deg,
-            rgba(57,243,140,.38),
-            rgba(234,243,255,.82),
-            rgba(57,243,140,.54)
+            rgba(7,11,18,.98),
+            rgba(57,243,140,.16)
+        );
+}
+
+.power-connected .plug-prong{
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,255,255,.88),
+            rgba(57,243,140,.55) 48%,
+            rgba(255,255,255,.78)
         );
 
     box-shadow:
