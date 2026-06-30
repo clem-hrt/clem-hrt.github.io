@@ -2367,3 +2367,51 @@ Unlocked after full profile scan
 
     text-shadow:0 0 8px rgba(57,243,140,.45);
 }
+/* ==========================================================
+FIX
+MAKE SYSTEM PORTS CLICKABLE
+========================================================== */
+
+/* CPU layer stays mostly non-interactive so it does not block modules */
+#cpu-layer{
+    pointer-events:none;
+}
+
+/* But the CPU core content can receive interactions */
+.cpu-core,
+.cpu-core-content,
+#system-ports-slot,
+.system-ports,
+.ports-grid,
+.system-port{
+    pointer-events:auto;
+}
+
+/* Make sure ports sit above the CPU visual layers */
+#system-ports-slot{
+    position:relative;
+    z-index:20;
+}
+
+.system-ports{
+    position:relative;
+    z-index:21;
+}
+
+.system-port{
+    position:relative;
+    z-index:22;
+    cursor:pointer;
+}
+
+/* Better feedback when the links are usable */
+.system-port:hover{
+    cursor:pointer;
+}
+
+/* Keyboard accessibility */
+.system-port:focus-visible{
+    outline:1px solid var(--clr-success);
+    outline-offset:3px;
+    box-shadow:0 0 18px rgba(57,243,140,.18);
+}
