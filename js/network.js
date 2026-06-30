@@ -480,9 +480,17 @@ const Network = (() => {
         detailBox.classList.add("detail-active");
     }
 
-    function show() {
+    function showTraces() {
         pcbLayer.classList.add("network-visible");
+    }
+
+    function showModules() {
         moduleLayer.classList.add("modules-visible");
+    }
+    
+    function show() {
+        showTraces();
+        showModules();
     }
 
     function getTotalModules() {
@@ -492,6 +500,8 @@ const Network = (() => {
     return {
         create,
         show,
+        showTraces,
+        showModules,
         getTotalModules
     };
 
