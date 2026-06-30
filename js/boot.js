@@ -98,29 +98,29 @@ const Boot = (() => {
                     <div class="boot-diagnostics" aria-live="polite">
 
                         <div class="boot-diagnostic-line" data-boot-step="power">
-                            <span class="diagnostic-energy"></span>
                             <span class="diagnostic-name">POWER LINK</span>
+                            <span class="diagnostic-energy"></span>
                             <strong>WAITING</strong>
                             <span class="diagnostic-dot"></span>
                         </div>
 
                         <div class="boot-diagnostic-line" data-boot-step="core">
-                            <span class="diagnostic-energy"></span>
                             <span class="diagnostic-name">CORE CHECK</span>
+                            <span class="diagnostic-energy"></span>
                             <strong>STANDBY</strong>
                             <span class="diagnostic-dot"></span>
                         </div>
 
                         <div class="boot-diagnostic-line" data-boot-step="pcb">
-                            <span class="diagnostic-energy"></span>
                             <span class="diagnostic-name">PCB BUS</span>
+                            <span class="diagnostic-energy"></span>
                             <strong>STANDBY</strong>
                             <span class="diagnostic-dot"></span>
                         </div>
 
                         <div class="boot-diagnostic-line" data-boot-step="modules">
-                            <span class="diagnostic-energy"></span>
                             <span class="diagnostic-name">PROFILE MODULES</span>
+                            <span class="diagnostic-energy"></span>
                             <strong>STANDBY</strong>
                             <span class="diagnostic-dot"></span>
                         </div>
@@ -198,7 +198,7 @@ const Boot = (() => {
             const targetRect = socketMouth ? socketMouth.getBoundingClientRect() : socket.getBoundingClientRect();
             const plugWidth = plug.offsetWidth;
 
-            sliderState.maxX = targetRect.left - sliderRect.left - plugWidth + 34;
+            sliderState.maxX = targetRect.left - sliderRect.left - plugWidth + 10;
 
             sliderState.maxX = Math.max(sliderState.maxX, 0);
 
