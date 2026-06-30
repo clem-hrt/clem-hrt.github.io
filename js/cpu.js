@@ -49,6 +49,8 @@ const CPU = (() => {
 
                                 <div id="cpu-monitor-slot"></div>
 
+                                <div id="system-ports-slot"></div>
+
                             </div>
 
                         </div>
