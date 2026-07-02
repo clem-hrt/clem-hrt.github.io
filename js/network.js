@@ -448,7 +448,7 @@ const Network = (() => {
     function openModule(id) {
         document
             .querySelectorAll(".module-card")
-            .forEach(card => {card.classList.remove("module-open", "module-inspecting");});
+            .forEach(card => {card.classList.remove("module-open");});
 
         document
             .querySelector(`[data-module="${id}"]`)
@@ -465,12 +465,9 @@ const Network = (() => {
         activateModule(moduleId);
         openModule(moduleId);
 
-        const moduleCard = document.querySelector(`[data-module="${moduleId}"]`);
         const detailBox = document.querySelector(`[data-detail="${moduleId}"]`);
 
-        if (!moduleCard || !detailBox) return;
-
-        moduleCard.classList.add("module-inspecting");
+        if (!detailBox) return;
 
         document
             .querySelectorAll(`[data-module-item="${moduleId}"]`)
@@ -483,14 +480,14 @@ const Network = (() => {
         detailBox.classList.add("detail-active");
 
         detailBox.innerHTML = `
-            <span class="detail-date">${item.meta}</span>
+            <span class="detail-date">${item.date}</span>
 
             <h4>${item.title}</h4>
 
-            <p>${item.description}</p>
+            <p>${item.meta}</p>
 
             <ul>
-                ${item.points.map(detail => `<li>${point}</li>`).join("")}
+                ${item.details.map(detail => `<li>${detail}</li>`).join("")}
             </ul>
         `;
     }
