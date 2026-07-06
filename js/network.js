@@ -449,7 +449,7 @@ const Network = (() => {
             .querySelectorAll(".module-card")
             .forEach(card => {card.classList.remove("module-open");});
 
-        const moduleCard = document.querySelector('[data-module="${id}"]');
+        const moduleCard = document.querySelector(`[data-module="${id}"]`);
 
         if (!moduleCard) return;
 
@@ -500,6 +500,7 @@ const Network = (() => {
 
     function showItemDetails(moduleId, itemIndex) {
         activateModule(moduleId);
+        openModule(id, false);
         renderItemDetails(moduleId, itemIndex);
     }
     
