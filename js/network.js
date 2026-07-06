@@ -7,10 +7,15 @@ const Network = (() => {
 
     const pcbLayer = document.querySelector("#pcb-layer");
     const moduleLayer = document.querySelector("#module-layer");
-
     const activatedModules = new Set();
-
+    const activatedItemTraces = new Set();
+    
+    let currentItemTrace = null;
     let traceRedrawTimer = null;
+    let traceSyncUntil = 0;
+    let traceSyncFrame = null;
+    let resizeObserver = null;
+    let mutationObserver = null;
 
     const modules = [
         {
@@ -269,16 +274,16 @@ const Network = (() => {
         education: {
             cpuSide: "left",
             moduleSide: "right",
-            cpuSlot: 0.52,
-            busOffset: 82
+            cpuSlot: 0.62,
+            busOffset: 88
         },
 
         hobbies: {
             cpuSide: "bottom",
             moduleSide: "right",
             cpuSlot: 0.34,
-            busOffset: 88,
-            moduleStub: 42
+            busOffset: 155,
+            moduleStub: 48
         },
 
         projects: {
@@ -291,16 +296,16 @@ const Network = (() => {
         skills: {
             cpuSide: "right",
             moduleSide: "left",
-            cpuSlot: 0.52,
-            busOffset: 82
+            cpuSlot: 0.62,
+            busOffset: 88
         },
 
         certifications: {
             cpuSide: "bottom",
             moduleSide: "left",
             cpuSlot: 0.66,
-            busOffset: 88,
-            moduleStub: 42
+            busOffset: 155,
+            moduleStub: 48
         }
     };
 
@@ -308,19 +313,19 @@ const Network = (() => {
         createModules();
         createTraces();
         bindInteractions();
+        startTraceSync();
 
         redrawTracesSoon();
-        redrawTracesSoon(250);
-        redrawTracesSoon(850);
+        forceTraceSync(1800);
 
         window.addEventListener("resize", () => {
-            redrawTracesSoon(80);
-            redrawTracesSoon(300);
+            redrawTracesSoon();
+            forceTraceSync(900);
         });
 
         window.addEventListener("load", () => {
             redrawTracesSoon();
-            redrawTracesSoon(500);
+            forceTraceSync(1800);
         });
     }
 
@@ -342,6 +347,54 @@ const Network = (() => {
         }, delay);
     }
 
+    function startTraceSync() {
+
+        if (resizeObserver) {
+            resizeObserver.disconnect();
+        }
+        resizeObserver = new ResizeObserver(() => {
+            redrawTracesSoon();
+            forceTraceSync(700);
+        });
+    
+        document
+            .querySelectorAll(".module-card, .cpu-core, #module-layer, #pcb-layer")
+            .forEach(element => resizeObserver.observe(element));
+    
+        if (mutationObserver) {
+            mutationObserver.disconnect();
+        }
+            
+        mutationObserver = new MutationObserver(() => {
+            redrawTracesSoon();
+            forceTraceSync(500);
+        });
+    
+        mutationObserver.observe(moduleLayer, {
+            attributes: true,
+            childList: true,
+            subtree: true,
+            attributeFilter: ["class", "style"]
+        });
+    
+    }
+
+    function forceTraceSync(duration = 700) {
+        traceSyncUntil = Math.max(traceSyncUntil, performance.now() + duration);
+        if (!traceSyncFrame) {
+            traceSyncLoop();
+        }
+    }
+
+    function traceSyncLoop() {
+        drawTraces();
+        if (performance.now() < traceSyncUntil) {
+            traceSyncFrame = requestAnimationFrame(traceSyncLoop);
+        } else {
+            traceSyncFrame = null;
+        }
+    }
+    
     function drawTraces() {
         if (!pcbLayer) return;
 
@@ -362,6 +415,8 @@ const Network = (() => {
 
         let tracesMarkup = "";
         let padsMarkup = "";
+        let itemTracesMarkup = "";
+        let itemPadsMarkup = "";
 
         modules.forEach(module => {
             const card = document.querySelector(`[data-module="${module.id}"]`);
@@ -370,7 +425,6 @@ const Network = (() => {
             if (!card || !config) return;
 
             const moduleRect = toLayerRect(card, layerRect);
-
             const start = getCpuAnchor(cpuRect, config);
             const end = getModuleAnchor(moduleRect, config);
 
@@ -399,11 +453,143 @@ const Network = (() => {
                     r="4"
                 />
             `;
+            if (card.classList.contains("module-open")) {
+                const itemMarkup = drawItemTraces(module, card, moduleRect, end, config, layerRect);
+                itemTracesMarkup += itemMarkup.traces;
+                itemPadsMarkup += itemMarkup.pads;
+            }
         });
 
-        svg.innerHTML = tracesMarkup + padsMarkup;
-
+        svg.innerHTML = tracesMarkup + itemTracesMarkup + padsMarkup + itemPadsMarkup;
         restoreTraceState();
+        refreshItemTraceClasses();
+    }
+
+    function drawItemTraces(module, card, moduleRect, moduleEntryPoint, config, layerRect) {
+        const itemButtons = card.querySelectorAll(".module-item");
+    
+        let traces = "";
+        let pads = "";
+    
+        itemButtons.forEach((button, index) => {
+            const itemRect = toLayerRect(button, layerRect);
+            const itemAnchor = getItemAnchor(itemRect, config);
+    
+            const traceKey = `${module.id}-${index}`;
+    
+            traces += `
+                <path
+                    class="pcb-item-trace"
+                    data-item-trace="${traceKey}"
+                    d="${buildItemTraceRoute(
+                        moduleEntryPoint,
+                        itemAnchor,
+                        config,
+                        index
+                    )}"
+                />
+            `;
+    
+            pads += `
+                <circle
+                    class="pcb-item-pad"
+                    data-item-pad="${traceKey}"
+                    cx="${round(itemAnchor.x)}"
+                    cy="${round(itemAnchor.y)}"
+                    r="3.2"
+                />
+            `;
+        });
+    
+        return {
+            traces,
+            pads
+        };
+    }
+    
+    function getItemAnchor(itemRect, config) {
+        if (config.moduleSide === "left") {
+            return {
+                x: itemRect.left,
+                y: itemRect.top + itemRect.height * 0.5
+            };
+        }
+    
+        if (config.moduleSide === "right") {
+            return {
+                x: itemRect.right,
+                y: itemRect.top + itemRect.height * 0.5
+            };
+        }
+    
+        return {
+            x: itemRect.left,
+            y: itemRect.top + itemRect.height * 0.5
+        };
+    }
+    
+    function buildItemTraceRoute(
+        moduleEntryPoint,
+        itemAnchor,
+        config,
+        index
+    ) {
+        const direction = config.moduleSide === "left" ? 1 : -1;
+    
+        const moduleBranchX =
+            moduleEntryPoint.x + direction * (24 + index * 8);
+        const itemStubX = itemAnchor.x - direction * 16;
+    
+        return [
+            `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
+            `L ${round(moduleBranchX)} ${round(moduleEntryPoint.y)}`,
+            `L ${round(moduleBranchX)} ${round(itemAnchor.y)}`,
+            `L ${round(itemStubX)} ${round(itemAnchor.y)}`,
+            `L ${round(itemAnchor.x)} ${round(itemAnchor.y)}`
+        ].join(" ");
+    }
+    
+    function activateItemTrace(moduleId, itemIndex) {
+        const traceKey = `${moduleId}-${itemIndex}`;
+    
+        currentItemTrace = traceKey;
+        activatedItemTraces.add(traceKey);
+    
+        refreshItemTraceClasses();
+    }
+    
+    function refreshItemTraceClasses() {
+        document
+            .querySelectorAll(".pcb-item-trace")
+            .forEach(trace => {
+                const key = trace.dataset.itemTrace;
+    
+                trace.classList.toggle(
+                    "item-trace-locked",
+                    activatedItemTraces.has(key)
+                );
+    
+                trace.classList.toggle(
+                    "item-trace-active",
+                    key === currentItemTrace
+                );
+            });
+    
+        document
+            .querySelectorAll(".pcb-item-pad")
+            .forEach(pad => {
+                const key = pad.dataset.itemPad;
+    
+                pad.classList.toggle(
+                    "item-pad-locked",
+                    activatedItemTraces.has(key)
+                );
+    
+                pad.classList.toggle(
+                    "item-pad-active",
+                    key === currentItemTrace
+                );
+            });
     }
 
     function toLayerRect(element, layerRect) {
@@ -522,17 +708,17 @@ const Network = (() => {
     function buildBottomCpuRoute(start, end, config) {
         const busY = start.y + config.busOffset;
 
-        const moduleStub = config.moduleStub ?? 42;
+        const moduleStub = config.moduleStub ?? 48;
 
         const moduleStubX = config.moduleSide === "left"
             ? end.x - moduleStub
             : end.x + moduleStub;
-
+        const finalTurnY = end.y;
         return [
             `M ${round(start.x)} ${round(start.y)}`,
             `L ${round(start.x)} ${round(busY)}`,
             `L ${round(moduleStubX)} ${round(busY)}`,
-            `L ${round(moduleStubX)} ${round(end.y)}`,
+            `L ${round(moduleStubX)} ${round(finalTurnY)}`,
             `L ${round(end.x)} ${round(end.y)}`
         ].join(" ");
     }
@@ -635,11 +821,17 @@ const Network = (() => {
             const moduleId = card.dataset.module;
 
             card.addEventListener("mouseenter", () => {
+                redrawTracesSoon();
+                forceTraceSync(900);
                 activateModule(moduleId);
                 openModule(moduleId);
             });
-
+            card.addEventListener("mousemove", () => {
+                redrawTracesSoon();
+            });
             card.addEventListener("click", () => {
+                redrawTracesSoon();
+                forceTraceSync(900);
                 activateModule(moduleId);
                 openModule(moduleId);
             });
@@ -651,16 +843,22 @@ const Network = (() => {
 
             itemButton.addEventListener("mouseenter", event => {
                 event.stopPropagation();
+                redrawTracesSoon();
+                forceTraceSync(500);
                 showItemDetails(moduleId, itemIndex);
             });
 
             itemButton.addEventListener("focus", event => {
                 event.stopPropagation();
+                redrawTracesSoon();
+                forceTraceSync(500);
                 showItemDetails(moduleId, itemIndex);
             });
 
             itemButton.addEventListener("click", event => {
                 event.stopPropagation();
+                redrawTracesSoon();
+                forceTraceSync(500);
                 showItemDetails(moduleId, itemIndex);
             });
         });
@@ -723,7 +921,7 @@ const Network = (() => {
         moduleCard.classList.add("module-open");
 
         redrawTracesSoon();
-        redrawTracesSoon(520);
+        forceTraceSync(1000);
 
         if (autoSelectFirst) {
             renderItemDetails(id, 0);
@@ -766,7 +964,7 @@ const Network = (() => {
         `;
 
         redrawTracesSoon();
-        redrawTracesSoon(300);
+        forceTraceSync(700);
     }
 
     function showItemDetails(moduleId, itemIndex) {
@@ -781,7 +979,7 @@ const Network = (() => {
         pcbLayer.classList.add("network-visible");
 
         redrawTracesSoon();
-        redrawTracesSoon(300);
+        forceTraceSync(1600);
     }
 
     function showModules() {
@@ -790,7 +988,7 @@ const Network = (() => {
         moduleLayer.classList.add("modules-visible");
 
         redrawTracesSoon();
-        redrawTracesSoon(850);
+        forceTraceSync(1600);
     }
 
     function show() {
