@@ -2073,7 +2073,7 @@ body{
 }
 
 .module-left-bottom{
-   left:calc(50% - var(--module-closed-width));
+   left:calc(50% - var(--module-open-width));
 }
 .module-right-bottom{
    right:calc(50% - var(--module-open-width));
@@ -2089,7 +2089,7 @@ body{
 /* Middle row */
 .module-left-middle,
 .module-right-middle{
-    top:50%;
+    top:55%;
 }
 
 /* Bottom row */
