@@ -274,19 +274,19 @@ const Network = (() => {
         
         if (!cpuCore || !layerRect.width || !layerRect.height) return;
         
-        const cpuRect = getRelativeRect(cpuCore, layerRect);
+        const cpuRect = getLayoutRect(cpuCore, layerRect);
         const traces = [];
         const pads = [];
         modules.forEach(module => 
             {const moduleCard = document.querySelector(`[data-module="${module.id}"]`);
              if (!moduleCard) return;
-             const moduleRect = getRelativeRect(moduleCard, layerRect);
+             const moduleRect = getLayoutRect(moduleCard, layerRect);
              const side = getTraceSide(module.position);
              
              module.items.forEach((item, itemIndex) => {
                  const traceKey = `${module.id}-${itemIndex}`;
                  const end = getItemTraceEnd(moduleRect, side, itemIndex, module.items.length);
-                 const start = getCpuTraceStart(cpuRect, side, end);
+                 const start = getCpuTraceStart(cpuRect, side, module.id, itemIndex, module.items.length);
                  const path = buildRectilinearPath(start, end, side, itemIndex);
                  traces.push(`
                  <path
@@ -351,33 +351,75 @@ const Network = (() => {
     refreshItemTraceClasses();
     }
 
-    function getRelativeRect(element, referenceRect) {
+function getLayoutRect(element, referenceElement) {
 
-    const rect = element.getBoundingClientRect();
+    const elementPos = getOffsetPosition(element);
+
+    const referencePos = getOffsetPosition(referenceElement);
+
+
+
+    const x = elementPos.x - referencePos.x;
+
+    const y = elementPos.y - referencePos.y;
+
+    const width = element.offsetWidth;
+
+    const height = element.offsetHeight;
 
 
 
     return {
 
-        x: rect.left - referenceRect.left,
+        x,
 
-        y: rect.top - referenceRect.top,
+        y,
 
-        width: rect.width,
+        width,
 
-        height: rect.height,
+        height,
 
-        left: rect.left - referenceRect.left,
+        left: x,
 
-        right: rect.right - referenceRect.left,
+        right: x + width,
 
-        top: rect.top - referenceRect.top,
+        top: y,
 
-        bottom: rect.bottom - referenceRect.top
+        bottom: y + height
 
     };
 
 }
+
+
+
+function getOffsetPosition(element) {
+
+    let x = 0;
+
+    let y = 0;
+
+    let node = element;
+
+
+
+    while (node && node !== document.body) {
+
+        x += node.offsetLeft || 0;
+
+        y += node.offsetTop || 0;
+
+        node = node.offsetParent;
+
+    }
+
+
+
+    return { x, y };
+
+}
+
+
 
 
 
@@ -391,21 +433,17 @@ function clamp(value, min, max) {
 
 function getTraceSide(position) {
 
-    if (position.includes("left-bottom") || position.includes("right-bottom")) {
-
-        return "bottom";
-
-    }
-
-
-
     if (position.includes("left")) {
 
         return "left";
 
     }
 
+    if (position.includes("right")) {
 
+        return "right";
+
+    }
 
     return "right";
 
@@ -459,7 +497,45 @@ function getItemTraceEnd(moduleRect, side, itemIndex, itemCount) {
 
 
 
-function getCpuTraceStart(cpuRect, side, end) {
+function getCpuTraceStart(cpuRect, side, moduleId, itemIndex, itemCount) {
+
+    const cpuSlots = {
+
+        experience: 0.24,
+
+        education: 0.50,
+
+        hobbies: 0.76,
+
+
+
+        projects: 0.24,
+
+        skills: 0.50,
+
+        certifications: 0.76
+
+    };
+
+
+
+    const slot = cpuSlots[moduleId] ?? 0.5;
+
+    const itemOffset = (itemIndex - (itemCount - 1) / 2) * 9;
+
+
+
+    const y = clamp(
+
+        cpuRect.top + cpuRect.height * slot + itemOffset,
+
+        cpuRect.top + 22,
+
+        cpuRect.bottom - 22
+
+    );
+
+
 
     if (side === "left") {
 
@@ -467,21 +543,7 @@ function getCpuTraceStart(cpuRect, side, end) {
 
             x: cpuRect.left,
 
-            y: clamp(end.y, cpuRect.top + 26, cpuRect.bottom - 26)
-
-        };
-
-    }
-
-
-
-    if (side === "right") {
-
-        return {
-
-            x: cpuRect.right,
-
-            y: clamp(end.y, cpuRect.top + 26, cpuRect.bottom - 26)
+            y
 
         };
 
@@ -491,9 +553,9 @@ function getCpuTraceStart(cpuRect, side, end) {
 
     return {
 
-        x: clamp(end.x, cpuRect.left + 34, cpuRect.right - 34),
+        x: cpuRect.right,
 
-        y: cpuRect.bottom
+        y
 
     };
 
@@ -503,13 +565,19 @@ function getCpuTraceStart(cpuRect, side, end) {
 
 function buildRectilinearPath(start, end, side, itemIndex) {
 
-    const offset = 14 + itemIndex * 10;
+    const laneOffset = 58 + itemIndex * 12;
 
 
 
     if (side === "left") {
 
-        const midX = start.x - 70 - offset;
+        const midX = Math.max(
+
+            end.x + 34,
+
+            start.x - laneOffset
+
+        );
 
 
 
@@ -529,29 +597,13 @@ function buildRectilinearPath(start, end, side, itemIndex) {
 
 
 
-    if (side === "right") {
+    const midX = Math.min(
 
-        const midX = start.x + 70 + offset;
+        end.x - 34,
 
+        start.x + laneOffset
 
-
-        return `
-
-            M ${start.x} ${start.y}
-
-            H ${midX}
-
-            V ${end.y}
-
-            H ${end.x}
-
-        `;
-
-    }
-
-
-
-    const midY = start.y + 52 + offset;
+    );
 
 
 
@@ -559,11 +611,11 @@ function buildRectilinearPath(start, end, side, itemIndex) {
 
         M ${start.x} ${start.y}
 
-        V ${midY}
-
-        H ${end.x}
+        H ${midX}
 
         V ${end.y}
+
+        H ${end.x}
 
     `;
 
@@ -877,8 +929,21 @@ function refreshItemTraceClasses() {
     }
 
     function showModules() {
-        moduleLayer.classList.add("modules-visible");
-    }
+    moduleLayer.classList.add("modules-visible");
+
+    requestAnimationFrame(() => {
+
+        createTraces();
+
+    });
+
+    setTimeout(() => {
+
+        createTraces();
+
+    }, 850);
+
+}
     
     function show() {
         showTraces();
