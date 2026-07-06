@@ -2049,9 +2049,21 @@ body{
 /* Positions */
 .module-left-top,
 .module-left-middle,
+.module-left-bottom,
+.module-right-top,
+.module-right-middle,
+.module-right-bottom{
+    top:auto;
+    bottom:auto;
+    left:auto;
+    right:auto;
+    translate:0 0;
+}
+
+.module-left-top,
+.module-left-middle,
 .module-left-bottom{
     left:clamp(18px,3vw,54px);
-    top:clamp(38px,6vh,76px);
     transform-origin:left center;
 }
 
@@ -2059,24 +2071,51 @@ body{
 .module-right-middle,
 .module-right-bottom{
     right:clamp(18px,3vw,54px);
-    top:clamp(38px,6vh,76px);
     transform-origin:right center;
 }
 
+/* Top row */
 .module-left-top,
 .module-right-top{
     top:clamp(32px,5vh,64px);
 }
 
+/* Middle row */
 .module-left-middle,
 .module-right-middle{
     top:50%;
-    transform:translateY(-50%);
 }
 
+/* Bottom row */
 .module-left-bottom,
 .module-right-bottom{
     bottom:clamp(32px,5vh,64px);
+}
+
+/* Visible state: preserve the correct transform per row */
+.modules-visible .module-left-top,
+.modules-visible .module-right-top,
+.modules-visible .module-left-bottom,
+.modules-visible .module-right-bottom{
+    transform:translateY(0) scale(1);
+}
+
+.modules-visible .module-left-middle,
+.modules-visible .module-right-middle{
+    transform:translateY(-50%) scale(1);
+}
+
+/* Open state: keep each row anchored correctly */
+.modules-visible .module-left-top.module-open,
+.modules-visible .module-right-top.module-open,
+.modules-visible .module-left-bottom.module-open,
+.modules-visible .module-right-bottom.module-open{
+    transform:translateY(-6px) scale(1.02);
+}
+
+.modules-visible .module-left-middle.module-open,
+.modules-visible .module-right-middle.module-open{
+    transform:translateY(-50%) translateY(-6px) scale(1.02);
 }
 
 /* Module decorations */
@@ -2524,17 +2563,18 @@ body{
     .module-card,
     .module-card.module-locked,
     .module-card.module-open,
-    .module-top-left,
-    .module-top-center,
-    .module-top-right,
-    .module-bottom-left,
-    .module-bottom-center,
-    .module-bottom-right{
-        position:relative;
-        inset:auto;
-        translate:0 0;
-        width:100%;
-        max-height:none;
+    .module-left-top,
+    .module-left-middle,
+    .module-left-bottom,
+    .module-right-top,
+    .module-right-middle,
+    .module-right-bottom{
+       position:relative;
+       inset:auto;
+       translate:0 0;
+       width:100%;
+       max-height:none;
+       transform:none;
     }
 
     .module-content{
