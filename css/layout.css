@@ -68,8 +68,8 @@ body{
 
 #pcb-layer{
     position:absolute;
-    inset:1;
-    z-index:1;
+    inset:0;
+    z-index:15;
     pointer-events:none;
 }
 
@@ -1908,166 +1908,143 @@ body{
 /* ==========================================================
    PCB NETWORK
 ========================================================== */
-.pcb-svg{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    overflow:visible;
-    pointer-events:none;
+.pcb-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1s ease;
 }
 
-.network-visible .pcb-pad{
-    opacity:0.78;
+.network-visible .pcb-svg {
+    opacity: 1;
 }
 
-.pcb-trace{
-    fill:none;
-    stroke:rgba(53,194,255,.16);
-    stroke-width:2.2;
-    stroke-linecap:round;
-    stroke-linejoin:round;
-    vector-effect:non-scaling-stroke;
-    shape-rendering:geometricPrecision;
-    filter:drop-shadow(0 0 3px rgba(53, 194, 255, 0.12));
+/* Main module bus traces */
+
+.pcb-trace {
+    fill: none;
+    stroke: rgba(53, 194, 255, 0.16);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+    shape-rendering: geometricPrecision;
+    opacity: 0.62;
+    filter: drop-shadow(0 0 3px rgba(53, 194, 255, 0.12));
     transition:
-
-        stroke .25s ease,
-
-        stroke-width .25s ease,
-
-        opacity .25s ease,
-
-        filter .25s ease;
-
+        stroke 0.25s ease,
+        stroke-width 0.25s ease,
+        opacity 0.25s ease,
+        filter 0.25s ease;
 }
 
-
-.trace-active,
-.trace-locked{
-
-    stroke:var(--clr-success);
-
-    stroke-width:3.4;
-
-    opacity:.86;
-
-    filter:drop-shadow(0 0 3px rgba(57,243,140,.45)) drop-shadow(0 0 12px rgba(57,243,140,.18));
-
+.pcb-trace.trace-active,
+.pcb-trace.trace-locked {
+    stroke: rgba(57, 243, 140, 0.74);
+    stroke-width: 3.2;
+    opacity: 0.9;
+    filter:
+        drop-shadow(0 0 4px rgba(57, 243, 140, 0.45))
+        drop-shadow(0 0 12px rgba(57, 243, 140, 0.16));
 }
 
+/* Main module connection pads */
 
-
-.pcb-pad{
-
-    opacity:0;
-
-    fill:rgba(53,194,255,.24);
-
-    stroke:none;
-
-    filter:drop-shadow(0 0 4px rgba(53, 194, 255, 0.18));
-
-    vector-effect:non-scaling-stroke;
-
+.pcb-pad {
+    opacity: 0.58;
+    fill: rgba(53, 194, 255, 0.24);
+    stroke: rgba(53, 194, 255, 0.2);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    filter: drop-shadow(0 0 4px rgba(53, 194, 255, 0.16));
     transition:
-
-        fill .25s ease,
-
-        stroke .25s ease,
-
-        opacity .25s ease,
-
-        filter .25s ease;
-
+        fill 0.25s ease,
+        stroke 0.25s ease,
+        opacity 0.25s ease,
+        filter 0.25s ease;
 }
 
-
-.pcb-pad.pad-active{
-    fill:var(--clr-success);
-    filter:drop-shadow(0 0 7px rgba(57,243,140,.58))
+.pcb-pad.pad-active {
+    opacity: 1;
+    fill: var(--clr-success);
+    stroke: rgba(255, 255, 255, 0.58);
+    filter:
+        drop-shadow(0 0 5px rgba(57, 243, 140, 0.62))
+        drop-shadow(0 0 12px rgba(57, 243, 140, 0.22));
 }
+
+/* Item-level traces: one per item in each module */
 
 .pcb-item-trace {
-
     fill: none;
-
-    stroke: rgba(53, 194, 255, 0.13);
-
-    stroke-width: 1.7;
-
+    stroke: rgba(53, 194, 255, 0.18);
+    stroke-width: 1.75;
     stroke-linecap: round;
-
     stroke-linejoin: round;
-
     vector-effect: non-scaling-stroke;
-
-    filter: drop-shadow(0 0 3px rgba(53, 194, 255, 0.10));
-
+    shape-rendering: geometricPrecision;
+    opacity: 0.56;
+    filter: drop-shadow(0 0 3px rgba(53, 194, 255, 0.1));
     transition:
-
         stroke 0.2s ease,
-
         stroke-width 0.2s ease,
-
         opacity 0.2s ease,
-
         filter 0.2s ease;
-
 }
-
-
-
-.pcb-item-trace.item-trace-active,
 
 .pcb-item-trace.item-trace-locked {
-
-    stroke: rgba(57, 243, 140, 0.85);
-
-    stroke-width: 2.4;
-
+    stroke: rgba(57, 243, 140, 0.56);
+    stroke-width: 2.25;
+    opacity: 0.82;
     filter:
-
-        drop-shadow(0 0 5px rgba(57, 243, 140, 0.45))
-
-        drop-shadow(0 0 11px rgba(57, 243, 140, 0.18));
-
+        drop-shadow(0 0 4px rgba(57, 243, 140, 0.34))
+        drop-shadow(0 0 9px rgba(57, 243, 140, 0.12));
 }
 
+.pcb-item-trace.item-trace-active {
+    stroke: var(--clr-success);
+    stroke-width: 3.1;
+    opacity: 1;
+    filter:
+        drop-shadow(0 0 6px rgba(57, 243, 140, 0.68))
+        drop-shadow(0 0 16px rgba(57, 243, 140, 0.24));
+}
 
+/* Item-level edge pads */
 
 .pcb-item-pad {
-
-    opacity: 0.7;
-
+    opacity: 0.62;
     fill: rgba(53, 194, 255, 0.28);
-
-    filter: drop-shadow(0 0 4px rgba(53, 194, 255, 0.16));
-
+    stroke: rgba(53, 194, 255, 0.22);
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+    filter: drop-shadow(0 0 4px rgba(53, 194, 255, 0.14));
     transition:
-
         fill 0.2s ease,
-
+        stroke 0.2s ease,
         opacity 0.2s ease,
-
         filter 0.2s ease;
-
 }
-
-
-
-.pcb-item-pad.item-pad-active,
 
 .pcb-item-pad.item-pad-locked {
-
-    opacity: 1;
-
-    fill: var(--clr-success);
-
-    filter: drop-shadow(0 0 7px rgba(57, 243, 140, 0.58));
-
+    opacity: 0.9;
+    fill: rgba(57, 243, 140, 0.64);
+    stroke: rgba(57, 243, 140, 0.38);
+    filter: drop-shadow(0 0 5px rgba(57, 243, 140, 0.42));
 }
 
+.pcb-item-pad.item-pad-active {
+    opacity: 1;
+    fill: var(--clr-success);
+    stroke: rgba(255, 255, 255, 0.72);
+    filter:
+        drop-shadow(0 0 6px rgba(57, 243, 140, 0.75))
+        drop-shadow(0 0 14px rgba(57, 243, 140, 0.26));
+}
 /* ==========================================================
    MODULES
 ========================================================== */
