@@ -14,7 +14,7 @@ const Network = (() => {
         {
             id: "experience",
             label: "Professional Experience",
-            position: "top-left",
+            position: "left-top",
             subtitle: "Career path",
             items: [
                 {
@@ -56,7 +56,7 @@ const Network = (() => {
         {
             id: "skills",
             label: "Skills",
-            position: "top-center",
+            position: "right-middle",
             subtitle: "Technical stack",
             items: [
                 {
@@ -112,7 +112,7 @@ const Network = (() => {
         {
             id: "projects",
             label: "Projects",
-            position: "top-right",
+            position: "right-top",
             subtitle: "Engineering missions",
             items: [
                 {
@@ -143,7 +143,7 @@ const Network = (() => {
         {
             id: "education",
             label: "Education",
-            position: "bottom-left",
+            position: "left-middle",
             subtitle: "Academic path",
             items: [
                 {
@@ -185,7 +185,7 @@ const Network = (() => {
         {
             id: "hobbies",
             label: "Hobbies",
-            position: "bottom-center",
+            position: "left-bottom",
             subtitle: "Beyond engineering",
             items: [
                 {
@@ -227,7 +227,7 @@ const Network = (() => {
         {
             id: "certifications",
             label: "Certifications",
-            position: "bottom-right",
+            position: "right-bottom",
             subtitle: "Validated skills",
             items: [
                 {
