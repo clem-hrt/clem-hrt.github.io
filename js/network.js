@@ -500,7 +500,6 @@ const Network = (() => {
 
     function showItemDetails(moduleId, itemIndex) {
         activateModule(moduleId);
-        openModule(moduleId, false);
         renderItemDetails(moduleId, itemIndex);
     }
     
