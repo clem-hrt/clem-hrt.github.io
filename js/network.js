@@ -445,17 +445,24 @@ const Network = (() => {
     }
 
 
-    function openModule(id) {
+    function openModule(id, autoSelectFirst = true) {
         document
             .querySelectorAll(".module-card")
             .forEach(card => {card.classList.remove("module-open");});
 
-        document
-            .querySelector(`[data-module="${id}"]`)
-            ?.classList.add("module-open");
+        const moduleCard = document.querySelector('[data-module="${id}"]');
+
+        if (!moduleCard) return;
+
+        moduleCard.classList.add("module-open");
+
+        if (autoSelectFirst) {
+            renderItemDetails(id, 0);
+        }
+
     }
 
-    function showItemDetails(moduleId, itemIndex) {
+    function renderItemDetails(moduleId, itemIndex) {
         const module = modules.find(entry => entry.id === moduleId);
         if (!module) return;
         
@@ -492,6 +499,12 @@ const Network = (() => {
         `;
     }
 
+    function showItemDetails(moduleId, itemIndex) {
+        activateModule(moduleId);
+        openModule(moduleId, false);
+        renderItemDetails(moduleId, itemIndex);
+    }
+    
     function showTraces() {
         pcbLayer.classList.add("network-visible");
     }
