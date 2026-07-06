@@ -445,13 +445,11 @@ const Network = (() => {
 
 
     function openModule(id, autoSelectFirst = true) {
+        const moduleCard = document.querySelector(`[data-module="${id}"]`);
+        if (!moduleCard) return;
         document
             .querySelectorAll(".module-card")
             .forEach(card => {card.classList.remove("module-open");});
-
-        const moduleCard = document.querySelector(`[data-module="${id}"]`);
-
-        if (!moduleCard) return;
 
         moduleCard.classList.add("module-open");
 
@@ -467,9 +465,6 @@ const Network = (() => {
         
         const item = module.items[itemIndex];
         if (!item) return;
-        
-        activateModule(moduleId);
-        openModule(moduleId);
 
         const detailBox = document.querySelector(`[data-detail="${moduleId}"]`);
 
@@ -500,7 +495,7 @@ const Network = (() => {
 
     function showItemDetails(moduleId, itemIndex) {
         activateModule(moduleId);
-        openModule(id, false);
+        openModule(moduleId, false);
         renderItemDetails(moduleId, itemIndex);
     }
     
