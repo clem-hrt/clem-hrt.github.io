@@ -453,11 +453,9 @@ const Network = (() => {
                     r="4"
                 />
             `;
-            if (card.classList.contains("module-open")) {
-                const itemMarkup = drawItemTraces(module, card, moduleRect, end, config, layerRect);
-                itemTracesMarkup += itemMarkup.traces;
-                itemPadsMarkup += itemMarkup.pads;
-            }
+            const itemMarkup = drawItemTraces(module, card, moduleRect, end, config);
+            itemTracesMarkup += itemMarkup.traces;
+            itemPadsMarkup += itemMarkup.pads;
         });
 
         svg.innerHTML = tracesMarkup + itemTracesMarkup + padsMarkup + itemPadsMarkup;
@@ -466,15 +464,11 @@ const Network = (() => {
     }
 
     function drawItemTraces(module, card, moduleRect, moduleEntryPoint, config, layerRect) {
-        const itemButtons = card.querySelectorAll(".module-item");
-    
         let traces = "";
         let pads = "";
     
-        itemButtons.forEach((button, index) => {
-            const itemRect = toLayerRect(button, layerRect);
-            const itemAnchor = getItemAnchor(itemRect, config);
-    
+        module.items.forEach((item, index) => {
+            const itemAnchor = getItemAnchor(moduleRect, config, index, module.items.length);
             const traceKey = `${module.id}-${index}`;
     
             traces += `
@@ -507,43 +501,43 @@ const Network = (() => {
         };
     }
     
-    function getItemAnchor(itemRect, config) {
+    function getItemAnchor(moduleRect, config, index, itemCount) {
+        const padding = 24;
+        const ratio = (index + 1) / (itemCount + 1);
         if (config.moduleSide === "left") {
             return {
-                x: itemRect.left,
-                y: itemRect.top + itemRect.height * 0.5
+                x: moduleRect.left,
+                y: moduleRect.top + padding + (moduleRect.height - padding * 2) * ratio
             };
         }
     
         if (config.moduleSide === "right") {
             return {
-                x: itemRect.right,
-                y: itemRect.top + itemRect.height * 0.5
+                x: moduleRect.right,
+                y: moduleRect.top + padding + (moduleRect.height - padding * 2) * ratio
             };
         }
-    
+        if (config.moduleSide === "top") {
+            return {
+                x: moduleRect.left + padding + (moduleRect.width - padding * 2) * ratio,
+                y: moduleRect.top
+            };
+        }
         return {
-            x: itemRect.left,
-            y: itemRect.top + itemRect.height * 0.5
+            x: moduleRect.left + padding + (moduleRect.width - padding * 2) * ratio,
+            y: moduleRect.bottom
         };
     }
     
-    function buildItemTraceRoute(
-        moduleEntryPoint,
-        itemAnchor,
-        config,
-        index
-    ) {
-        const direction = config.moduleSide === "left" ? 1 : -1;
-    
-        const moduleBranchX =
-            moduleEntryPoint.x + direction * (24 + index * 8);
-        const itemStubX = itemAnchor.x - direction * 16;
+    function buildItemTraceRoute(moduleEntryPoint, itemAnchor, config, index) {
+        const outward = config.moduleSide === "left" ? -1 : 1;
+        const branchX = moduleEntryPoint.x + outward * (28 + index * 10);
+        const itemStubX = itemAnchor.x + outward * 14;
     
         return [
             `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
-            `L ${round(moduleBranchX)} ${round(moduleEntryPoint.y)}`,
-            `L ${round(moduleBranchX)} ${round(itemAnchor.y)}`,
+            `L ${round(branchX)} ${round(moduleEntryPoint.y)}`,
+            `L ${round(branchX)} ${round(itemAnchor.y)}`,
             `L ${round(itemStubX)} ${round(itemAnchor.y)}`,
             `L ${round(itemAnchor.x)} ${round(itemAnchor.y)}`
         ].join(" ");
@@ -936,6 +930,8 @@ const Network = (() => {
         const item = module.items[itemIndex];
 
         if (!item) return;
+
+        activateItemTrace(moduleId, itemIndex);
 
         const detailBox = document.querySelector(`[data-detail="${moduleId}"]`);
 
