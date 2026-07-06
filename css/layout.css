@@ -2048,38 +2048,61 @@ body{
 /* ==========================================================
    MODULES
 ========================================================== */
-
 :root{
     --module-closed-width:clamp(220px,17vw,270px);
-    --module-open-width:clamp(430px,30vw,560px);
+    --module-open-width:clamp(470px,34vw,610px);
+
+    --module-open-height:min(430px, calc(100vh - 105px));
+    --module-content-height:270px;
+
+    --module-side-x:clamp(18px,3vw,54px);
+    --module-bottom-gap:18px;
 }
+
+/* ==========================================================
+   MODULE CARD BASE
+========================================================== */
 
 .module-card{
     position:absolute;
+
     width:var(--module-closed-width);
     max-height:calc(50vh - 58px);
+
     padding:24px;
+
     overflow:hidden;
+
     border-radius:var(--radius-medium);
     border:1px solid rgba(53,194,255,.18);
+
     background:linear-gradient(
         145deg,
         rgba(12,18,30,.84),
         rgba(5,9,16,.78)
     );
+
     box-shadow:
         var(--shadow-soft),
         inset 0 0 24px rgba(53,194,255,.025);
+
     backdrop-filter:blur(18px);
+
     opacity:0;
+
     transform:translateY(18px) scale(.96);
+
     pointer-events:auto;
     cursor:pointer;
+
     isolation:isolate;
+
     transition:
         opacity .8s ease,
         transform .8s ease,
         width .5s ease,
+        min-height .5s ease,
+        max-height .5s ease,
         border-color .3s ease,
         box-shadow .3s ease;
 }
@@ -2091,23 +2114,30 @@ body{
 
 .module-card::before{
     content:"";
+
     position:absolute;
+
     left:18px;
     right:18px;
     top:0;
+
     height:1px;
+
     background:linear-gradient(
         90deg,
         transparent,
         rgba(53,194,255,.55),
         transparent
     );
+
     opacity:.5;
 }
 
 .module-card.module-locked{
     width:var(--module-closed-width);
+
     border-color:rgba(57,243,140,.38);
+
     box-shadow:
         var(--shadow-soft),
         0 0 26px rgba(57,243,140,.055),
@@ -2116,23 +2146,26 @@ body{
 
 .module-card.module-open{
     width:var(--module-open-width);
+
+    min-height:385px;
+    max-height:var(--module-open-height);
+
     z-index:12;
-    min-height: 340px;
-    /* max-height:min(440px, calc(100vh - 130px)); */
-    transform:translateY(-6px) scale(1.02);
+
+    transform:translateY(-6px) scale(1.025);
+
     border-color:rgba(53,194,255,.68);
+
     box-shadow:
         var(--shadow-card),
-        0 0 46px rgba(53,194,255,.18),
-        inset 0 0 30px rgba(53,194,255,.04);
+        0 0 48px rgba(53,194,255,.20),
+        inset 0 0 32px rgba(53,194,255,.045);
 }
 
-.module-left-middle.module-open,
-.module-right-middle.module-open{
-   transform:translateY(-50%) translateY(-6px) scale(1.02);
-}
+/* ==========================================================
+   POSITIONS - CURRENT APPROVED LAYOUT
+========================================================== */
 
-/* Positions */
 .module-left-top,
 .module-left-middle,
 .module-left-bottom,
@@ -2146,25 +2179,30 @@ body{
     translate:0 0;
 }
 
+/* Top and middle left modules */
 .module-left-top,
 .module-left-middle{
-    left:clamp(18px,3vw,54px);
+    left:var(--module-side-x);
     transform-origin:left center;
 }
 
+/* Top and middle right modules */
 .module-right-top,
 .module-right-middle{
-    right:clamp(18px,3vw,54px);
+    right:var(--module-side-x);
     transform-origin:right center;
 }
 
+/* Bottom modules centered under the CPU area */
 .module-left-bottom{
-   left:calc(50% - var(--module-open-width));
-}
-.module-right-bottom{
-   right:calc(50% - var(--module-open-width));
+    left:calc(50% - var(--module-open-width) - var(--module-bottom-gap));
+    transform-origin:right center;
 }
 
+.module-right-bottom{
+    right:calc(50% - var(--module-open-width) - var(--module-bottom-gap));
+    transform-origin:left center;
+}
 
 /* Top row */
 .module-left-top,
@@ -2184,7 +2222,7 @@ body{
     bottom:clamp(32px,5vh,64px);
 }
 
-/* Visible state: preserve the correct transform per row */
+/* Visible state */
 .modules-visible .module-left-top,
 .modules-visible .module-right-top,
 .modules-visible .module-left-bottom,
@@ -2197,32 +2235,40 @@ body{
     transform:translateY(-50%) scale(1);
 }
 
-/* Open state: keep each row anchored correctly */
+/* Open state */
 .modules-visible .module-left-top.module-open,
 .modules-visible .module-right-top.module-open,
 .modules-visible .module-left-bottom.module-open,
 .modules-visible .module-right-bottom.module-open{
-    transform:translateY(-6px) scale(1.02);
+    transform:translateY(-6px) scale(1.025);
 }
 
 .modules-visible .module-left-middle.module-open,
 .modules-visible .module-right-middle.module-open{
-    transform:translateY(-50%) translateY(-6px) scale(1.02);
+    transform:translateY(-50%) translateY(-6px) scale(1.025);
 }
 
-/* Module decorations */
+/* ==========================================================
+   MODULE DECORATIONS
+========================================================== */
+
 .module-scanline{
     position:absolute;
     inset:0;
+
     background:linear-gradient(
         180deg,
         transparent 0%,
         rgba(53,194,255,.035) 48%,
         transparent 52%
     );
+
     opacity:.35;
+
     pointer-events:none;
+
     transform:translateY(-100%);
+
     transition:transform .9s ease;
 }
 
@@ -2232,10 +2278,14 @@ body{
 
 .module-corner{
     position:absolute;
+
     width:18px;
     height:18px;
+
     border-color:rgba(53,194,255,.48);
+
     z-index:3;
+
     transition:border-color var(--transition-normal);
 }
 
@@ -2275,7 +2325,10 @@ body{
     border-color:rgba(53,194,255,.82);
 }
 
-/* Module header */
+/* ==========================================================
+   MODULE HEADER
+========================================================== */
+
 .module-header{
     position:relative;
     z-index:2;
@@ -2286,13 +2339,16 @@ body{
     justify-content:space-between;
     align-items:center;
     gap:12px;
+
     margin-bottom:14px;
 }
 
 .module-index{
     color:var(--clr-accent);
+
     letter-spacing:3px;
     font-size:.62rem;
+
     opacity:.75;
 }
 
@@ -2305,7 +2361,9 @@ body{
     display:flex;
     align-items:center;
     gap:7px;
+
     color:#7f8a9b;
+
     font-size:.56rem;
     letter-spacing:1.8px;
 }
@@ -2313,8 +2371,11 @@ body{
 .module-status-dot{
     width:6px;
     height:6px;
+
     border-radius:50%;
+
     background:#657184;
+
     transition:
         background var(--transition-normal),
         box-shadow var(--transition-normal);
@@ -2336,8 +2397,11 @@ body{
 .module-card h3{
     font-family:var(--font-title);
     font-size:1.2rem;
+
     letter-spacing:.2px;
+
     margin-bottom:10px;
+
     transition:
         color var(--transition-normal),
         text-shadow var(--transition-normal);
@@ -2354,20 +2418,30 @@ body{
 
 .module-card p{
     color:var(--clr-text-secondary);
+
     font-size:.85rem;
     line-height:1.5;
 }
 
-/* Module content */
+/* ==========================================================
+   MODULE CONTENT
+========================================================== */
+
 .module-content{
     display:grid;
     grid-template-columns:minmax(135px,.85fr) minmax(180px,1.15fr);
     gap:14px;
+
     max-height:0;
+
     margin-top:0;
+
     opacity:0;
+
     overflow:hidden;
+
     transform:translateY(10px);
+
     transition:
         max-height .65s ease,
         opacity .45s ease,
@@ -2376,42 +2450,61 @@ body{
 }
 
 .module-open .module-content{
-    grid-template-columns:minmax(185px,.72fr) minmax(340px,1.28fr);
-    max-height:min(380px,calc(100vh - 220px));
-    margin-top:20px;
+    grid-template-columns:minmax(195px,.72fr) minmax(365px,1.28fr);
+
+    max-height:var(--module-content-height);
+
+    margin-top:18px;
+
     opacity:1;
+
     transform:translateY(0);
 }
+
+/* ==========================================================
+   MODULE ITEMS
+========================================================== */
 
 .module-items{
     display:flex;
     flex-direction:column;
     gap:8px;
+
     min-width:0;
-    max-height:320px;
+    max-height:var(--module-content-height);
+
     overflow-y:auto;
     overflow-x:hidden;
+
     padding-right:4px;
 }
 
 .module-item{
     position:relative;
+
     width:100%;
     min-height:52px;
+
     padding:10px 12px;
+
     display:flex;
     flex-direction:column;
     align-items:flex-start;
     gap:3px;
+
     border:1px solid rgba(53,194,255,.14);
     border-radius:10px;
+
     color:var(--clr-text);
+
     background:linear-gradient(
         90deg,
         rgba(53,194,255,.035),
         rgba(255,255,255,.018)
     );
+
     cursor:pointer;
+
     transition:
         border-color var(--transition-normal),
         background var(--transition-normal),
@@ -2420,14 +2513,21 @@ body{
 
 .module-item::before{
     content:"";
+
     position:absolute;
+
     left:0;
     top:50%;
+
     width:3px;
     height:55%;
+
     border-radius:999px;
+
     background:rgba(53,194,255,.28);
+
     transform:translateY(-50%);
+
     transition:
         background var(--transition-normal),
         box-shadow var(--transition-normal);
@@ -2436,6 +2536,7 @@ body{
 .module-item:hover,
 .module-item.item-active{
     border-color:rgba(53,194,255,.55);
+
     transform:translateX(4px);
 }
 
@@ -2446,6 +2547,7 @@ body{
 
 .module-item.item-active{
     border-color:rgba(57,243,140,.38);
+
     background:linear-gradient(
         90deg,
         rgba(57,243,140,.08),
@@ -2465,24 +2567,35 @@ body{
 
 .module-item small{
     color:var(--clr-text-secondary);
+
     font-size:.72rem;
+    line-height:1.35;
 }
 
-/* Detail panel */
+/* ==========================================================
+   MODULE DETAIL PANEL
+========================================================== */
+
 .module-detail{
     min-height:100%;
-    max-height:320px;
+    max-height:var(--module-content-height);
+
     padding:17px 16px;
+
     overflow-y:auto;
     overflow-x:hidden;
+
     border:1px solid rgba(53,194,255,.12);
     border-radius:12px;
+
     background:linear-gradient(
         145deg,
         rgba(4,8,14,.62),
         rgba(10,16,28,.45)
     );
+
     opacity:.75;
+
     transition:
         border-color var(--transition-normal),
         background var(--transition-normal),
@@ -2491,7 +2604,9 @@ body{
 
 .module-detail.detail-active{
     opacity:1;
+
     border-color:rgba(57,243,140,.38);
+
     background:linear-gradient(
         145deg,
         rgba(57,243,140,.04),
@@ -2501,21 +2616,29 @@ body{
 
 .detail-placeholder{
     display:block;
+
     color:var(--clr-text-secondary);
+
     font-size:.78rem;
     line-height:1.5;
 }
 
 .detail-date{
     display:block;
+
     width:max-content;
     max-width:100%;
+
     padding:4px 7px;
     margin-bottom:10px;
+
     border:1px solid rgba(57,243,140,.22);
     border-radius:999px;
+
     background:rgba(57,243,140,.035);
+
     color:var(--clr-success);
+
     font-size:.68rem;
     letter-spacing:1.5px;
 }
@@ -2523,13 +2646,16 @@ body{
 .module-detail h4{
     font-family:var(--font-title);
     font-size:1.05rem;
+
     margin-bottom:8px;
 }
 
 .module-detail p{
     color:var(--clr-text-secondary);
+
     font-size:.82rem;
     line-height:1.45;
+
     margin-bottom:12px;
 }
 
@@ -2537,30 +2663,43 @@ body{
     display:flex;
     flex-direction:column;
     gap:5px;
+
     padding-bottom:4px;
 }
 
 .module-detail li{
     position:relative;
+
     padding-left:14px;
+
     color:rgba(245,248,252,.78);
+
     font-size:.78rem;
     line-height:1.42;
 }
 
 .module-detail li::before{
     content:"";
+
     position:absolute;
+
     left:0;
     top:.45rem;
+
     width:5px;
     height:5px;
+
     border-radius:50%;
+
     background:var(--clr-success);
+
     box-shadow:0 0 8px rgba(57,243,140,.65);
 }
 
-/* Scrollbars */
+/* ==========================================================
+   MODULE SCROLLBARS
+========================================================== */
+
 .module-items::-webkit-scrollbar,
 .module-detail::-webkit-scrollbar{
     width:5px;
@@ -2589,14 +2728,18 @@ body{
     scrollbar-color:rgba(53,194,255,.45) rgba(255,255,255,.03);
 }
 
+/* ==========================================================
+   ALL MODULES ACTIVE
+========================================================== */
+
 .all-modules-active .module-card.module-locked:not(.module-open){
     border-color:rgba(57,243,140,.48);
+
     box-shadow:
         var(--shadow-soft),
         0 0 22px rgba(57,243,140,.07),
         inset 0 0 22px rgba(57,243,140,.025);
 }
-
 /* ==========================================================
    RESPONSIVE
 ========================================================== */
