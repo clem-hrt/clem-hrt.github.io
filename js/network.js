@@ -7,10 +7,10 @@ const Network = (() => {
 
     const pcbLayer = document.querySelector("#pcb-layer");
     const moduleLayer = document.querySelector("#module-layer");
+
     const activatedModules = new Set();
-    const activatedItemTraces = new Set();
-    let currentItemTrace = null;
-    let traceRefreshTimer = null;
+
+    let traceRedrawTimer = null;
 
     const modules = [
         {
@@ -258,821 +258,376 @@ const Network = (() => {
         }
     ];
 
-function create() {
-
-    createModules();
-
-    createTraces();
-
-    bindInteractions();
-
-
-
-    redrawTracesSoon();
-
-    redrawTracesSoon(850);
-
-
-
-    window.addEventListener("resize", () => {
-
-        redrawTracesSoon(80);
-
-    });
-
-}
-
-
-
-function createTraces() {
-
-    pcbLayer.innerHTML = `
-
-        <svg class="pcb-svg" aria-hidden="true"></svg>
-
-    `;
-
-}
-
     const traceConfig = {
+        experience: {
+            cpuSide: "left",
+            moduleSide: "right",
+            cpuSlot: 0.28,
+            busOffset: 58
+        },
 
-    experience: {
+        education: {
+            cpuSide: "left",
+            moduleSide: "right",
+            cpuSlot: 0.52,
+            busOffset: 82
+        },
 
-        cpuSide: "left",
+        hobbies: {
+            cpuSide: "bottom",
+            moduleSide: "right",
+            cpuSlot: 0.34,
+            busOffset: 88,
+            moduleStub: 42
+        },
 
-        moduleSide: "right",
+        projects: {
+            cpuSide: "right",
+            moduleSide: "left",
+            cpuSlot: 0.28,
+            busOffset: 58
+        },
 
-        cpuSlot: 0.28,
+        skills: {
+            cpuSide: "right",
+            moduleSide: "left",
+            cpuSlot: 0.52,
+            busOffset: 82
+        },
 
-        busOffset: 58
+        certifications: {
+            cpuSide: "bottom",
+            moduleSide: "left",
+            cpuSlot: 0.66,
+            busOffset: 88,
+            moduleStub: 42
+        }
+    };
 
-    },
+    function create() {
+        createModules();
+        createTraces();
+        bindInteractions();
 
+        redrawTracesSoon();
+        redrawTracesSoon(250);
+        redrawTracesSoon(850);
 
+        window.addEventListener("resize", () => {
+            redrawTracesSoon(80);
+            redrawTracesSoon(300);
+        });
 
-    education: {
-
-        cpuSide: "left",
-
-        moduleSide: "right",
-
-        cpuSlot: 0.50,
-
-        busOffset: 82
-
-    },
-
-
-
-    hobbies: {
-
-        cpuSide: "bottom",
-
-        moduleSide: "right", // important: connects to right side of Hobbies
-
-        cpuSlot: 0.72,
-
-        busOffset: 106
-
-    },
-
-
-
-    projects: {
-
-        cpuSide: "right",
-
-        moduleSide: "left",
-
-        cpuSlot: 0.28,
-
-        busOffset: 58
-
-    },
-
-
-
-    skills: {
-
-        cpuSide: "bottom",
-
-        moduleSide: "left",
-
-        cpuSlot: 0.50,
-
-        busOffset: 82
-
-    },
-
-
-
-    certifications: {
-
-        cpuSide: "right",
-
-        moduleSide: "left", // important: connects to left side of Certifications
-
-        cpuSlot: 0.72,
-
-        busOffset: 106
-
+        window.addEventListener("load", () => {
+            redrawTracesSoon();
+            redrawTracesSoon(500);
+        });
     }
 
-};
+    function createTraces() {
+        if (!pcbLayer) return;
 
-
-
-let traceRedrawTimer = null;
-
-
-
-function redrawTracesSoon(delay = 0) {
-
-    window.clearTimeout(traceRedrawTimer);
-
-
-
-    traceRedrawTimer = window.setTimeout(() => {
-
-        requestAnimationFrame(drawTraces);
-
-    }, delay);
-
-}
-
-
-
-function drawTraces() {
-
-    const svg = pcbLayer.querySelector(".pcb-svg");
-
-    const cpu = document.querySelector(".cpu-core");
-
-
-
-    if (!svg || !cpu) return;
-
-
-
-    const layerRect = pcbLayer.getBoundingClientRect();
-
-
-
-    if (layerRect.width === 0 || layerRect.height === 0) return;
-
-
-
-    svg.setAttribute("viewBox", `0 0 ${layerRect.width} ${layerRect.height}`);
-
-
-
-    const cpuRect = toLayerRect(cpu, layerRect);
-
-
-
-    let tracesMarkup = "";
-
-    let padsMarkup = "";
-
-
-
-    modules.forEach(module => {
-
-        const card = document.querySelector(`[data-module="${module.id}"]`);
-
-        const config = traceConfig[module.id];
-
-
-
-        if (!card || !config) return;
-
-
-
-        const moduleRect = toLayerRect(card, layerRect);
-
-
-
-        const start = getCpuAnchor(cpuRect, config);
-
-        const end = getModuleAnchor(moduleRect, config);
-
-
-
-        tracesMarkup += `
-
-            <path
-
-                class="pcb-trace"
-
-                data-trace="${module.id}"
-
-                d="${buildPcbRoute(start, end, config)}"
-
-            />
-
+        pcbLayer.innerHTML = `
+            <svg class="pcb-svg" aria-hidden="true"></svg>
         `;
 
-
-
-        padsMarkup += `
-
-            <circle
-
-                class="pcb-pad"
-
-                data-pad="${module.id}"
-
-                cx="${start.x}"
-
-                cy="${start.y}"
-
-                r="4"
-
-            />
-
-
-
-            <circle
-
-                class="pcb-pad"
-
-                data-pad="${module.id}"
-
-                cx="${end.x}"
-
-                cy="${end.y}"
-
-                r="4"
-
-            />
-
-        `;
-
-    });
-
-
-
-    svg.innerHTML = tracesMarkup + padsMarkup;
-
-
-
-    restoreTraceState();
-
-}
-
-
-
-function toLayerRect(element, layerRect) {
-
-    const rect = element.getBoundingClientRect();
-
-
-
-    return {
-
-        left: rect.left - layerRect.left,
-
-        right: rect.right - layerRect.left,
-
-        top: rect.top - layerRect.top,
-
-        bottom: rect.bottom - layerRect.top,
-
-        width: rect.width,
-
-        height: rect.height
-
-    };
-
-}
-
-
-
-function getCpuAnchor(cpuRect, config) {
-
-    return {
-
-        x: config.cpuSide === "left" ? cpuRect.left : cpuRect.right,
-
-        y: cpuRect.top + cpuRect.height * config.cpuSlot
-
-    };
-
-}
-
-
-
-function getModuleAnchor(moduleRect, config) {
-
-    return {
-
-        x: config.moduleSide === "left" ? moduleRect.left : moduleRect.right,
-
-        y: moduleRect.top + moduleRect.height * 0.5
-
-    };
-
-}
-
-
-
-function buildPcbRoute(start, end, config) {
-
-    const direction = config.cpuSide === "left" ? -1 : 1;
-
-
-
-    const busX = start.x + direction * config.busOffset;
-
-    const moduleStubX = end.x - direction * 38;
-
-
-
-    return [
-
-        `M ${round(start.x)} ${round(start.y)}`,
-
-        `L ${round(busX)} ${round(start.y)}`,
-
-        `L ${round(busX)} ${round(end.y)}`,
-
-        `L ${round(moduleStubX)} ${round(end.y)}`,
-
-        `L ${round(end.x)} ${round(end.y)}`
-
-    ].join(" ");
-
-}
-
-
-
-function restoreTraceState() {
-
-    activatedModules.forEach(id => {
-
-        document
-
-            .querySelector(`[data-trace="${id}"]`)
-
-            ?.classList.add("trace-active", "trace-locked");
-
-
-
-        document
-
-            .querySelectorAll(`[data-pad="${id}"]`)
-
-            .forEach(pad => pad.classList.add("pad-active"));
-
-    });
-
-
-
-    if (activatedModules.size === modules.length) {
-
-        pcbLayer.classList.add("all-traces-active");
-
+        redrawTracesSoon();
     }
 
-}
+    function redrawTracesSoon(delay = 0) {
+        window.clearTimeout(traceRedrawTimer);
 
-
-
-function round(value) {
-
-    return Math.round(value * 10) / 10;
-
-}
-    
-function getLayoutRect(element, referenceElement) {
-
-    const elementPos = getOffsetPosition(element);
-
-    const referencePos = getOffsetPosition(referenceElement);
-
-
-
-    const x = elementPos.x - referencePos.x;
-
-    const y = elementPos.y - referencePos.y;
-
-    const width = element.offsetWidth;
-
-    const height = element.offsetHeight;
-
-
-
-    return {
-
-        x,
-
-        y,
-
-        width,
-
-        height,
-
-        left: x,
-
-        right: x + width,
-
-        top: y,
-
-        bottom: y + height
-
-    };
-
-}
-
-
-
-function getOffsetPosition(element) {
-
-    let x = 0;
-
-    let y = 0;
-
-    let node = element;
-
-
-
-    while (node && node !== document.body) {
-
-        x += node.offsetLeft || 0;
-
-        y += node.offsetTop || 0;
-
-        node = node.offsetParent;
-
+        traceRedrawTimer = window.setTimeout(() => {
+            requestAnimationFrame(drawTraces);
+        }, delay);
     }
 
+    function drawTraces() {
+        if (!pcbLayer) return;
 
+        const svg = pcbLayer.querySelector(".pcb-svg");
+        const cpu = document.querySelector(".cpu-core");
 
-    return { x, y };
+        if (!svg || !cpu) return;
 
-}
+        const layerRect = pcbLayer.getBoundingClientRect();
 
+        if (layerRect.width === 0 || layerRect.height === 0) return;
 
+        svg.setAttribute("viewBox", `0 0 ${layerRect.width} ${layerRect.height}`);
+        svg.setAttribute("width", layerRect.width);
+        svg.setAttribute("height", layerRect.height);
 
+        const cpuRect = toLayerRect(cpu, layerRect);
 
+        let tracesMarkup = "";
+        let padsMarkup = "";
 
-function clamp(value, min, max) {
+        modules.forEach(module => {
+            const card = document.querySelector(`[data-module="${module.id}"]`);
+            const config = traceConfig[module.id];
 
-    return Math.max(min, Math.min(max, value));
+            if (!card || !config) return;
 
-}
+            const moduleRect = toLayerRect(card, layerRect);
 
+            const start = getCpuAnchor(cpuRect, config);
+            const end = getModuleAnchor(moduleRect, config);
 
+            tracesMarkup += `
+                <path
+                    class="pcb-trace"
+                    data-trace="${module.id}"
+                    d="${buildPcbRoute(start, end, config)}"
+                />
+            `;
 
-function getTraceSide(position) {
+            padsMarkup += `
+                <circle
+                    class="pcb-pad"
+                    data-pad="${module.id}"
+                    cx="${round(start.x)}"
+                    cy="${round(start.y)}"
+                    r="4"
+                />
 
-    if (position.includes("left")) {
+                <circle
+                    class="pcb-pad"
+                    data-pad="${module.id}"
+                    cx="${round(end.x)}"
+                    cy="${round(end.y)}"
+                    r="4"
+                />
+            `;
+        });
 
-        return "left";
+        svg.innerHTML = tracesMarkup + padsMarkup;
 
+        restoreTraceState();
     }
 
-    if (position.includes("right")) {
-
-        return "right";
-
-    }
-
-    return "right";
-
-}
-
-
-
-function getItemTraceEnd(moduleRect, side, itemIndex, itemCount) {
-
-    const ratio = (itemIndex + 1) / (itemCount + 1);
-
-
-
-    if (side === "left") {
+    function toLayerRect(element, layerRect) {
+        const rect = element.getBoundingClientRect();
 
         return {
-
-            x: moduleRect.right,
-
-            y: moduleRect.top + moduleRect.height * ratio
-
+            left: rect.left - layerRect.left,
+            right: rect.right - layerRect.left,
+            top: rect.top - layerRect.top,
+            bottom: rect.bottom - layerRect.top,
+            width: rect.width,
+            height: rect.height
         };
-
     }
 
+    function getCpuAnchor(cpuRect, config) {
+        if (config.cpuSide === "left") {
+            return {
+                x: cpuRect.left,
+                y: cpuRect.top + cpuRect.height * config.cpuSlot
+            };
+        }
 
+        if (config.cpuSide === "right") {
+            return {
+                x: cpuRect.right,
+                y: cpuRect.top + cpuRect.height * config.cpuSlot
+            };
+        }
 
-    if (side === "right") {
+        if (config.cpuSide === "bottom") {
+            return {
+                x: cpuRect.left + cpuRect.width * config.cpuSlot,
+                y: cpuRect.bottom
+            };
+        }
+
+        if (config.cpuSide === "top") {
+            return {
+                x: cpuRect.left + cpuRect.width * config.cpuSlot,
+                y: cpuRect.top
+            };
+        }
 
         return {
+            x: cpuRect.right,
+            y: cpuRect.top + cpuRect.height * 0.5
+        };
+    }
 
+    function getModuleAnchor(moduleRect, config) {
+        if (config.moduleSide === "left") {
+            return {
+                x: moduleRect.left,
+                y: moduleRect.top + moduleRect.height * 0.5
+            };
+        }
+
+        if (config.moduleSide === "right") {
+            return {
+                x: moduleRect.right,
+                y: moduleRect.top + moduleRect.height * 0.5
+            };
+        }
+
+        if (config.moduleSide === "top") {
+            return {
+                x: moduleRect.left + moduleRect.width * 0.5,
+                y: moduleRect.top
+            };
+        }
+
+        if (config.moduleSide === "bottom") {
+            return {
+                x: moduleRect.left + moduleRect.width * 0.5,
+                y: moduleRect.bottom
+            };
+        }
+
+        return {
             x: moduleRect.left,
-
-            y: moduleRect.top + moduleRect.height * ratio
-
+            y: moduleRect.top + moduleRect.height * 0.5
         };
-
     }
 
+    function buildPcbRoute(start, end, config) {
+        if (config.cpuSide === "bottom") {
+            return buildBottomCpuRoute(start, end, config);
+        }
 
+        if (config.cpuSide === "top") {
+            return buildTopCpuRoute(start, end, config);
+        }
 
-    return {
-
-        x: moduleRect.left + moduleRect.width * ratio,
-
-        y: moduleRect.top
-
-    };
-
-}
-
-
-
-function getCpuTraceStart(cpuRect, side, moduleId, itemIndex, itemCount) {
-
-    const cpuSlots = {
-
-        experience: 0.24,
-
-        education: 0.50,
-
-        hobbies: 0.76,
-
-
-
-        projects: 0.24,
-
-        skills: 0.50,
-
-        certifications: 0.76
-
-    };
-
-
-
-    const slot = cpuSlots[moduleId] ?? 0.5;
-
-    const itemOffset = (itemIndex - (itemCount - 1) / 2) * 9;
-
-
-
-    const y = clamp(
-
-        cpuRect.top + cpuRect.height * slot + itemOffset,
-
-        cpuRect.top + 22,
-
-        cpuRect.bottom - 22
-
-    );
-
-
-
-    if (side === "left") {
-
-        return {
-
-            x: cpuRect.left,
-
-            y
-
-        };
-
+        return buildSideCpuRoute(start, end, config);
     }
 
+    function buildSideCpuRoute(start, end, config) {
+        const direction = config.cpuSide === "left" ? -1 : 1;
 
+        const busX = start.x + direction * config.busOffset;
 
-    return {
+        const moduleStubX = config.moduleSide === "left"
+            ? end.x - 38
+            : end.x + 38;
 
-        x: cpuRect.right,
-
-        y
-
-    };
-
-}
-
-
-
-function buildRectilinearPath(start, end, side, itemIndex) {
-
-    const laneOffset = 58 + itemIndex * 12;
-
-
-
-    if (side === "left") {
-
-        const midX = Math.max(
-
-            end.x + 34,
-
-            start.x - laneOffset
-
-        );
-
-
-
-        return `
-
-            M ${start.x} ${start.y}
-
-            H ${midX}
-
-            V ${end.y}
-
-            H ${end.x}
-
-        `;
-
+        return [
+            `M ${round(start.x)} ${round(start.y)}`,
+            `L ${round(busX)} ${round(start.y)}`,
+            `L ${round(busX)} ${round(end.y)}`,
+            `L ${round(moduleStubX)} ${round(end.y)}`,
+            `L ${round(end.x)} ${round(end.y)}`
+        ].join(" ");
     }
 
+    function buildBottomCpuRoute(start, end, config) {
+        const busY = start.y + config.busOffset;
 
+        const moduleStub = config.moduleStub ?? 42;
 
-    const midX = Math.min(
+        const moduleStubX = config.moduleSide === "left"
+            ? end.x - moduleStub
+            : end.x + moduleStub;
 
-        end.x - 34,
+        return [
+            `M ${round(start.x)} ${round(start.y)}`,
+            `L ${round(start.x)} ${round(busY)}`,
+            `L ${round(moduleStubX)} ${round(busY)}`,
+            `L ${round(moduleStubX)} ${round(end.y)}`,
+            `L ${round(end.x)} ${round(end.y)}`
+        ].join(" ");
+    }
 
-        start.x + laneOffset
+    function buildTopCpuRoute(start, end, config) {
+        const busY = start.y - config.busOffset;
 
-    );
+        const moduleStub = config.moduleStub ?? 42;
 
+        const moduleStubX = config.moduleSide === "left"
+            ? end.x - moduleStub
+            : end.x + moduleStub;
 
+        return [
+            `M ${round(start.x)} ${round(start.y)}`,
+            `L ${round(start.x)} ${round(busY)}`,
+            `L ${round(moduleStubX)} ${round(busY)}`,
+            `L ${round(moduleStubX)} ${round(end.y)}`,
+            `L ${round(end.x)} ${round(end.y)}`
+        ].join(" ");
+    }
 
-    return `
+    function restoreTraceState() {
+        activatedModules.forEach(id => {
+            document
+                .querySelector(`[data-trace="${id}"]`)
+                ?.classList.add("trace-active", "trace-locked");
 
-        M ${start.x} ${start.y}
-
-        H ${midX}
-
-        V ${end.y}
-
-        H ${end.x}
-
-    `;
-
-}
-
-
-
-function scheduleTraceRefresh() {
-
-    requestAnimationFrame(() => {
-
-        createTraces();
-
-    });
-
-
-
-    clearTimeout(traceRefreshTimer);
-
-
-
-    traceRefreshTimer = setTimeout(() => {
-
-        createTraces();
-
-    }, 560);
-
-}
-
-    function activateItemTrace(moduleId, itemIndex) {
-
-    const traceKey = `${moduleId}-${itemIndex}`;
-
-
-
-    currentItemTrace = traceKey;
-
-    activatedItemTraces.add(traceKey);
-
-
-
-    refreshItemTraceClasses();
-
-}
-
-
-
-function refreshItemTraceClasses() {
-
-    document
-
-        .querySelectorAll(".pcb-item-trace")
-
-        .forEach(trace => {
-
-            const key = trace.dataset.itemTrace;
-
-
-
-            trace.classList.toggle(
-
-                "item-trace-locked",
-
-                activatedItemTraces.has(key)
-
-            );
-
-
-
-            trace.classList.toggle(
-
-                "item-trace-active",
-
-                key === currentItemTrace
-
-            );
-
+            document
+                .querySelectorAll(`[data-pad="${id}"]`)
+                .forEach(pad => pad.classList.add("pad-active"));
         });
 
+        if (activatedModules.size === modules.length) {
+            pcbLayer.classList.add("all-traces-active");
+        }
+    }
 
+    function round(value) {
+        return Math.round(value * 10) / 10;
+    }
 
-    document
-
-        .querySelectorAll(".pcb-item-pad")
-
-        .forEach(pad => {
-
-            const key = pad.dataset.itemPad;
-
-
-
-            pad.classList.toggle(
-
-                "item-pad-locked",
-
-                activatedItemTraces.has(key)
-
-            );
-
-
-
-            pad.classList.toggle(
-
-                "item-pad-active",
-
-                key === currentItemTrace
-
-            );
-
-        });
-
-}
-    
     function createModules() {
+        if (!moduleLayer) return;
+
         moduleLayer.innerHTML = modules.map(module => `
-        <article class="module-card module-${module.position}" data-module="${module.id}">
+            <article class="module-card module-${module.position}" data-module="${module.id}">
 
-            <span class="module-corner module-corner-tl"></span>
-            <span class="module-corner module-corner-tr"></span>
-            <span class="module-corner module-corner-bl"></span>
-            <span class="module-corner module-corner-br"></span>
+                <span class="module-corner module-corner-tl"></span>
+                <span class="module-corner module-corner-tr"></span>
+                <span class="module-corner module-corner-bl"></span>
+                <span class="module-corner module-corner-br"></span>
 
-            <div class="module-scanline"></div>
+                <div class="module-scanline"></div>
 
-            <div class="module-header">
+                <div class="module-header">
 
-                <div class="module-header-top">
-                    <span class="module-index">${module.id.toUpperCase()}</span>
+                    <div class="module-header-top">
+                        <span class="module-index">${module.id.toUpperCase()}</span>
 
-                    <span class="module-status">
-                        <span class="module-status-dot"></span>
-                        <span class="module-status-label">STANDBY</span>
-                    </span>
+                        <span class="module-status">
+                            <span class="module-status-dot"></span>
+                            <span class="module-status-label">STANDBY</span>
+                        </span>
+                    </div>
+
+                    <h3>${module.label}</h3>
+
+                    <p>${module.subtitle}</p>
+
                 </div>
 
-                <h3>${module.label}</h3>
+                <div class="module-content">
 
-                <p>${module.subtitle}</p>
+                    <div class="module-items">
+                        ${module.items.map((item, index) => `
+                            <button class="module-item"
+                                data-module-item="${module.id}"
+                                data-item-index="${index}">
+                                <span>${item.title}</span>
+                                <small>${item.meta}</small>
+                            </button>
+                        `).join("")}
+                    </div>
 
-            </div>
+                    <div class="module-detail" data-detail="${module.id}">
+                        <span class="detail-placeholder">
+                            Select an item to inspect details.
+                        </span>
+                    </div>
 
-            <div class="module-content">
-
-                <div class="module-items">
-                    ${module.items.map((item, index) => `
-                        <button class="module-item"
-                            data-module-item="${module.id}"
-                            data-item-index="${index}">
-                            <span>${item.title}</span>
-                            <small>${item.meta}</small>
-                        </button>
-                    `).join("")}
                 </div>
 
-                <div class="module-detail" data-detail="${module.id}">
-                    <span class="detail-placeholder">
-                        Select an item to inspect details.
-                    </span>
-                </div>
-
-            </div>
-
-        </article>
-    `).join("");
+            </article>
+        `).join("");
     }
 
     function bindInteractions() {
@@ -1111,17 +666,14 @@ function refreshItemTraceClasses() {
         });
     }
 
-
     function activateModule(id) {
         if (!activatedModules.has(id)) {
             activatedModules.add(id);
 
-            document
-                .querySelector(`[data-module="${id}"]`)
-                ?.classList.add("module-active", "module-locked");
-
             const moduleCard = document.querySelector(`[data-module="${id}"]`);
             const statusLabel = moduleCard?.querySelector(".module-status-label");
+
+            moduleCard?.classList.add("module-active", "module-locked");
 
             if (statusLabel) {
                 statusLabel.textContent = "LINKED";
@@ -1132,8 +684,8 @@ function refreshItemTraceClasses() {
                 ?.classList.add("trace-active", "trace-locked");
 
             document
-                .querySelector(`[data-pad="${id}"]`)
-                ?.classList.add("pad-active");
+                .querySelectorAll(`[data-pad="${id}"]`)
+                .forEach(pad => pad.classList.add("pad-active"));
 
             CPU.activateModulePins(id);
 
@@ -1151,61 +703,41 @@ function refreshItemTraceClasses() {
             SystemMonitor.setConnection("STABLE", { temporary: false });
 
             Ports.unlock();
-            
+
             moduleLayer.classList.add("all-modules-active");
             pcbLayer.classList.add("all-traces-active");
         }
     }
 
-
     function openModule(id, autoSelectFirst = true) {
+        document
+            .querySelectorAll(".module-card")
+            .forEach(card => {
+                card.classList.remove("module-open");
+            });
 
-    document
+        const moduleCard = document.querySelector(`[data-module="${id}"]`);
 
-        .querySelectorAll(".module-card")
+        if (!moduleCard) return;
 
-        .forEach(card => {
+        moduleCard.classList.add("module-open");
 
-            card.classList.remove("module-open");
+        redrawTracesSoon();
+        redrawTracesSoon(520);
 
-        });
-
-
-
-    const moduleCard = document.querySelector(`[data-module="${id}"]`);
-
-
-
-    if (!moduleCard) return;
-
-
-
-    moduleCard.classList.add("module-open");
-
-
-
-    redrawTracesSoon();
-
-    redrawTracesSoon(520);
-
-
-
-    if (autoSelectFirst) {
-
-        renderItemDetails(id, 0);
-
+        if (autoSelectFirst) {
+            renderItemDetails(id, 0);
+        }
     }
-
-}
 
     function renderItemDetails(moduleId, itemIndex) {
         const module = modules.find(entry => entry.id === moduleId);
-        if (!module) return;
-        
-        const item = module.items[itemIndex];
-        if (!item) return;
 
-        activateItemTrace(moduleId, itemIndex);
+        if (!module) return;
+
+        const item = module.items[itemIndex];
+
+        if (!item) return;
 
         const detailBox = document.querySelector(`[data-detail="${moduleId}"]`);
 
@@ -1232,6 +764,9 @@ function refreshItemTraceClasses() {
                 ${item.details.map(detail => `<li>${detail}</li>`).join("")}
             </ul>
         `;
+
+        redrawTracesSoon();
+        redrawTracesSoon(300);
     }
 
     function showItemDetails(moduleId, itemIndex) {
@@ -1239,28 +774,25 @@ function refreshItemTraceClasses() {
         openModule(moduleId, false);
         renderItemDetails(moduleId, itemIndex);
     }
-    
+
     function showTraces() {
+        if (!pcbLayer) return;
+
         pcbLayer.classList.add("network-visible");
+
+        redrawTracesSoon();
+        redrawTracesSoon(300);
     }
 
     function showModules() {
-    moduleLayer.classList.add("modules-visible");
+        if (!moduleLayer) return;
 
-    requestAnimationFrame(() => {
+        moduleLayer.classList.add("modules-visible");
 
-        createTraces();
+        redrawTracesSoon();
+        redrawTracesSoon(850);
+    }
 
-    });
-
-    setTimeout(() => {
-
-        createTraces();
-
-    }, 850);
-
-}
-    
     function show() {
         showTraces();
         showModules();
