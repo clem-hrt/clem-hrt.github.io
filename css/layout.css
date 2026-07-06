@@ -67,7 +67,9 @@ body{
 }
 
 #pcb-layer{
-    z-index:15;
+    position:absolute;
+    inset:1;
+    z-index:1;
     pointer-events:none;
 }
 
@@ -1907,47 +1909,27 @@ body{
    PCB NETWORK
 ========================================================== */
 .pcb-svg{
-
     position:absolute;
-
     inset:0;
-
     width:100%;
-
     height:100%;
-
-    opacity:0;
-
-    transition:opacity 1s ease;
-
+    overflow:visible;
+    pointer-events:none;
 }
 
-
-
-.network-visible .pcb-svg{
-
-    opacity:1;
-
+.network-visible .pcb-pad{
+    opacity:0.78;
 }
 
-
-
-.pcb-item-trace{
-
+.pcb-trace{
     fill:none;
-
     stroke:rgba(53,194,255,.16);
-
-    stroke-width:2.4;
-
+    stroke-width:2.2;
     stroke-linecap:round;
-
     stroke-linejoin:round;
-
     vector-effect:non-scaling-stroke;
-
-    opacity:.62;
-
+    shape-rendering:geometricPrecision;
+    filter:drop-shadow(0 0 3px rgba(53, 194, 255, 0.12));
     transition:
 
         stroke .25s ease,
@@ -1961,48 +1943,30 @@ body{
 }
 
 
-
-.pcb-item-trace.item-trace-locked{
-
-    stroke:rgba(57,243,140,.55);
-
-    stroke-width:3.1;
-
-    opacity:.86;
-
-    filter:drop-shadow(0 0 3px rgba(57,243,140,.32));
-
-}
-
-
-
-.pcb-item-trace.item-trace-active{
+.trace-active,
+.trace-locked{
 
     stroke:var(--clr-success);
 
-    stroke-width:4.2;
+    stroke-width:3.4;
 
-    opacity:1;
+    opacity:.86;
 
-    filter:
-
-        drop-shadow(0 0 5px rgba(57,243,140,.58))
-
-        drop-shadow(0 0 13px rgba(57,243,140,.22));
+    filter:drop-shadow(0 0 3px rgba(57,243,140,.45)) drop-shadow(0 0 12px rgba(57,243,140,.18));
 
 }
 
 
 
-.pcb-item-pad{
+.pcb-pad{
 
-    opacity:.72;
+    opacity:0;
 
     fill:rgba(53,194,255,.24);
 
-    stroke:rgba(53,194,255,.22);
+    stroke:none;
 
-    stroke-width:1;
+    filter:drop-shadow(0 0 4px rgba(53, 194, 255, 0.18));
 
     vector-effect:non-scaling-stroke;
 
@@ -2019,35 +1983,9 @@ body{
 }
 
 
-
-.pcb-item-pad.item-pad-locked{
-
-    opacity:.9;
-
-    fill:rgba(57,243,140,.62);
-
-    stroke:rgba(57,243,140,.38);
-
-    filter:drop-shadow(0 0 4px rgba(57,243,140,.42));
-
-}
-
-
-
-.pcb-item-pad.item-pad-active{
-
-    opacity:1;
-
+.pcb-pad.pad-active{
     fill:var(--clr-success);
-
-    stroke:rgba(255,255,255,.72);
-
-    filter:
-
-        drop-shadow(0 0 5px rgba(57,243,140,.75))
-
-        drop-shadow(0 0 12px rgba(57,243,140,.28));
-
+    filter:drop-shadow(0 0 7px rgba(57,243,140,.58))
 }
 
 /* ==========================================================
