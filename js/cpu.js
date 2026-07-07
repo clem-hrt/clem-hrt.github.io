@@ -50,7 +50,7 @@ const CPU = (() => {
                     </div>
     
                     <div class="cpu-pins cpu-pins-bottom">
-                        ${createPins("bottom", 12)}
+                        ${createPins("bottom", 10)}
                     </div>
                 </div>
             </div>
