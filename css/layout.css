@@ -1881,29 +1881,6 @@ body{
     text-shadow: 0 0 9px rgba(57, 243, 140, 0.45);
 }
 
-.scan-bus-label {
-    max-width: 72px;
-
-    color: rgba(245, 248, 252, 0.58);
-
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-
-    font-size: 0.52rem;
-    letter-spacing: 1.1px;
-}
-
-.core-monitor-row strong.scan-active .scan-bus-label {
-    color: var(--clr-accent);
-    text-shadow: 0 0 9px rgba(53, 194, 255, 0.38);
-}
-
-.core-monitor-row strong.scan-complete .scan-bus-label {
-    color: var(--clr-success);
-    text-shadow: 0 0 10px rgba(57, 243, 140, 0.55);
-}
-
 .core-monitor-progress{
     position:relative;
     width:100%;
