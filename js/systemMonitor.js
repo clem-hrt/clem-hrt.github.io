@@ -112,7 +112,7 @@ const SystemMonitor = (() => {
         const remaining = Math.max(state.modulesTotal - state.modulesActive, 0);
         power.textContent = state.power;
         core.textContent = state.core;
-        modules.textContent = `
+        modules.innerHTML = `
             <span class="monitor-module-led ${remaining > 0 ? "is-alert" : "is-clear"}"></span>
             <span>${remaining} REMAINING</span>
         `;
