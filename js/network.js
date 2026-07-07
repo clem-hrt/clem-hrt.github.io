@@ -309,6 +309,18 @@ const Network = (() => {
         }
     };
 
+    const cpuItemPinMap = {
+        experience: ["left-1", "left-2", "left-3"],
+        education: ["left-5", "left-6", "left-7"],
+        hobbies: ["bottom-1", "bottom-2", "bottom-3"],
+    
+        projects: ["right-1", "right-2"],
+        skills: ["right-5", "right-6", "right-7", "right-8"],
+        certifications: ["bottom-6", "bottom-7"]
+    };
+    
+    const activatedCpuItemPins = new Set();
+    
     function create() {
         createModules();
         createTraces();
@@ -548,10 +560,59 @@ const Network = (() => {
     
         currentItemTrace = traceKey;
         activatedItemTraces.add(traceKey);
-    
+        activateCpuItemPin(moduleId, itemIndex);
         refreshItemTraceClasses();
     }
+
+    function activateCpuItemPin(moduleId, itemIndex) {
+    const pins = cpuItemPinMap[moduleId];
+
+    if (!pins || !pins.length) return;
+
+    const pinId = pins[Math.min(itemIndex, pins.length - 1)];
+    const pinKey = `${moduleId}-${itemIndex}`;
+
+    activatedCpuItemPins.add(pinKey);
+
+    document
+        .querySelectorAll(".cpu-pin")
+        .forEach(pin => {
+            pin.classList.remove("pin-item-active");
+        });
+
+    activatedCpuItemPins.forEach(key => {
+        const [storedModuleId, storedIndex] = key.split("-");
+        const storedPins = cpuItemPinMap[storedModuleId];
+
+        if (!storedPins) return;
+
+        const storedPinId =
+            storedPins[
+                Math.min(
+                    Number(storedIndex),
+                    storedPins.length - 1
+                )
+            ];
+
+        document
+            .querySelector(
+                `[data-pin="${storedPinId}"]`
+            )
+            ?.classList.add(
+                "pin-item-locked",
+                "pin-active"
+            );
+        });
     
+        document
+            .querySelector(`[data-pin="${pinId}"]`)
+            ?.classList.add(
+                "pin-item-active",
+                "pin-item-locked",
+                "pin-active"
+            );
+    }
+        
     function refreshItemTraceClasses() {
         document
             .querySelectorAll(".pcb-item-trace")
