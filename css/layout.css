@@ -2153,7 +2153,7 @@ body{
     --module-bottom-gap:18px;
     --module-top-y:clamp(32px,5vh,64px);
     --cpu-card-top-y:var(--module-top-y);
-    --module-items-width:210px;
+    --module-items-width:240px;
 }
 
 /* ==========================================================
@@ -2857,7 +2857,7 @@ body{
 
     :root{
         --module-closed-width:clamp(215px,18vw,250px);
-        --module-open-width:clamp(460px,42vw,600px);
+        --module-open-width:clamp(260px,55vw,450px);
     }
 
     .module-content{
