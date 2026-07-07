@@ -47,7 +47,10 @@ const SystemMonitor = (() => {
 
                     <div class="core-monitor-row">
                         <span>MODULES</span>
-                        <strong id="core-monitor-modules">0 / 6</strong>
+                        <strong id="core-monitor-modules">
+                            <span class="monitor-module-led is-alert"></span>
+                            <span>6 REMAINING</span>
+                        </strong>
                     </div>
 
                     <div class="core-monitor-row">
@@ -106,9 +109,13 @@ const SystemMonitor = (() => {
 
         if (!power || !core || !modules || !connection || !progressBar) return;
 
+        const remaining = Math.max(state.modulesTotal - state.modulesActive, 0);
         power.textContent = state.power;
         core.textContent = state.core;
-        modules.textContent = `${state.modulesActive} / ${state.modulesTotal}`;
+        modules.textContent = `
+            <span class="monitor-module-led ${remaining > 0 ? "is-alert" : "is-clear"}"></span>
+            <span>${remaining} REMAINING</span>
+        `;
         connection.textContent = state.connection;
 
         const progress = state.modulesTotal === 0
@@ -119,7 +126,9 @@ const SystemMonitor = (() => {
 
         power.classList.toggle("is-online", state.power === "ONLINE");
         core.classList.toggle("is-online", state.core === "ACTIVATED");
-        modules.classList.toggle("is-online", state.modulesActive === state.modulesTotal);
+        modules.classList.toggle("modules-alert", remaining > 0);
+        modules.classList.toggle("modules-clear", remaining === 0);
+        modules.classList.toggle("is-online", remaining === 0);
         connection.classList.toggle("is-online", state.connection !== "IDLE");
     }
 
