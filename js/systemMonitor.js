@@ -142,6 +142,7 @@ const SystemMonitor = (() => {
             <span class="scan-bus-label">
                 ${itemsComplete ? "LOCKED" : state.currentBus}
             </span>
+        `;
         const progress = state.itemsTotal === 0
             ? 0
             : (state.itemsActive / state.itemsTotal) * 100;
