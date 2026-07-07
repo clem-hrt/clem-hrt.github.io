@@ -262,7 +262,10 @@ const Network = (() => {
             ]
         }
     ];
-
+    const totalItems = modules.reduce((total, module) => {
+        return total + module.items.length;
+    }, 0);
+    
     const traceConfig = {
         experience: {
             cpuSide: "left",
@@ -314,7 +317,7 @@ const Network = (() => {
         createTraces();
         bindInteractions();
         startTraceSync();
-
+        SystemMonitor.setItems(0, totalItems, "IDLE");
         redrawTracesSoon();
         forceTraceSync(1800);
 
@@ -549,6 +552,11 @@ const Network = (() => {
         currentItemTrace = traceKey;
         activatedItemTraces.add(traceKey);
         CPU.activateItemPins(moduleId, itemIndex);
+        SystemMonitor.setItems(
+            activatedItemTraces.size,
+            totalItems,
+            moduleId
+        );
         refreshItemTraceClasses();
     }
         
