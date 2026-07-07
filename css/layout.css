@@ -1447,6 +1447,8 @@ body{
     display:flex;
     align-items:flex-start;
     justify-content:center;
+    padding-top:var(--cpu-card-top-y);
+    box-sizing:border-box;
 }
 
 .cpu-chip{
@@ -2149,8 +2151,9 @@ body{
 
     --module-side-x:clamp(18px,3vw,54px);
     --module-bottom-gap:18px;
-
-   --module-items-width:252px;
+    --module-top-y:clamp(32px,5vh,64px);
+    --cpu-card-top-y:var(--module-top-y);
+    --module-items-width:252px;
 }
 
 /* ==========================================================
@@ -2301,7 +2304,7 @@ body{
 /* Top row */
 .module-left-top,
 .module-right-top{
-    top:clamp(32px,5vh,64px);
+    top:var(--cpu-card-top-y);
 }
 
 /* Middle row */
