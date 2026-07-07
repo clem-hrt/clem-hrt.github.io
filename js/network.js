@@ -558,7 +558,7 @@ const Network = (() => {
             totalItems,
             moduleId
         );
-        if (!portsUnlocked && activateItemTraces.size == totalItems) {
+        if (!portsUnlocked && activatedItemTraces.size == totalItems) {
             portsUnlocked = true;
             Ports.unlock();
         }
