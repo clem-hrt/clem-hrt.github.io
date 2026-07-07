@@ -281,8 +281,8 @@ const Network = (() => {
         hobbies: {
             cpuSide: "bottom",
             moduleSide: "right",
-            cpuSlot: 0.40,
-            busOffset: 500,
+            cpuSlot: 0.45,
+            busOffset: 400,
             moduleStub: 300
         },
 
@@ -303,8 +303,8 @@ const Network = (() => {
         certifications: {
             cpuSide: "bottom",
             moduleSide: "left",
-            cpuSlot: 0.60,
-            busOffset: 550,
+            cpuSlot: 0.55,
+            busOffset: 450,
             moduleStub: 300
         }
     };
