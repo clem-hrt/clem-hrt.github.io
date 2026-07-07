@@ -282,8 +282,8 @@ const Network = (() => {
             cpuSide: "bottom",
             moduleSide: "right",
             cpuSlot: 0.40,
-            busOffset: 255,
-            moduleStub: 48
+            busOffset: 130,
+            moduleStub: 100
         },
 
         projects: {
@@ -304,8 +304,8 @@ const Network = (() => {
             cpuSide: "bottom",
             moduleSide: "left",
             cpuSlot: 0.60,
-            busOffset: 255,
-            moduleStub: 48
+            busOffset: 130,
+            moduleStub: 100
         }
     };
     
