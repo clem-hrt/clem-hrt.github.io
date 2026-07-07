@@ -12,61 +12,47 @@ const CPU = (() => {
     function create() {
         cpuLayer.innerHTML = `
             <div class="cpu-wrapper">
-
                 <div class="cpu-chip">
-
-                    <div class="cpu-pins cpu-pins-top">
-                        ${createPins("top", 8)}
-                    </div>
-
                     <div class="cpu-row">
-
                         <div class="cpu-pins cpu-pins-left">
                             ${createPins("left", 8)}
                         </div>
-
+    
                         <div class="cpu-core">
-
                             <span class="cpu-corner cpu-corner-tl"></span>
                             <span class="cpu-corner cpu-corner-tr"></span>
                             <span class="cpu-corner cpu-corner-bl"></span>
                             <span class="cpu-corner cpu-corner-br"></span>
-
+    
                             <div class="cpu-core-grid"></div>
-
+    
                             <div class="cpu-core-content">
-
                                 <div class="cpu-identity">
                                     <span class="cpu-ref">CH-RX01</span>
                                     <span class="cpu-subref">CORE MODULE</span>
                                 </div>
-
+    
                                 <h2>Clément Héritier</h2>
-
+    
                                 <p>
                                     Embedded Systems & Robotics Engineer
                                 </p>
-
+    
                                 <div id="cpu-monitor-slot"></div>
-
+    
                                 <div id="system-ports-slot"></div>
-
                             </div>
-
                         </div>
-
+    
                         <div class="cpu-pins cpu-pins-right">
                             ${createPins("right", 8)}
                         </div>
-
                     </div>
-
+    
                     <div class="cpu-pins cpu-pins-bottom">
                         ${createPins("bottom", 8)}
                     </div>
-
                 </div>
-
             </div>
         `;
     }
