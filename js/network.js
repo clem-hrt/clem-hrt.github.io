@@ -548,7 +548,7 @@ const Network = (() => {
     
         currentItemTrace = traceKey;
         activatedItemTraces.add(traceKey);
-        CPU.activateModulePins(moduleId);
+        CPU.activateItemPins(moduleId, itemIndex);
         refreshItemTraceClasses();
     }
         
@@ -878,8 +878,6 @@ const Network = (() => {
             document
                 .querySelectorAll(`[data-pad="${id}"]`)
                 .forEach(pad => pad.classList.add("pad-active"));
-
-            CPU.activateModulePins(id);
 
             SystemMonitor.setModules(activatedModules.size, modules.length);
             SystemMonitor.setConnection(id);
