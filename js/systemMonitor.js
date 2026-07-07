@@ -12,6 +12,9 @@ const SystemMonitor = (() => {
         core: "STANDBY",
         modulesActive: 0,
         modulesTotal: 6,
+        itemsActive: 0,
+        itemsTotal: 17,
+        currentBus: "IDLE",
         connection: "IDLE"
     };
 
@@ -48,16 +51,23 @@ const SystemMonitor = (() => {
                     <div class="core-monitor-row">
                         <span>MODULES</span>
                         <strong id="core-monitor-modules">
-                            <span class="monitor-module-led is-alert"></span>
-                            <span>6 REMAINING</span>
+                            <span class="monitor-module-led-row">
+                                <span class="monitor-module-dot is-alert"></span>
+                                <span class="monitor-module-dot is-alert"></span>
+                                <span class="monitor-module-dot is-alert"></span>
+                                <span class="monitor-module-dot is-alert"></span>
+                                <span class="monitor-module-dot is-alert"></span>
+                                <span class="monitor-module-dot is-alert"></span>
+                            </span>
                         </strong>
                     </div>
 
                     <div class="core-monitor-row">
-                        <span>LINK</span>
-                        <strong id="core-monitor-connection">IDLE</strong>
+                        <span>SCAN BUS</span>
+                        <strong id="core-monitor-connection">
+                            <span class="scan-count">00 / 17</span>
+                        </strong>
                     </div>
-
                 </div>
 
                 <div class="core-monitor-progress">
@@ -69,7 +79,12 @@ const SystemMonitor = (() => {
 
         render();
     }
-
+    function setItems(active, total = 17, bus = "IDLE") {
+        state.itemsActive = active;
+        state.itemsTotal = total;
+        state.currentBus = bus.toUpperCase();
+        render();
+    }
     function setPowerOnline() {
         state.power = "ONLINE";
         render();
@@ -109,27 +124,38 @@ const SystemMonitor = (() => {
 
         if (!power || !core || !modules || !connection || !progressBar) return;
 
-        const remaining = Math.max(state.modulesTotal - state.modulesActive, 0);
+        const modulesComplete = state.modulesActive === state.modulesTotal;
+        const itemsComplete = state.itemsActive === state.itemsTotal;
         power.textContent = state.power;
         core.textContent = state.core;
         modules.innerHTML = `
-            <span class="monitor-module-led ${remaining > 0 ? "is-alert" : "is-clear"}"></span>
-            <span>${remaining} REMAINING</span>
+            <span class="monitor-module-led-row">
+                ${Array.from({ length: state.modulesTotal }, (_, index) => `
+                    <span class="monitor-module-dot ${index < state.modulesActive ? "is-clear" : "is-alert"}"></span>
+                `).join("")}
+            </span>
         `;
-        connection.textContent = state.connection;
-
-        const progress = state.modulesTotal === 0
+        connection.innerHTML = `
+            <span class="scan-count">
+                ${String(state.itemsActive).padStart(2, "0")} / ${String(state.itemsTotal).padStart(2, "0")}
+            </span>
+            <span class="scan-bus-label">
+                ${itemsComplete ? "LOCKED" : state.currentBus}
+            </span>
+        const progress = state.itemsTotal === 0
             ? 0
-            : (state.modulesActive / state.modulesTotal) * 100;
+            : (state.itemsActive / state.itemsTotal) * 100;
 
         progressBar.style.width = `${progress}%`;
 
         power.classList.toggle("is-online", state.power === "ONLINE");
         core.classList.toggle("is-online", state.core === "ACTIVATED");
-        modules.classList.toggle("modules-alert", remaining > 0);
-        modules.classList.toggle("modules-clear", remaining === 0);
-        modules.classList.toggle("is-online", remaining === 0);
-        connection.classList.toggle("is-online", state.connection !== "IDLE");
+        modules.classList.toggle("modules-alert", !modulesComplete);
+        modules.classList.toggle("modules-clear", modulesComplete);
+        modules.classList.toggle("is-online", modulesComplete);
+        connection.classList.toggle("scan-active", state.itemsActive > 0 && !itemsComplete);
+        connection.classList.toggle("scan-complete", itemsComplete);
+        connection.classList.toggle("is-online", state.itemsActive > 0);
     }
 
     return {
@@ -137,6 +163,7 @@ const SystemMonitor = (() => {
         setPowerOnline,
         setCoreStatus,
         setModules,
+        setItems,
         setConnection
     };
 
