@@ -11,6 +11,7 @@ const Network = (() => {
     const activatedItemTraces = new Set();
     
     let currentItemTrace = null;
+    let portsUnlocked = false;
     let traceRedrawTimer = null;
     let traceSyncUntil = 0;
     let traceSyncFrame = null;
@@ -557,6 +558,10 @@ const Network = (() => {
             totalItems,
             moduleId
         );
+        if (!portsUnlocked && activateItemTraces.size == totalItems) {
+            portsUnlocked = true;
+            Ports.unlock();
+        }
         refreshItemTraceClasses();
     }
         
@@ -899,8 +904,6 @@ const Network = (() => {
             SystemMonitor.setCoreStatus("ACTIVATED");
             SystemMonitor.setModules(activatedModules.size, modules.length);
             SystemMonitor.setConnection("STABLE", { temporary: false });
-
-            Ports.unlock();
 
             moduleLayer.classList.add("all-modules-active");
             pcbLayer.classList.add("all-traces-active");
