@@ -2144,7 +2144,7 @@ body{
 ========================================================== */
 :root{
     --module-closed-width:clamp(220px,17vw,270px);
-    --module-open-width:clamp(520px,37vw,650px);
+    --module-open-width:clamp(520px,37vw,600px);
 
     --module-open-height:min(405px, calc(100vh - 115px));
     --module-content-height:248px;
@@ -2852,22 +2852,6 @@ body{
 /* ==========================================================
    RESPONSIVE
 ========================================================== */
-
-@media (max-width:1200px){
-
-    :root{
-        --module-closed-width:clamp(215px,18vw,250px);
-        --module-open-width:clamp(260px,55vw,450px);
-    }
-
-    .module-content{
-        grid-template-columns:1fr;
-    }
-
-    .module-detail{
-        max-height:140px;
-    }
-}
 
 @media (max-width:900px){
 
