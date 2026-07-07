@@ -1597,7 +1597,7 @@ body{
 
 .cpu-pins-bottom{
     display:grid;
-    grid-template-columns:repeat(12,1fr);
+    grid-template-columns:repeat(10,1fr);
     gap:6px;
     width:380px;
     margin-top:-1px;
