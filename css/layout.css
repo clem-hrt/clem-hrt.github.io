@@ -1665,8 +1665,6 @@ body{
     transition:
         background var(--transition-normal),
         box-shadow var(--transition-normal),
-        width var(--transition-normal),
-        height var(--transition-normal),
         opacity var(--transition-normal);
 }
 
@@ -1750,12 +1748,9 @@ body{
 }
 
 .cpu-pins-left .cpu-pin.pin-item-active,
-.cpu-pins-right .cpu-pin.pin-item-active {
-    width: 21px;
-}
-
-.cpu-pins-bottom .cpu-pin.pin-item-active {
-    height: 21px;
+.cpu-pins-right .cpu-pin.pin-item-active,
+.cpu-pins-bottom .cpu-pin.pin-item-active{
+    transform:scaleX(1.32);
 }
 
 .core-activated .cpu-core{
