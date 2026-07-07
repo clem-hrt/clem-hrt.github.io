@@ -1453,7 +1453,7 @@ body{
     display:grid;
     grid-template-rows:auto auto auto;
     place-items:center;
-    gap:12px;
+    gap:7px;
     opacity:0;
     transform:scale(.92);
     transition:
@@ -1470,7 +1470,7 @@ body{
     display:flex;
     align-items:center;
     justify-content:center;
-    gap:14px;
+    gap:7px;
 }
 
 .cpu-core{
@@ -1599,105 +1599,123 @@ body{
 .cpu-pins-bottom{
     display:grid;
     grid-template-columns:repeat(8,1fr);
-    gap:9px;
+    gap:5px;
 }
 
 .cpu-pins-left,
 .cpu-pins-right{
     display:grid;
     grid-template-rows:repeat(8,1fr);
-    gap:10px;
+    gap:6px;
 }
 
 .cpu-pins-top .cpu-pin,
 .cpu-pins-bottom .cpu-pin{
-    width:5px;
-    height:34px;
+    width:3px;
+    height:22px;
 }
 
 .cpu-pins-left .cpu-pin,
 .cpu-pins-right .cpu-pin{
-    width:38px;
-    height:5px;
+    width:24px;
+    height:3px;
 }
 
 .cpu-pin{
     position:relative;
     border-radius:999px;
-    background:rgba(53,194,255,.15);
+    background:rgba(53,194,255,.13);
     box-shadow:
-        inset 0 0 3px rgba(255,255,255,.06),
-        0 0 4px rgba(53,194,255,.08);
+        inset 0 0 2px rgba(255,255,255,.08),
+        0 0 3px rgba(53,194,255,.10);
     transition:
         background var(--transition-normal),
         box-shadow var(--transition-normal),
         transform var(--transition-normal),
         width var(--transition-normal),
-        height var(--transition-normal);
+        height var(--transition-normal),
+        opacity var(--transition-normal);
 }
 
 .cpu-pin::after{
     content:"";
     position:absolute;
     border-radius:999px;
-    background:rgba(234,243,255,.24);
+    background:rgba(234,243,255,.25);
     opacity:.45;
 }
 
 .cpu-pins-left .cpu-pin::after,
 .cpu-pins-right .cpu-pin::after{
     top:50%;
-    width:8px;
-    height:2px;
+    width:6px;
+    height:1px;
     transform:translateY(-50%);
 }
 
 .cpu-pins-left .cpu-pin::after{
-    right:4px;
+    right:3px;
 }
 
 .cpu-pins-right .cpu-pin::after{
-    left:4px;
+    left:3px;
 }
 
 .cpu-pins-top .cpu-pin::after,
 .cpu-pins-bottom .cpu-pin::after{
     left:50%;
-    width:2px;
-    height:8px;
+    width:1px;
+    height:6px;
     transform:translateX(-50%);
 }
 
 .cpu-pins-top .cpu-pin::after{
-    bottom:4px;
+    bottom:3px;
 }
 
 .cpu-pins-bottom .cpu-pin::after{
-    top:4px;
+    top:3px;
 }
 
 .cpu-pin.pin-active{
     transform:scale(1.08);
     background:var(--clr-success);
     box-shadow:
-        0 0 8px rgba(57,243,140,.85),
-        0 0 18px rgba(57,243,140,.35),
-        inset 0 0 5px rgba(255,255,255,.20);
+        0 0 6px rgba(57,243,140,.60),
+        0 0 13px rgba(57,243,140,.22),
+        inset 0 0 4px rgba(255,255,255,.18);
 }
 
 .cpu-pin.pin-active::after{
     background:#fff;
-    opacity:.75;
+    opacity:.7;
+}
+
+.cpu-pin.pin-item-locked{
+    background:rgba(57,243,140,.72);
+    box-shadow:
+        0 0 7px rgba(57,243,140,.70),
+        0 0 16px rgba(57,243,140,.28),
+        inset 0 0 4px rgba(255,255,255,.22);
+}
+
+.cpu-pin.pin-item-active::after{
+    background:#fff;
+    opacity:.85;
 }
 
 .cpu-pins-left .cpu-pin.pin-active,
-.cpu-pins-right .cpu-pin.pin-active{
-    width:44px;
+.cpu-pins-right .cpu-pin.pin-active,
+.cpu-pins-left .cpu-pin.pin-item-active,
+.cpu-pins-right .cpu-pin.pin-item-active{
+    width:28px;
 }
 
 .cpu-pins-top .cpu-pin.pin-active,
-.cpu-pins-bottom .cpu-pin.pin-active{
-    height:40px;
+.cpu-pins-bottom .cpu-pin.pin-active,
+.cpu-pins-top .cpu-pin.pin-item-active,
+.cpu-pins-bottom .cpu-pin.pin-item-active{
+    height:26px;
 }
 
 .core-activated .cpu-core{
