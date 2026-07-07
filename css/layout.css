@@ -1595,127 +1595,165 @@ body{
    CPU PINS
 ========================================================== */
 
-.cpu-pins-top,
 .cpu-pins-bottom{
     display:grid;
-    grid-template-columns:repeat(8,1fr);
-    gap:5px;
+    grid-template-columns:repeat(12,1fr);
+    gap:6px;
+    width:380px;
+    margin-top:-1px;
+    padding:0 30px;
+    pointer-events:none;
 }
 
 .cpu-pins-left,
 .cpu-pins-right{
     display:grid;
-    grid-template-rows:repeat(8,1fr);
-    gap:6px;
+    grid-template-rows:repeat(12,1fr);
+    gap:3px;
+    align-self:stretch;
+    padding:18px 0;
+    pointer-events:none;
 }
 
-.cpu-pins-top .cpu-pin,
+.cpu-pins-left{
+    margin-right:-1px;
+}
+
+.cpu-pins-right{
+    margin-left:-1px;
+}
 .cpu-pins-bottom .cpu-pin{
-    width:3px;
-    height:22px;
+    justify-self:center;
+    width:2px;
+    height:16px;
+    border-radius:0 0 999px 999px;
+    transform-origin:center top;
 }
 
-.cpu-pins-left .cpu-pin,
+.cpu-pins-left .cpu-pin{
+    justify-self:end;
+    align-self:center;
+    width:16px;
+    height:2px;
+    border-radius:999px 0 0 999px;
+    transform-origin:right center;
+}
+
 .cpu-pins-right .cpu-pin{
-    width:24px;
-    height:3px;
+    justify-self:start;
+    align-self:center;
+    width:16px;
+    height:2px;
+    border-radius:0 999px 999px 0;
+    transform-origin:left center;
 }
 
 .cpu-pin{
     position:relative;
-    border-radius:999px;
-    background:rgba(53,194,255,.13);
+    opacity:.62;
+    background:linear-gradient(
+        90deg,
+        rgba(126,144,164,.62),
+        rgba(234,243,255,.74),
+        rgba(53,194,255,.20)
+    );
     box-shadow:
-        inset 0 0 2px rgba(255,255,255,.08),
-        0 0 3px rgba(53,194,255,.10);
+        inset 0 0 2px rgba(255,255,255,.22),
+        0 0 4px rgba(53,194,255,.10);
     transition:
         background var(--transition-normal),
         box-shadow var(--transition-normal),
-        transform var(--transition-normal),
         width var(--transition-normal),
         height var(--transition-normal),
         opacity var(--transition-normal);
 }
 
-.cpu-pin::after{
-    content:"";
-    position:absolute;
-    border-radius:999px;
-    background:rgba(234,243,255,.25);
-    opacity:.45;
+/* Solder bridge into CPU edge */
+
+.cpu-pin::before {
+    content: "";
+
+    position: absolute;
+
+    background: rgba(53, 194, 255, 0.16);
+
+    box-shadow: 0 0 5px rgba(53, 194, 255, 0.14);
 }
 
-.cpu-pins-left .cpu-pin::after,
-.cpu-pins-right .cpu-pin::after{
-    top:50%;
-    width:6px;
-    height:1px;
-    transform:translateY(-50%);
+.cpu-pins-left .cpu-pin::before {
+    right: -3px;
+    top: 0;
+
+    width: 4px;
+    height: 100%;
 }
 
-.cpu-pins-left .cpu-pin::after{
-    right:3px;
+.cpu-pins-right .cpu-pin::before {
+    left: -3px;
+    top: 0;
+
+    width: 4px;
+    height: 100%;
 }
 
-.cpu-pins-right .cpu-pin::after{
-    left:3px;
+.cpu-pins-bottom .cpu-pin::before {
+    top: -3px;
+    left: 0;
+
+    width: 100%;
+    height: 4px;
 }
 
-.cpu-pins-top .cpu-pin::after,
-.cpu-pins-bottom .cpu-pin::after{
-    left:50%;
-    width:1px;
-    height:6px;
-    transform:translateX(-50%);
+/* Remove old floating highlight */
+
+.cpu-pin::after {
+    display: none;
 }
 
-.cpu-pins-top .cpu-pin::after{
-    bottom:3px;
-}
+/* Visited item trace pins */
 
-.cpu-pins-bottom .cpu-pin::after{
-    top:3px;
-}
+.cpu-pin.pin-active,
+.cpu-pin.pin-item-locked {
+    opacity: 0.94;
 
-.cpu-pin.pin-active{
-    transform:scale(1.08);
-    background:var(--clr-success);
+    background: linear-gradient(
+        90deg,
+        rgba(57, 243, 140, 0.46),
+        rgba(234, 255, 244, 0.92),
+        rgba(57, 243, 140, 0.52)
+    );
+
     box-shadow:
-        0 0 6px rgba(57,243,140,.60),
-        0 0 13px rgba(57,243,140,.22),
-        inset 0 0 4px rgba(255,255,255,.18);
+        0 0 7px rgba(57, 243, 140, 0.62),
+        0 0 15px rgba(57, 243, 140, 0.24),
+        inset 0 0 4px rgba(255, 255, 255, 0.26);
 }
 
-.cpu-pin.pin-active::after{
-    background:#fff;
-    opacity:.7;
-}
+/* Current item trace pins */
 
-.cpu-pin.pin-item-locked{
-    background:rgba(57,243,140,.72);
+.cpu-pin.pin-item-active {
+    opacity: 1;
+
+    background: linear-gradient(
+        90deg,
+        rgba(57, 243, 140, 0.72),
+        #ffffff,
+        rgba(57, 243, 140, 0.78)
+    );
+
     box-shadow:
-        0 0 7px rgba(57,243,140,.70),
-        0 0 16px rgba(57,243,140,.28),
-        inset 0 0 4px rgba(255,255,255,.22);
+        0 0 9px rgba(57, 243, 140, 0.95),
+        0 0 22px rgba(57, 243, 140, 0.42),
+        inset 0 0 5px rgba(255, 255, 255, 0.35);
 }
 
-.cpu-pin.pin-item-active::after{
-    background:#fff;
-    opacity:.85;
-}
-
-.cpu-pins-left .cpu-pin.pin-active,
-.cpu-pins-right .cpu-pin.pin-active,
 .cpu-pins-left .cpu-pin.pin-item-active,
-.cpu-pins-right .cpu-pin.pin-item-active{
-    width:28px;
+.cpu-pins-right .cpu-pin.pin-item-active {
+    width: 21px;
 }
 
-.cpu-pins-top .cpu-pin.pin-active,
-.cpu-pins-bottom .cpu-pin.pin-active,
-.cpu-pins-top .cpu-pin.pin-item-active,
-.cpu-pins-bottom .cpu-pin.pin-item-active{
-    height:26px;
+.cpu-pins-bottom .cpu-pin.pin-item-active {
+    height: 21px;
 }
 
 .core-activated .cpu-core{
@@ -2929,24 +2967,24 @@ body{
 
    .cpu-pins-left .cpu-pin,
    .cpu-pins-right .cpu-pin{
-       width:15px;
+       width:13px;
    }
    
    .cpu-pins-bottom{
-       width:260px;
-       padding:0 28px;
+       width:300px;
+       padding:0 26px;
    }
    
    .cpu-pins-bottom .cpu-pin{
-       height:15px;
+       height:13px;
    }
    
    .cpu-pins-left .cpu-pin.pin-trace-active,
    .cpu-pins-right .cpu-pin.pin-trace-active{
-       width:19px;
+       width:17px;
    }
 
    .cpu-pins-bottom .cpu-pin.pin-trace-active{
-       height:19px;
+       height:17px;
    }
 }
