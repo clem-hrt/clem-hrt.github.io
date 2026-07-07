@@ -6,6 +6,16 @@ Unlocked after all profile modules are activated
 */
 
 const Ports = (() => {
+    
+    const email = "clem.heritier@laposte.net";
+    const subject = encodeURIComponent("Contact from Portfolio");
+    const body = encodeURIComponent(
+        `Hello Clement,
+        
+        I found your portfolio and would like to get in touch.
+        
+        Best regards,`
+    );
 
     const ports = [
         {
@@ -29,7 +39,7 @@ const Ports = (() => {
         {
             label: "EMAIL",
             status: "READY",
-            href: "mailto:clem.heritier@laposte.net",
+            href: `mailto:${email}?subject=${subject}&body=${body}`,
             type: "email"
         }
     ];
