@@ -15,7 +15,7 @@ const CPU = (() => {
                 <div class="cpu-chip">
                     <div class="cpu-row">
                         <div class="cpu-pins cpu-pins-left">
-                            ${createPins("left", 8)}
+                            ${createPins("left", 12)}
                         </div>
     
                         <div class="cpu-core">
@@ -45,12 +45,12 @@ const CPU = (() => {
                         </div>
     
                         <div class="cpu-pins cpu-pins-right">
-                            ${createPins("right", 8)}
+                            ${createPins("right", 12)}
                         </div>
                     </div>
     
                     <div class="cpu-pins cpu-pins-bottom">
-                        ${createPins("bottom", 8)}
+                        ${createPins("bottom", 12)}
                     </div>
                 </div>
             </div>
@@ -72,39 +72,98 @@ const CPU = (() => {
         cpuLayer.classList.add("cpu-visible");
     }
 
-    function activateModulePins(moduleId) {
-        const pinMap = {
-            experience: [
-                "left-1", "left-2", "left-3", "left-4"
-            ],
-
-            education: [
-                "left-5", "left-6", "left-7", "left-8"
-            ],
-
-            skills: [
-                "top-1", "top-2", "top-3", "top-4",
-                "top-5", "top-6", "top-7", "top-8"
-            ],
-
-            hobbies: [
-                "bottom-1", "bottom-2", "bottom-3", "bottom-4",
-                "bottom-5", "bottom-6", "bottom-7", "bottom-8"
-            ],
-
-            projects: [
-                "right-1", "right-2", "right-3", "right-4"
-            ],
-
-            certifications: [
-                "right-5", "right-6", "right-7", "right-8"
-            ]
-        };
-
-        pinMap[moduleId]?.forEach(pinId => {
+    const itemPinPairs = {
+        experience: [
+            ["left-1", "left-2"],
+            ["left-3", "left-4"],
+            ["left-5", "left-6"]
+        ],
+    
+        education: [
+            ["left-7", "left-8"],
+            ["left-9", "left-10"],
+            ["left-11", "left-12"]
+        ],
+    
+        projects: [
+            ["right-1", "right-2"],
+            ["right-3", "right-4"]
+        ],
+    
+        skills: [
+            ["right-5", "right-6"],
+            ["right-7", "right-8"],
+            ["right-9", "right-10"],
+            ["right-11", "right-12"]
+        ],
+    
+        hobbies: [
+            ["bottom-1", "bottom-2"],
+            ["bottom-3", "bottom-4"],
+            ["bottom-5", "bottom-6"]
+        ],
+    
+        certifications: [
+            ["bottom-7", "bottom-8"],
+            ["bottom-9", "bottom-10"]
+        ]
+    };
+    
+    const activatedItemPinPairs = new Set();
+    
+    let currentItemPinPair = null;
+    
+    function activateItemPins(moduleId, itemIndex) {
+        const pair = itemPinPairs[moduleId]?.[itemIndex];
+    
+        if (!pair) return;
+    
+        const key = `${moduleId}-${itemIndex}`;
+    
+        currentItemPinPair = key;
+        activatedItemPinPairs.add(key);
+    
+        document
+            .querySelectorAll(".cpu-pin")
+            .forEach(pin => {
+                pin.classList.remove(
+                    "pin-active",
+                    "pin-item-active",
+                    "pin-item-locked"
+                );
+            });
+    
+        activatedItemPinPairs.forEach(savedKey => {
+            const [savedModuleId, savedItemIndex] =
+                savedKey.split("-");
+    
+            const savedPair =
+                itemPinPairs[savedModuleId]?.[
+                    Number(savedItemIndex)
+                ];
+    
+            if (!savedPair) return;
+    
+            savedPair.forEach(pinId => {
+                document
+                    .querySelector(
+                        `[data-pin="${pinId}"]`
+                    )
+                    ?.classList.add(
+                        "pin-active",
+                        "pin-item-locked"
+                    );
+            });
+        });
+    
+        pair.forEach(pinId => {
             document
                 .querySelector(`[data-pin="${pinId}"]`)
-                ?.classList.add("pin-active");
+                ?.classList.add(
+                    "pin-active",
+                    "pin-item-locked",
+                    "pin-item-active"
+                );
         });
     }
 
@@ -114,7 +173,7 @@ const CPU = (() => {
     return {
         create,
         show,
-        activateModulePins,
+        activateItemPins,
         setCoreActivated
     };
 
