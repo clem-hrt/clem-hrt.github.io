@@ -468,84 +468,213 @@ const Network = (() => {
     }
 
     function drawItemTraces(module, card, moduleRect, moduleEntryPoint, config, layerRect) {
-        let traces = "";
-        let pads = "";
-    
-        module.items.forEach((item, index) => {
-            const itemAnchor = getItemAnchor(moduleRect, config, index, module.items.length);
-            const traceKey = `${module.id}-${index}`;
-    
-            traces += `
-                <path
-                    class="pcb-item-trace"
-                    data-item-trace="${traceKey}"
-                    d="${buildItemTraceRoute(
-                        moduleEntryPoint,
-                        itemAnchor,
-                        config,
-                        index
-                    )}"
-                />
-            `;
-    
-            pads += `
-                <circle
-                    class="pcb-item-pad"
-                    data-item-pad="${traceKey}"
-                    cx="${round(itemAnchor.x)}"
-                    cy="${round(itemAnchor.y)}"
-                    r="3.2"
-                />
-            `;
-        });
-    
+    let traces = "";
+    let pads = "";
+
+    const itemCount = module.items.length;
+
+    const anchors = module.items.map((item, index) =>
+        getItemAnchor(moduleRect, config, index, itemCount)
+    );
+
+    traces += `
+        <path
+            class="pcb-item-backbone"
+            data-item-backbone="${module.id}"
+            d="${buildItemBackboneRoute(moduleEntryPoint, anchors, config)}"
+        />
+    `;
+
+    module.items.forEach((item, index) => {
+        const itemAnchor = anchors[index];
+        const traceKey = `${module.id}-${index}`;
+
+        traces += `
+            <path
+                class="pcb-item-trace"
+                data-item-trace="${traceKey}"
+                d="${buildItemStubRoute(moduleEntryPoint, itemAnchor, config)}"
+            />
+        `;
+
+        pads += `
+            <circle
+                class="pcb-item-pad"
+                data-item-pad="${traceKey}"
+                cx="${round(itemAnchor.x)}"
+                cy="${round(itemAnchor.y)}"
+                r="3.2"
+            />
+        `;
+    });
+
+    return {
+        traces,
+        pads
+    };
+}
+
+const ITEM_ANCHOR_MIN_SPACING = 22;
+
+function getItemAnchor(moduleRect, config, index, itemCount) {
+    const naturalPadding = Math.min(24, moduleRect.height * 0.2);
+
+    const naturalSpacing =
+        (moduleRect.height - naturalPadding * 2) /
+        (itemCount + 1);
+
+    const spacing = Math.max(
+        naturalSpacing,
+        ITEM_ANCHOR_MIN_SPACING
+    );
+
+    const span = spacing * (itemCount + 1);
+
+    const centerY =
+        moduleRect.top + moduleRect.height / 2;
+
+    const startY = centerY - span / 2;
+
+    const y = startY + spacing * (index + 1);
+
+    if (config.moduleSide === "left") {
         return {
-            traces,
-            pads
+            x: moduleRect.left,
+            y
         };
     }
-    
-    function getItemAnchor(moduleRect, config, index, itemCount) {
-        const padding = 24;
-        const ratio = (index + 1) / (itemCount + 1);
-        if (config.moduleSide === "left") {
-            return {
-                x: moduleRect.left,
-                y: moduleRect.top + padding + (moduleRect.height - padding * 2) * ratio
-            };
-        }
-    
-        if (config.moduleSide === "right") {
-            return {
-                x: moduleRect.right,
-                y: moduleRect.top + padding + (moduleRect.height - padding * 2) * ratio
-            };
-        }
-        if (config.moduleSide === "top") {
-            return {
-                x: moduleRect.left + padding + (moduleRect.width - padding * 2) * ratio,
-                y: moduleRect.top
-            };
-        }
+
+    if (config.moduleSide === "right") {
         return {
-            x: moduleRect.left + padding + (moduleRect.width - padding * 2) * ratio,
-            y: moduleRect.bottom
+            x: moduleRect.right,
+            y
         };
     }
-    
-    function buildItemTraceRoute(moduleEntryPoint, itemAnchor, config, index) {
-        const outward = config.moduleSide === "left" ? -1 : 1;
-        const branchX = moduleEntryPoint.x + outward * (28 + index * 10);
-        const itemStubX = itemAnchor.x + outward * 14;
-    
+
+    const naturalPaddingX = Math.min(24, moduleRect.width * 0.2);
+
+    const naturalSpacingX =
+        (moduleRect.width - naturalPaddingX * 2) /
+        (itemCount + 1);
+
+    const spacingX = Math.max(
+        naturalSpacingX,
+        ITEM_ANCHOR_MIN_SPACING
+    );
+
+    const spanX = spacingX * (itemCount + 1);
+
+    const centerX =
+        moduleRect.left + moduleRect.width / 2;
+
+    const startX = centerX - spanX / 2;
+
+    const x = startX + spacingX * (index + 1);
+
+    if (config.moduleSide === "top") {
+        return {
+            x,
+            y: moduleRect.top
+        };
+    }
+
+    return {
+        x,
+        y: moduleRect.bottom
+    };
+}
+
+const ITEM_SPINE_OFFSET = 34;
+
+function buildItemBackboneRoute(moduleEntryPoint, anchors, config) {
+    const vertical =
+        config.moduleSide === "left" ||
+        config.moduleSide === "right";
+
+    const outward =
+        config.moduleSide === "left" ||
+        config.moduleSide === "top"
+            ? -1
+            : 1;
+
+    if (vertical) {
+        const spineX =
+            moduleEntryPoint.x +
+            outward * ITEM_SPINE_OFFSET;
+
+        const ys = anchors.map(a => a.y);
+        const yTop = Math.min(...ys);
+        const yBottom = Math.max(...ys);
+
+        const joinY =
+            Math.abs(yTop - moduleEntryPoint.y) <=
+            Math.abs(yBottom - moduleEntryPoint.y)
+                ? yTop
+                : yBottom;
+
         return [
             `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
-            `L ${round(branchX)} ${round(moduleEntryPoint.y)}`,
-            `L ${round(branchX)} ${round(itemAnchor.y)}`,
-            `L ${round(itemStubX)} ${round(itemAnchor.y)}`,
+            `L ${round(spineX)} ${round(moduleEntryPoint.y)}`,
+            `L ${round(spineX)} ${round(joinY)}`,
+            `M ${round(spineX)} ${round(yTop)}`,
+            `L ${round(spineX)} ${round(yBottom)}`
+        ].join(" ");
+    }
+
+    const spineY =
+        moduleEntryPoint.y +
+        outward * ITEM_SPINE_OFFSET;
+
+    const xs = anchors.map(a => a.x);
+    const xLeft = Math.min(...xs);
+    const xRight = Math.max(...xs);
+
+    const joinX =
+        Math.abs(xLeft - moduleEntryPoint.x) <=
+        Math.abs(xRight - moduleEntryPoint.x)
+            ? xLeft
+            : xRight;
+
+    return [
+        `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
+        `L ${round(moduleEntryPoint.x)} ${round(spineY)}`,
+        `L ${round(joinX)} ${round(spineY)}`,
+        `M ${round(xLeft)} ${round(spineY)}`,
+        `L ${round(xRight)} ${round(spineY)}`
+    ].join(" ");
+}
+
+function buildItemStubRoute(moduleEntryPoint, itemAnchor, config) {
+    const vertical =
+        config.moduleSide === "left" ||
+        config.moduleSide === "right";
+
+    const outward =
+        config.moduleSide === "left" ||
+        config.moduleSide === "top"
+            ? -1
+            : 1;
+
+    if (vertical) {
+        const spineX =
+            moduleEntryPoint.x +
+            outward * ITEM_SPINE_OFFSET;
+
+        return [
+            `M ${round(spineX)} ${round(itemAnchor.y)}`,
             `L ${round(itemAnchor.x)} ${round(itemAnchor.y)}`
         ].join(" ");
     }
+
+    const spineY =
+        moduleEntryPoint.y +
+        outward * ITEM_SPINE_OFFSET;
+
+    return [
+        `M ${round(itemAnchor.x)} ${round(spineY)}`,
+        `L ${round(itemAnchor.x)} ${round(itemAnchor.y)}`
+    ].join(" ");
+}
     
     function activateItemTrace(moduleId, itemIndex) {
         const traceKey = `${moduleId}-${itemIndex}`;
