@@ -271,45 +271,91 @@ const Network = (() => {
         experience: {
             cpuSide: "left",
             moduleSide: "right",
-            cpuSlot: 0.25,
-            busOffset: 48
+            cpuPins: [
+                "left-1",
+                "left-2",
+                "left-3",
+                "left-4",
+                "left-5",
+                "left-6"
+            ],
+            cpuSlot: 0.30,
+            busOffset: 34
         },
-
+    
         education: {
             cpuSide: "left",
             moduleSide: "right",
-            cpuSlot: 0.95,
-            busOffset: 38
+            cpuPins: [
+                "left-7",
+                "left-8",
+                "left-9",
+                "left-10",
+                "left-11",
+                "left-12"
+            ],
+            cpuSlot: 0.70,
+            busOffset: 64
         },
-
-        projects: {
-            cpuSide: "right",
-            moduleSide: "left",
-            cpuSlot: 0.15,
-            busOffset: 48
-        },
-
-        skills: {
-            cpuSide: "right",
-            moduleSide: "left",
-            cpuSlot: 0.85,
-            busOffset: 78
-        },
-        
+    
         hobbies: {
             cpuSide: "bottom",
             moduleSide: "right",
+            cpuPins: [
+                "bottom-1",
+                "bottom-2",
+                "bottom-3",
+                "bottom-4",
+                "bottom-5",
+                "bottom-6"
+            ],
             cpuSlot: 0.45,
-            busOffset: 400,
-            moduleStub: 500
+            busOffset: 360,
+            moduleStub: 300
         },
-        
+    
+        projects: {
+            cpuSide: "right",
+            moduleSide: "left",
+            cpuPins: [
+                "right-1",
+                "right-2",
+                "right-3",
+                "right-4"
+            ],
+            cpuSlot: 0.30,
+            busOffset: 34
+        },
+    
+        skills: {
+            cpuSide: "right",
+            moduleSide: "left",
+            cpuPins: [
+                "right-5",
+                "right-6",
+                "right-7",
+                "right-8",
+                "right-9",
+                "right-10",
+                "right-11",
+                "right-12"
+            ],
+            cpuSlot: 0.65,
+            busOffset: 64
+        },
+    
         certifications: {
             cpuSide: "bottom",
             moduleSide: "left",
+            cpuPins: [
+                "bottom-7",
+                "bottom-8",
+                "bottom-9",
+                "bottom-10"
+            ],
             cpuSlot: 0.55,
-            busOffset: 450,
-            moduleStub: 400
+            busOffset: 410,
+            moduleStub: 300
         }
     };
     
@@ -429,14 +475,21 @@ const Network = (() => {
             if (!card || !config) return;
 
             const moduleRect = toLayerRect(card, layerRect);
-            const start = getCpuAnchor(cpuRect, config);
+            const bus = getCpuPinBus(config, layerRect, cpuRect);
+            const start = bus.center;
             const end = getModuleAnchor(moduleRect, config);
 
+            const routeD = [
+                buildPcbRoute(start, end, config),
+                bus.railPath,
+                bus.tapPath
+            ].filter(Boolean).join(" ");
+            
             tracesMarkup += `
                 <path
                     class="pcb-trace"
                     data-trace="${module.id}"
-                    d="${buildPcbRoute(start, end, config)}"
+                    d="${routeD}"
                 />
             `;
 
@@ -741,38 +794,172 @@ function buildItemStubRoute(moduleEntryPoint, itemAnchor, config) {
         };
     }
 
-    function getCpuAnchor(cpuRect, config) {
+    function averageOf(values) {
+        return (
+            values.reduce(
+                (sum, value) => sum + value,
+                0
+            ) / values.length
+        );
+    }
+    
+    function getModulePinRects(config, layerRect) {
+        return (config.cpuPins || [])
+            .map(id =>
+                document.querySelector(
+                    `[data-pin="${id}"]`
+                )
+            )
+            .filter(Boolean)
+            .map(pin => toLayerRect(pin, layerRect));
+    }
+    
+    function getCpuPinBus(config, layerRect, cpuRect) {
+        const rects = getModulePinRects(
+            config,
+            layerRect
+        );
+    
+        if (!rects.length) {
+            return {
+                center: getCpuSlotAnchor(cpuRect, config),
+                railPath: "",
+                tapPath: ""
+            };
+        }
+    
+        if (
+            config.cpuSide === "left" ||
+            config.cpuSide === "right"
+        ) {
+            const isLeft =
+                config.cpuSide === "left";
+    
+            const railX = isLeft
+                ? Math.min(
+                      ...rects.map(r => r.left)
+                  ) - CPU_PIN_CLEARANCE
+                : Math.max(
+                      ...rects.map(r => r.right)
+                  ) + CPU_PIN_CLEARANCE;
+    
+            const centersY = rects.map(
+                r => (r.top + r.bottom) / 2
+            );
+    
+            const yTop = Math.min(...centersY);
+            const yBottom = Math.max(...centersY);
+    
+            const railPath =
+                `M ${round(railX)} ${round(yTop)} ` +
+                `L ${round(railX)} ${round(yBottom)}`;
+    
+            const tapPath = rects
+                .map(r => {
+                    const cy =
+                        (r.top + r.bottom) / 2;
+    
+                    const pinTipX = isLeft
+                        ? r.left
+                        : r.right;
+    
+                    return (
+                        `M ${round(pinTipX)} ${round(cy)} ` +
+                        `L ${round(railX)} ${round(cy)}`
+                    );
+                })
+                .join(" ");
+    
+            return {
+                center: {
+                    x: railX,
+                    y: averageOf([yTop, yBottom])
+                },
+                railPath,
+                tapPath
+            };
+        }
+    
+        const railY =
+            Math.max(
+                ...rects.map(r => r.bottom)
+            ) + CPU_PIN_CLEARANCE;
+    
+        const centersX = rects.map(
+            r => (r.left + r.right) / 2
+        );
+    
+        const xLeft = Math.min(...centersX);
+        const xRight = Math.max(...centersX);
+    
+        const railPath =
+            `M ${round(xLeft)} ${round(railY)} ` +
+            `L ${round(xRight)} ${round(railY)}`;
+    
+        const tapPath = rects
+            .map(r => {
+                const cx =
+                    (r.left + r.right) / 2;
+    
+                return (
+                    `M ${round(cx)} ${round(r.bottom)} ` +
+                    `L ${round(cx)} ${round(railY)}`
+                );
+            })
+            .join(" ");
+    
+        return {
+            center: {
+                x: averageOf([xLeft, xRight]),
+                y: railY
+            },
+            railPath,
+            tapPath
+        };
+    }
+    
+    function getCpuSlotAnchor(cpuRect, config) {
         if (config.cpuSide === "left") {
             return {
                 x: cpuRect.left,
-                y: cpuRect.top + cpuRect.height * config.cpuSlot
+                y:
+                    cpuRect.top +
+                    cpuRect.height * config.cpuSlot
             };
         }
-
+    
         if (config.cpuSide === "right") {
             return {
                 x: cpuRect.right,
-                y: cpuRect.top + cpuRect.height * config.cpuSlot
+                y:
+                    cpuRect.top +
+                    cpuRect.height * config.cpuSlot
             };
         }
-
+    
         if (config.cpuSide === "bottom") {
             return {
-                x: cpuRect.left + cpuRect.width * config.cpuSlot,
+                x:
+                    cpuRect.left +
+                    cpuRect.width * config.cpuSlot,
                 y: cpuRect.bottom
             };
         }
-
+    
         if (config.cpuSide === "top") {
             return {
-                x: cpuRect.left + cpuRect.width * config.cpuSlot,
+                x:
+                    cpuRect.left +
+                    cpuRect.width * config.cpuSlot,
                 y: cpuRect.top
             };
         }
-
+    
         return {
             x: cpuRect.right,
-            y: cpuRect.top + cpuRect.height * 0.5
+            y:
+                cpuRect.top +
+                cpuRect.height * 0.5
         };
     }
 
