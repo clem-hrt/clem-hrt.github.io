@@ -1557,161 +1557,314 @@ body{
 /* ==========================================================
    CPU PINS
 ========================================================== */
-
-.cpu-pins-bottom{
-    display:grid;
-    grid-template-columns:repeat(10,1fr);
-    gap:6px;
-    width:380px;
-    margin-top:-1px;
-    padding:0 30px;
-    pointer-events:none;
+.cpu-pins-bottom {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 9px;
+    width: 380px;
+    margin-top: -1px;
+    padding: 0 34px;
+    pointer-events: none;
 }
 
 .cpu-pins-left,
-.cpu-pins-right{
-    display:grid;
-    grid-template-rows:repeat(12,1fr);
-    gap:3px;
-    align-self:stretch;
-    padding:18px 0;
-    pointer-events:none;
+.cpu-pins-right {
+    display: grid;
+    grid-template-rows: repeat(12, 1fr);
+    gap: 6px;
+    align-self: stretch;
+    padding: 20px 0;
+    pointer-events: none;
 }
 
-.cpu-pins-left{
-    margin-right:-1px;
+.cpu-pins-left {
+    margin-right: -2px;
 }
 
-.cpu-pins-right{
-    margin-left:-1px;
-}
-.cpu-pins-bottom .cpu-pin{
-    justify-self:center;
-    width:2px;
-    height:16px;
-    border-radius:0 0 999px 999px;
-    transform-origin:center top;
+.cpu-pins-right {
+    margin-left: -2px;
 }
 
-.cpu-pins-left .cpu-pin{
-    justify-self:end;
-    align-self:center;
-    width:16px;
-    height:2px;
-    border-radius:999px 0 0 999px;
-    transform-origin:right center;
+.cpu-pins-bottom .cpu-pin {
+    justify-self: center;
+    width: 7px;
+    height: 15px;
+    border-radius: 0 0 2px 2px;
+    transform-origin: center top;
 }
 
-.cpu-pins-right .cpu-pin{
-    justify-self:start;
-    align-self:center;
-    width:16px;
-    height:2px;
-    border-radius:0 999px 999px 0;
-    transform-origin:left center;
+.cpu-pins-left .cpu-pin {
+    justify-self: end;
+    align-self: center;
+    width: 15px;
+    height: 7px;
+    border-radius: 2px 0 0 2px;
+    transform-origin: right center;
 }
 
-.cpu-pin{
-    position:relative;
-    opacity:.62;
-    background:linear-gradient(
-        90deg,
-        rgba(126,144,164,.62),
-        rgba(234,243,255,.74),
-        rgba(53,194,255,.20)
-    );
+.cpu-pins-right .cpu-pin {
+    justify-self: start;
+    align-self: center;
+    width: 15px;
+    height: 7px;
+    border-radius: 0 2px 2px 0;
+    transform-origin: left center;
+}
+
+.cpu-pin {
+    position: relative;
+    opacity: 0.9;
+
     box-shadow:
-        inset 0 0 2px rgba(255,255,255,.22),
-        0 0 4px rgba(53,194,255,.10);
+        inset 0 0 2px rgba(255, 255, 255, 0.28),
+        0 1px 2px rgba(0, 0, 0, 0.55);
+
     transition:
         background var(--transition-normal),
         box-shadow var(--transition-normal),
-        opacity var(--transition-normal);
+        opacity var(--transition-normal),
+        transform var(--transition-normal);
 }
 
-/* Solder bridge into CPU edge */
+.cpu-pins-left .cpu-pin,
+.cpu-pins-right .cpu-pin {
+    background: linear-gradient(
+        180deg,
+        rgba(70, 84, 102, 0.95) 0%,
+        rgba(150, 168, 190, 0.98) 26%,
+        rgba(238, 246, 255, 1) 50%,
+        rgba(140, 158, 180, 0.98) 74%,
+        rgba(58, 70, 86, 0.95) 100%
+    );
+}
+
+.cpu-pins-bottom .cpu-pin {
+    background: linear-gradient(
+        90deg,
+        rgba(70, 84, 102, 0.95) 0%,
+        rgba(150, 168, 190, 0.98) 26%,
+        rgba(238, 246, 255, 1) 50%,
+        rgba(140, 158, 180, 0.98) 74%,
+        rgba(58, 70, 86, 0.95) 100%
+    );
+}
 
 .cpu-pin::before {
     content: "";
-
     position: absolute;
+    border-radius: 1px;
 
-    background: rgba(53, 194, 255, 0.16);
+    background: linear-gradient(
+        180deg,
+        rgba(58, 70, 86, 0.98),
+        rgba(96, 110, 128, 0.98),
+        rgba(48, 58, 72, 0.98)
+    );
 
-    box-shadow: 0 0 5px rgba(53, 194, 255, 0.14);
+    box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.2);
 }
 
 .cpu-pins-left .cpu-pin::before {
-    right: -3px;
-    top: 0;
-
-    width: 4px;
-    height: 100%;
-}
-
-.cpu-pins-right .cpu-pin::before {
-    left: -3px;
-    top: 0;
-
-    width: 4px;
-    height: 100%;
-}
-
-.cpu-pins-bottom .cpu-pin::before {
-    top: -3px;
-    left: 0;
-
-    width: 100%;
-    height: 4px;
-}
-
-/* Remove old floating highlight */
-
-.cpu-pin::after {
-    display: none;
-}
-
-/* Visited item trace pins */
-
-.cpu-pin.pin-active,
-.cpu-pin.pin-item-locked {
-    opacity: 0.94;
+    right: -6px;
+    top: 50%;
+    width: 8px;
+    height: 9px;
+    transform: translateY(-50%);
 
     background: linear-gradient(
         90deg,
-        rgba(57, 243, 140, 0.46),
-        rgba(234, 255, 244, 0.92),
-        rgba(57, 243, 140, 0.52)
+        rgba(48, 58, 72, 0.98),
+        rgba(96, 110, 128, 0.98),
+        rgba(58, 70, 86, 0.98)
+    );
+}
+
+.cpu-pins-right .cpu-pin::before {
+    left: -6px;
+    top: 50%;
+    width: 8px;
+    height: 9px;
+    transform: translateY(-50%);
+
+    background: linear-gradient(
+        90deg,
+        rgba(58, 70, 86, 0.98),
+        rgba(96, 110, 128, 0.98),
+        rgba(48, 58, 72, 0.98)
+    );
+}
+
+.cpu-pins-bottom .cpu-pin::before {
+    top: -6px;
+    left: 50%;
+    width: 9px;
+    height: 8px;
+    transform: translateX(-50%);
+
+    background: linear-gradient(
+        180deg,
+        rgba(48, 58, 72, 0.98),
+        rgba(96, 110, 128, 0.98),
+        rgba(58, 70, 86, 0.98)
+    );
+}
+
+.cpu-pin::after {
+    content: "";
+    position: absolute;
+    display: block;
+
+    background: linear-gradient(
+        180deg,
+        rgba(210, 224, 240, 0.95),
+        rgba(150, 168, 190, 0.95)
+    );
+
+    box-shadow: 0 0 3px rgba(53, 194, 255, 0.18);
+}
+
+.cpu-pins-left .cpu-pin::after {
+    left: -3px;
+    top: 50%;
+    width: 4px;
+    height: 9px;
+    border-radius: 2px 0 0 2px;
+    transform: translateY(-50%);
+}
+
+.cpu-pins-right .cpu-pin::after {
+    right: -3px;
+    top: 50%;
+    width: 4px;
+    height: 9px;
+    border-radius: 0 2px 2px 0;
+    transform: translateY(-50%);
+}
+
+.cpu-pins-bottom .cpu-pin::after {
+    bottom: -3px;
+    left: 50%;
+    width: 9px;
+    height: 4px;
+    border-radius: 0 0 2px 2px;
+    transform: translateX(-50%);
+}
+
+.cpu-pins-left .cpu-pin.pin-active,
+.cpu-pins-right .cpu-pin.pin-active,
+.cpu-pins-left .cpu-pin.pin-item-locked,
+.cpu-pins-right .cpu-pin.pin-item-locked {
+    opacity: 1;
+
+    background: linear-gradient(
+        180deg,
+        rgba(30, 120, 78, 0.98) 0%,
+        rgba(120, 240, 180, 0.98) 30%,
+        rgba(235, 255, 245, 1) 50%,
+        rgba(110, 235, 172, 0.98) 70%,
+        rgba(26, 108, 70, 0.98) 100%
     );
 
     box-shadow:
-        0 0 7px rgba(57, 243, 140, 0.62),
-        0 0 15px rgba(57, 243, 140, 0.24),
-        inset 0 0 4px rgba(255, 255, 255, 0.26);
+        0 0 7px rgba(57, 243, 140, 0.6),
+        0 0 15px rgba(57, 243, 140, 0.22),
+        inset 0 0 3px rgba(255, 255, 255, 0.3);
 }
 
-/* Current item trace pins */
-
-.cpu-pin.pin-item-active {
+.cpu-pins-bottom .cpu-pin.pin-active,
+.cpu-pins-bottom .cpu-pin.pin-item-locked {
     opacity: 1;
 
     background: linear-gradient(
         90deg,
-        rgba(57, 243, 140, 0.72),
-        #ffffff,
-        rgba(57, 243, 140, 0.78)
+        rgba(30, 120, 78, 0.98) 0%,
+        rgba(120, 240, 180, 0.98) 30%,
+        rgba(235, 255, 245, 1) 50%,
+        rgba(110, 235, 172, 0.98) 70%,
+        rgba(26, 108, 70, 0.98) 100%
+    );
+
+    box-shadow:
+        0 0 7px rgba(57, 243, 140, 0.6),
+        0 0 15px rgba(57, 243, 140, 0.22),
+        inset 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+.cpu-pin.pin-active::before,
+.cpu-pin.pin-item-locked::before {
+    background: linear-gradient(
+        180deg,
+        rgba(26, 108, 70, 0.98),
+        rgba(70, 200, 138, 0.98),
+        rgba(26, 108, 70, 0.98)
+    );
+}
+
+.cpu-pin.pin-active::after,
+.cpu-pin.pin-item-locked::after {
+    background: linear-gradient(
+        180deg,
+        rgba(200, 255, 228, 0.95),
+        rgba(90, 220, 158, 0.95)
+    );
+
+    box-shadow: 0 0 4px rgba(57, 243, 140, 0.5);
+}
+
+.cpu-pins-left .cpu-pin.pin-item-active,
+.cpu-pins-right .cpu-pin.pin-item-active {
+    opacity: 1;
+
+    background: linear-gradient(
+        180deg,
+        rgba(57, 243, 140, 0.85) 0%,
+        rgba(200, 255, 228, 1) 40%,
+        #ffffff 50%,
+        rgba(190, 255, 222, 1) 60%,
+        rgba(57, 243, 140, 0.88) 100%
     );
 
     box-shadow:
         0 0 9px rgba(57, 243, 140, 0.95),
         0 0 22px rgba(57, 243, 140, 0.42),
-        inset 0 0 5px rgba(255, 255, 255, 0.35);
+        inset 0 0 5px rgba(255, 255, 255, 0.4);
+}
+
+.cpu-pins-bottom .cpu-pin.pin-item-active {
+    opacity: 1;
+
+    background: linear-gradient(
+        90deg,
+        rgba(57, 243, 140, 0.85) 0%,
+        rgba(200, 255, 228, 1) 40%,
+        #ffffff 50%,
+        rgba(190, 255, 222, 1) 60%,
+        rgba(57, 243, 140, 0.88) 100%
+    );
+
+    box-shadow:
+        0 0 9px rgba(57, 243, 140, 0.95),
+        0 0 22px rgba(57, 243, 140, 0.42),
+        inset 0 0 5px rgba(255, 255, 255, 0.4);
+}
+
+.cpu-pin.pin-item-active::after {
+    background: linear-gradient(
+        180deg,
+        #ffffff,
+        rgba(120, 240, 180, 0.95)
+    );
+
+    box-shadow: 0 0 6px rgba(57, 243, 140, 0.7);
 }
 
 .cpu-pins-left .cpu-pin.pin-item-active,
-.cpu-pins-right .cpu-pin.pin-item-active,
-.cpu-pins-bottom .cpu-pin.pin-item-active{
-    transform:scaleX(1.32);
+.cpu-pins-right .cpu-pin.pin-item-active {
+    transform: scaleX(1.28);
+}
+
+.cpu-pins-bottom .cpu-pin.pin-item-active {
+    transform: scaleY(1.28);
 }
 
 .core-activated .cpu-core{
