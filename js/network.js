@@ -271,45 +271,45 @@ const Network = (() => {
         experience: {
             cpuSide: "left",
             moduleSide: "right",
-            cpuSlot: 0.30,
-            busOffset: 58
+            cpuSlot: 0.25,
+            busOffset: 48
         },
 
         education: {
             cpuSide: "left",
             moduleSide: "right",
-            cpuSlot: 0.70,
-            busOffset: 88
-        },
-
-        hobbies: {
-            cpuSide: "bottom",
-            moduleSide: "right",
-            cpuSlot: 0.45,
-            busOffset: 400,
-            moduleStub: 300
+            cpuSlot: 0.95,
+            busOffset: 38
         },
 
         projects: {
             cpuSide: "right",
             moduleSide: "left",
-            cpuSlot: 0.30,
-            busOffset: 58
+            cpuSlot: 0.15,
+            busOffset: 48
         },
 
         skills: {
             cpuSide: "right",
             moduleSide: "left",
-            cpuSlot: 0.65,
-            busOffset: 88
+            cpuSlot: 0.85,
+            busOffset: 78
         },
-
+        
+        hobbies: {
+            cpuSide: "bottom",
+            moduleSide: "right",
+            cpuSlot: 0.45,
+            busOffset: 400,
+            moduleStub: 500
+        },
+        
         certifications: {
             cpuSide: "bottom",
             moduleSide: "left",
             cpuSlot: 0.55,
             busOffset: 450,
-            moduleStub: 300
+            moduleStub: 400
         }
     };
     
