@@ -20,32 +20,13 @@ body{
     position:relative;
 }
 
+
 #app{
     position:relative;
     z-index:var(--z-content);
     width:100%;
     min-height:100vh;
     overflow:hidden;
-}
-
-.container{
-    width:min(1400px,92vw);
-    margin:auto;
-}
-
-.hidden{
-    display:none;
-}
-
-.center{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-}
-
-.fullscreen{
-    width:100vw;
-    height:100vh;
 }
 
 /* ==========================================================
@@ -83,10 +64,6 @@ body{
     pointer-events:none;
 }
 
-#system-layer{
-    display:none;
-}
-
 /* ==========================================================
    BOOT SCREEN
 ========================================================== */
@@ -99,7 +76,7 @@ body{
 }
 
 .boot-panel{
-    width:min(560px,90vw);
+    width:min(520px,90vw);
     padding:46px;
     border:1px solid rgba(53,194,255,.18);
     border-radius:var(--radius-large);
@@ -173,14 +150,10 @@ body{
 }
 
 .boot-fade-out{
-    animation:bootFadeOut 1s ease forwards;
+    animation:bootFadeOut .9s ease forwards;
 }
 
 .boot-hidden{
-    display:none;
-}
-
-.boot-hint{
     display:none;
 }
 
@@ -872,17 +845,9 @@ body{
         rgba(7,11,18,.92);
 }
 
-.plug-body{
-    display:none;
-}
-
 /* ==========================================================
    SOCKET V2
 ========================================================== */
-
-.socket-core{
-    display:none;
-}
 
 .power-socket{
     position:absolute;
@@ -1589,10 +1554,6 @@ body{
     font-size:.86rem;
 }
 
-.cpu-core-status{
-    display:none;
-}
-
 /* ==========================================================
    CPU PINS
 ========================================================== */
@@ -2096,22 +2057,6 @@ body{
         stroke-width 0.2s ease,
         opacity 0.2s ease,
         filter 0.2s ease;
-}
-
-.pcb-item-backbone.backbone-locked {
-    stroke: rgba(57, 243, 140, 0.4);
-    stroke-width: 1.7;
-    opacity: 0.78;
-    filter: drop-shadow(0 0 3px rgba(57, 243, 140, 0.22));
-}
-
-.pcb-item-backbone.backbone-active {
-    stroke: rgba(57, 243, 140, 0.75);
-    stroke-width: 2.1;
-    opacity: 1;
-    filter:
-        drop-shadow(0 0 4px rgba(57, 243, 140, 0.4))
-        drop-shadow(0 0 10px rgba(57, 243, 140, 0.16));
 }
 
 .pcb-item-trace {
@@ -3005,14 +2950,5 @@ body{
    
    .cpu-pins-bottom .cpu-pin{
        height:13px;
-   }
-   
-   .cpu-pins-left .cpu-pin.pin-trace-active,
-   .cpu-pins-right .cpu-pin.pin-trace-active{
-       width:17px;
-   }
-
-   .cpu-pins-bottom .cpu-pin.pin-trace-active{
-       height:17px;
    }
 }
