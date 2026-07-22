@@ -31,7 +31,7 @@ ANIMATIONS
 /* ==========================================================
 BOOT ENGINE
 ========================================================== */
-
+/* 
 .boot-screen{
     min-height:100vh;
     display:flex;
@@ -158,7 +158,7 @@ BOOT ENGINE
         opacity:0;
         filter:blur(10px);
     }
-}
+} */
 
 @keyframes traceFlow{
     from{
