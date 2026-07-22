@@ -9,6 +9,7 @@ const Network = (() => {
     const moduleLayer = document.querySelector("#module-layer");
     const activatedModules = new Set();
     const activatedItemTraces = new Set();
+    const CPU_PIN_CLEARANCE = 9;
     
     let currentItemTrace = null;
     let portsUnlocked = false;
