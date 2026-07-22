@@ -2090,7 +2090,28 @@ body{
     vector-effect: non-scaling-stroke;
     shape-rendering: geometricPrecision;
     opacity: 0.5;
-    transition: stroke 0.25s ease, opacity 0.25s ease;
+    filter: drop-shadow(0 0 2px rgba(53, 194, 255, 0.08));
+    transition:
+        stroke 0.2s ease,
+        stroke-width 0.2s ease,
+        opacity 0.2s ease,
+        filter 0.2s ease;
+}
+
+.pcb-item-backbone.backbone-locked {
+    stroke: rgba(57, 243, 140, 0.4);
+    stroke-width: 1.7;
+    opacity: 0.78;
+    filter: drop-shadow(0 0 3px rgba(57, 243, 140, 0.22));
+}
+
+.pcb-item-backbone.backbone-active {
+    stroke: rgba(57, 243, 140, 0.75);
+    stroke-width: 2.1;
+    opacity: 1;
+    filter:
+        drop-shadow(0 0 4px rgba(57, 243, 140, 0.4))
+        drop-shadow(0 0 10px rgba(57, 243, 140, 0.16));
 }
 
 .pcb-item-trace {
