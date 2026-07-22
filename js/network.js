@@ -280,8 +280,7 @@ const Network = (() => {
                 "left-5",
                 "left-6"
             ],
-            cpuSlot: 0.30,
-            busOffset: 34
+            cpuSlot: 0.30
         },
     
         education: {
@@ -295,8 +294,7 @@ const Network = (() => {
                 "left-11",
                 "left-12"
             ],
-            cpuSlot: 0.70,
-            busOffset: 64
+            cpuSlot: 0.70
         },
     
         hobbies: {
@@ -310,9 +308,7 @@ const Network = (() => {
                 "bottom-5",
                 "bottom-6"
             ],
-            cpuSlot: 0.45,
-            busOffset: 360,
-            moduleStub: 300
+            cpuSlot: 0.45
         },
     
         projects: {
@@ -324,8 +320,7 @@ const Network = (() => {
                 "right-3",
                 "right-4"
             ],
-            cpuSlot: 0.30,
-            busOffset: 34
+            cpuSlot: 0.30
         },
     
         skills: {
@@ -341,8 +336,7 @@ const Network = (() => {
                 "right-11",
                 "right-12"
             ],
-            cpuSlot: 0.65,
-            busOffset: 64
+            cpuSlot: 0.65
         },
     
         certifications: {
@@ -354,9 +348,7 @@ const Network = (() => {
                 "bottom-9",
                 "bottom-10"
             ],
-            cpuSlot: 0.55,
-            busOffset: 410,
-            moduleStub: 300
+            cpuSlot: 0.55
         }
     };
     
@@ -522,51 +514,51 @@ const Network = (() => {
     }
 
     function drawItemTraces(module, card, moduleRect, moduleEntryPoint, config, layerRect) {
-    let traces = "";
-    let pads = "";
-
-    const itemCount = module.items.length;
-
-    const anchors = module.items.map((item, index) =>
-        getItemAnchor(moduleRect, config, index, itemCount)
-    );
-
-    traces += `
-        <path
-            class="pcb-item-backbone"
-            data-item-backbone="${module.id}"
-            d="${buildItemBackboneRoute(moduleEntryPoint, anchors, config)}"
-        />
-    `;
-
-    module.items.forEach((item, index) => {
-        const itemAnchor = anchors[index];
-        const traceKey = `${module.id}-${index}`;
-
+        let traces = "";
+        let pads = "";
+    
+        const itemCount = module.items.length;
+    
+        const anchors = module.items.map((item, index) =>
+            getItemAnchor(moduleRect, config, index, itemCount)
+        );
+    
         traces += `
             <path
-                class="pcb-item-trace"
-                data-item-trace="${traceKey}"
-                d="${buildItemStubRoute(moduleEntryPoint, itemAnchor, config)}"
+                class="pcb-item-backbone"
+                data-item-backbone="${module.id}"
+                d="${buildItemBackboneRoute(moduleEntryPoint, anchors, config)}"
             />
         `;
-
-        pads += `
-            <circle
-                class="pcb-item-pad"
-                data-item-pad="${traceKey}"
-                cx="${round(itemAnchor.x)}"
-                cy="${round(itemAnchor.y)}"
-                r="3.2"
-            />
-        `;
-    });
-
-    return {
-        traces,
-        pads
-    };
-}
+    
+        module.items.forEach((item, index) => {
+            const itemAnchor = anchors[index];
+            const traceKey = `${module.id}-${index}`;
+    
+            traces += `
+                <path
+                    class="pcb-item-trace"
+                    data-item-trace="${traceKey}"
+                    d="${buildItemStubRoute(moduleEntryPoint, itemAnchor, config)}"
+                />
+            `;
+    
+            pads += `
+                <circle
+                    class="pcb-item-pad"
+                    data-item-pad="${traceKey}"
+                    cx="${round(itemAnchor.x)}"
+                    cy="${round(itemAnchor.y)}"
+                    r="3.2"
+                />
+            `;
+        });
+    
+        return {
+            traces,
+            pads
+        };
+    }
 
 const ITEM_ANCHOR_MIN_SPACING = 22;
 
@@ -1003,68 +995,95 @@ function buildItemStubRoute(moduleEntryPoint, itemAnchor, config) {
         };
     }
 
-    function buildPcbRoute(start, end, config) {
-        if (config.cpuSide === "bottom") {
-            return buildBottomCpuRoute(start, end, config);
-        }
+    const CHANNEL_GAP = 30; // channel distance from the CPU edge (closed)
 
-        if (config.cpuSide === "top") {
-            return buildTopCpuRoute(start, end, config);
-        }
-
-        return buildSideCpuRoute(start, end, config);
+    function nearestEdgeX(end, rect) {
+        return Math.abs(end.x - rect.left) <= Math.abs(end.x - rect.right)
+            ? rect.left
+            : rect.right;
     }
-
-    function buildSideCpuRoute(start, end, config) {
-        const direction = config.cpuSide === "left" ? -1 : 1;
-
-        const busX = start.x + direction * config.busOffset;
-
-        const moduleStubX = config.moduleSide === "left"
-            ? end.x - 38
-            : end.x + 38;
-
+    
+    function nearestEdgeY(end, rect) {
+        return Math.abs(end.y - rect.top) <= Math.abs(end.y - rect.bottom)
+            ? rect.top
+            : rect.bottom;
+    }
+    
+    function buildPcbRoute(start, end, config, moduleRect, isOpen) {
+        const open = isOpen && moduleRect ? moduleRect : null;
+    
+        if (config.cpuSide === "left" || config.cpuSide === "right") {
+            return buildHorizontalRoute(start, end, config, open);
+        }
+    
+        // bottom / top pins -> vertical-first route
+        return buildVerticalRoute(start, end, config, open);
+    }
+    
+    /*
+        CPU pins on the left/right edge. Runs horizontally out of the pins to a
+        vertical channel, along it to the module row, then into the module.
+    */
+    function buildHorizontalRoute(start, end, config, open) {
+        const dir = config.cpuSide === "left" ? -1 : 1; // outward from CPU
+    
+        // Open: land straight on the card's CPU-facing edge at the pin row.
+        if (open) {
+            const entryX = nearestEdgeX(end, open);
+    
+            return [
+                `M ${round(start.x)} ${round(start.y)}`,
+                `L ${round(entryX)} ${round(start.y)}`,
+                `L ${round(entryX)} ${round(end.y)}`,
+                `L ${round(end.x)} ${round(end.y)}`
+            ].join(" ");
+        }
+    
+        // Closed: derived L/Z through the channel just outside the CPU edge.
+        const channelX = start.x + dir * CHANNEL_GAP;
+    
         return [
             `M ${round(start.x)} ${round(start.y)}`,
-            `L ${round(busX)} ${round(start.y)}`,
-            `L ${round(busX)} ${round(end.y)}`,
-            `L ${round(moduleStubX)} ${round(end.y)}`,
+            `L ${round(channelX)} ${round(start.y)}`,
+            `L ${round(channelX)} ${round(end.y)}`,
             `L ${round(end.x)} ${round(end.y)}`
         ].join(" ");
     }
-
-    function buildBottomCpuRoute(start, end, config) {
-        const busY = start.y + config.busOffset;
-
-        const moduleStub = config.moduleStub ?? 48;
-
-        const moduleStubX = config.moduleSide === "left"
-            ? end.x - moduleStub
-            : end.x + moduleStub;
-        const finalTurnY = end.y;
+    
+    /*
+        CPU pins on the bottom/top edge. Runs vertically out of the pins to a
+        horizontal channel, along it to the module column, then into the module.
+    */
+    function buildVerticalRoute(start, end, config, open) {
+        const dir = config.cpuSide === "top" ? -1 : 1; // outward from CPU
+    
+        // Open: land straight on the card's CPU-facing (top/bottom) edge at
+        // the pin column.
+        if (open) {
+            const entryY = nearestEdgeY(end, open);
+    
+            return [
+                `M ${round(start.x)} ${round(start.y)}`,
+                `L ${round(start.x)} ${round(entryY)}`,
+                `L ${round(end.x)} ${round(entryY)}`,
+                `L ${round(end.x)} ${round(end.y)}`
+            ].join(" ");
+        }
+    
+        // Closed: channel sits roughly halfway to the module so the run reads
+        // as a bus, but never closer than CHANNEL_GAP to the CPU edge.
+        let channelY = start.y + dir * CHANNEL_GAP;
+        const midY = start.y + (end.y - start.y) * 0.5;
+    
+        channelY =
+            dir === 1
+                ? Math.max(channelY, midY)
+                : Math.min(channelY, midY);
+    
         return [
             `M ${round(start.x)} ${round(start.y)}`,
-            `L ${round(start.x)} ${round(busY)}`,
-            `L ${round(moduleStubX)} ${round(busY)}`,
-            `L ${round(moduleStubX)} ${round(finalTurnY)}`,
-            `L ${round(end.x)} ${round(end.y)}`
-        ].join(" ");
-    }
-
-    function buildTopCpuRoute(start, end, config) {
-        const busY = start.y - config.busOffset;
-
-        const moduleStub = config.moduleStub ?? 42;
-
-        const moduleStubX = config.moduleSide === "left"
-            ? end.x - moduleStub
-            : end.x + moduleStub;
-
-        return [
-            `M ${round(start.x)} ${round(start.y)}`,
-            `L ${round(start.x)} ${round(busY)}`,
-            `L ${round(moduleStubX)} ${round(busY)}`,
-            `L ${round(moduleStubX)} ${round(end.y)}`,
+            `L ${round(start.x)} ${round(channelY)}`,
+            `L ${round(end.x)} ${round(channelY)}`,
             `L ${round(end.x)} ${round(end.y)}`
         ].join(" ");
     }
