@@ -715,7 +715,9 @@ function buildItemStubRoute(moduleEntryPoint, itemAnchor, config) {
             outward * ITEM_SPINE_OFFSET;
 
         return [
-            `M ${round(spineX)} ${round(itemAnchor.y)}`,
+            `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
+            `L ${round(spineX)} ${round(moduleEntryPoint.y)}`,
+            `L ${round(spineX)} ${round(itemAnchor.y)}`,
             `L ${round(itemAnchor.x)} ${round(itemAnchor.y)}`
         ].join(" ");
     }
@@ -725,7 +727,9 @@ function buildItemStubRoute(moduleEntryPoint, itemAnchor, config) {
         outward * ITEM_SPINE_OFFSET;
 
     return [
-        `M ${round(itemAnchor.x)} ${round(spineY)}`,
+        `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
+        `L ${round(moduleEntryPoint.x)} ${round(spineY)}`,
+        `L ${round(itemAnchor.x)} ${round(spineY)}`,
         `L ${round(itemAnchor.x)} ${round(itemAnchor.y)}`
     ].join(" ");
 }
