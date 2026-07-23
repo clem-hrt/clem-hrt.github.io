@@ -682,12 +682,32 @@ const Network = (() => {
     /* Gap left between the CPU link's end and the merge point, so the link
        touches the junction without overlapping the backbone. */
     const ITEM_MERGE_GAP = 6;
+    const CPU_MERGE_GAP = 6;
     /*
         The common point where all item traces converge and where the CPU link
         terminates. It sits on the item spine, just outside the card's
         CPU-facing edge — never on the card itself, so the link can also avoid
         its own open panel.
     */
+    function trimPathStart(points, gap) {
+        if (points.length < 2 || gap <= 0) return points;
+
+        const a = points[0];
+        const b = points[1];
+
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const len = Math.hypot(dx, dy);
+        
+        if (len <= gap) return points;
+
+        const out = points.slice();
+        out[0] = {
+            x: a.x + (dx / len) * gap,
+            y: a.y + (dy / len/) *gap
+        };
+        return out;
+    }
     function getMergePoint(moduleEntryPoint, config) {
         const vertical =
             config.moduleSide === "left" ||
@@ -1069,7 +1089,7 @@ const Network = (() => {
             end
         );
 
-        return pointsToPath(routed);
+        return pointsToPath(trimPathStart(routed, CPU_MERGE_GAP));
     }
 
     function pointsToPath(points) {
