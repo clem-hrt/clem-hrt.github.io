@@ -483,10 +483,12 @@ const Network = (() => {
             const bus = getCpuPinBus(config, layerRect, cpuRect);
             const start = bus.center;
             const end = getModuleAnchor(moduleRect, config);
+            const merge = getMergePoint(end, config);
+            const linkTarget = getLinkTarget(merge);
             const isOpen = card.classList.contains("module-open");
             const obstacles = openObstacles.map(o => o.rect);
             const routeD = [
-                buildPcbRoute(start, end, config, moduleRect, isOpen, obstacles),
+                buildPcbRoute(start, linkTarget, config, moduleRect, isOpen, obstacles),
                 bus.railPath,
                 bus.tapPath
             ].filter(Boolean).join(" ");
@@ -511,12 +513,12 @@ const Network = (() => {
                 <circle
                     class="pcb-pad"
                     data-pad="${module.id}"
-                    cx="${round(end.x)}"
-                    cy="${round(end.y)}"
+                    cx="${round(merge.x)}"
+                    cy="${round(merge.y)}"
                     r="4"
                 />
             `;
-            const itemMarkup = drawItemTraces(module, card, moduleRect, end, config, layerRect, isOpen);
+            const itemMarkup = drawItemTraces(module, card, moduleRect, merge, config, layerRect, isOpen);
             itemTracesMarkup += itemMarkup.traces;
             itemPadsMarkup += itemMarkup.pads;
         });
@@ -677,7 +679,17 @@ const Network = (() => {
 
     const ITEM_SPINE_OFFSET = 34;
 
-    function buildItemBackboneRoute(moduleEntryPoint, anchors, config) {
+    /* Gap left between the CPU link's end and the merge point, so the link
+       touches the junction without overlapping the backbone. */
+    const ITEM_MERGE_GAP = 6;
+
+    /*
+        The common point where all item traces converge and where the CPU link
+        terminates. It sits on the item spine, just outside the card's
+        CPU-facing edge — never on the card itself, so the link can also avoid
+        its own open panel.
+    */
+    function getMergePoint(moduleEntryPoint, config) {
         const vertical =
             config.moduleSide === "left" ||
             config.moduleSide === "right";
@@ -689,84 +701,67 @@ const Network = (() => {
                 : 1;
 
         if (vertical) {
-            const spineX =
-                moduleEntryPoint.x +
-                outward * ITEM_SPINE_OFFSET;
+            return {
+                x: moduleEntryPoint.x + outward * ITEM_SPINE_OFFSET,
+                y: moduleEntryPoint.y,
+                outward,
+                vertical
+            };
+        }
 
-            const ys = anchors.map(a => a.y);
+        return {
+            x: moduleEntryPoint.x,
+            y: moduleEntryPoint.y + outward * ITEM_SPINE_OFFSET,
+            outward,
+            vertical
+        };
+    }
+
+    /* Where the CPU link stops: merge point pushed a few px further out. */
+    function getLinkTarget(merge) {
+        return merge.vertical
+            ? { x: merge.x + merge.outward * ITEM_MERGE_GAP, y: merge.y }
+            : { x: merge.x, y: merge.y + merge.outward * ITEM_MERGE_GAP };
+    }
+
+    function buildItemBackboneRoute(merge, anchors, config) {
+        if (merge.vertical) {
+            // Spine runs along the merge point's x, spanning all item rows and
+            // the merge point itself.
+            const ys = anchors.map(a => a.y).concat(merge.y);
             const yTop = Math.min(...ys);
             const yBottom = Math.max(...ys);
 
-            const joinY =
-                Math.abs(yTop - moduleEntryPoint.y) <=
-                Math.abs(yBottom - moduleEntryPoint.y)
-                    ? yTop
-                    : yBottom;
-
             return [
-                `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
-                `L ${round(spineX)} ${round(moduleEntryPoint.y)}`,
-                `L ${round(spineX)} ${round(joinY)}`,
-                `M ${round(spineX)} ${round(yTop)}`,
-                `L ${round(spineX)} ${round(yBottom)}`
+                `M ${round(merge.x)} ${round(yTop)}`,
+                `L ${round(merge.x)} ${round(yBottom)}`
             ].join(" ");
         }
 
-        const spineY =
-            moduleEntryPoint.y +
-            outward * ITEM_SPINE_OFFSET;
-
-        const xs = anchors.map(a => a.x);
+        const xs = anchors.map(a => a.x).concat(merge.x);
         const xLeft = Math.min(...xs);
         const xRight = Math.max(...xs);
 
-        const joinX =
-            Math.abs(xLeft - moduleEntryPoint.x) <=
-            Math.abs(xRight - moduleEntryPoint.x)
-                ? xLeft
-                : xRight;
-
         return [
-            `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
-            `L ${round(moduleEntryPoint.x)} ${round(spineY)}`,
-            `L ${round(joinX)} ${round(spineY)}`,
-            `M ${round(xLeft)} ${round(spineY)}`,
-            `L ${round(xRight)} ${round(spineY)}`
+            `M ${round(xLeft)} ${round(merge.y)}`,
+            `L ${round(xRight)} ${round(merge.y)}`
         ].join(" ");
     }
 
-    function buildItemStubRoute(moduleEntryPoint, itemAnchor, config) {
-        const vertical =
-            config.moduleSide === "left" ||
-            config.moduleSide === "right";
-
-        const outward =
-            config.moduleSide === "left" ||
-            config.moduleSide === "top"
-                ? -1
-                : 1;
-
-        if (vertical) {
-            const spineX =
-                moduleEntryPoint.x +
-                outward * ITEM_SPINE_OFFSET;
-
+    function buildItemStubRoute(merge, itemAnchor, config) {
+        if (merge.vertical) {
+            // From the merge point, down/up the spine to this item's row, then
+            // straight into the item. The spine run lights with the item.
             return [
-                `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
-                `L ${round(spineX)} ${round(moduleEntryPoint.y)}`,
-                `L ${round(spineX)} ${round(itemAnchor.y)}`,
+                `M ${round(merge.x)} ${round(merge.y)}`,
+                `L ${round(merge.x)} ${round(itemAnchor.y)}`,
                 `L ${round(itemAnchor.x)} ${round(itemAnchor.y)}`
             ].join(" ");
         }
 
-        const spineY =
-            moduleEntryPoint.y +
-            outward * ITEM_SPINE_OFFSET;
-
         return [
-            `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
-            `L ${round(moduleEntryPoint.x)} ${round(spineY)}`,
-            `L ${round(itemAnchor.x)} ${round(spineY)}`,
+            `M ${round(merge.x)} ${round(merge.y)}`,
+            `L ${round(itemAnchor.x)} ${round(merge.y)}`,
             `L ${round(itemAnchor.x)} ${round(itemAnchor.y)}`
         ].join(" ");
     }
@@ -1111,14 +1106,11 @@ const Network = (() => {
             p.y > r.top - OBSTACLE_PAD &&
             p.y < r.bottom + OBSTACLE_PAD;
 
-        // A panel that already encloses an endpoint can't be avoided for that
-        // endpoint — exclude it so A* can still reach the connector.
+        // A panel that encloses the pin START can't be avoided (the pins sit
+        // physically under it). The goal now sits outside every card, so the
+        // trace's own open panel IS avoided like any other obstacle.
         const boxes = obstacles
-            .filter(
-                r =>
-                    !contains(r, start) &&
-                    !contains(r, goal)
-            )
+            .filter(r => !contains(r, start))
             .map(r => ({
                 left: r.left - OBSTACLE_PAD,
                 right: r.right + OBSTACLE_PAD,
@@ -1460,7 +1452,8 @@ const Network = (() => {
     function buildHorizontalPoints(start, end, config, open) {
         const dir = config.cpuSide === "left" ? -1 : 1; // outward from CPU
 
-        // Open: land straight on the card's CPU-facing edge at the pin row.
+        // Open: approach along the card's CPU-facing edge, then out to the
+        // merge point. Hugging the edge keeps the run off the panel body.
         if (open) {
             const entryX = nearestEdgeX(end, open);
 
@@ -1492,11 +1485,9 @@ const Network = (() => {
         const sideEntry =
             config.moduleSide === "left" || config.moduleSide === "right";
 
-        // Open: route to the actual connector.
+        // Open: approach the merge point from outside the card.
         if (open) {
             if (sideEntry) {
-                // Come up level with the side-edge middle, just outside the
-                // card, then step in horizontally to the entry point.
                 const laneX = config.moduleSide === "left"
                     ? open.left - CHANNEL_GAP
                     : open.right + CHANNEL_GAP;
@@ -1509,7 +1500,6 @@ const Network = (() => {
                 ];
             }
 
-            // Top/bottom entry: land on that edge at the pin column.
             const entryY = nearestEdgeY(end, open);
 
             return [
