@@ -507,7 +507,7 @@ const Network = (() => {
                     data-pad="${module.id}"
                     cx="${round(start.x)}"
                     cy="${round(start.y)}"
-                    r="4"
+                    r="${CPU_MERGE_GAP}"
                 />
 
                 <circle
@@ -515,7 +515,7 @@ const Network = (() => {
                     data-pad="${module.id}"
                     cx="${round(merge.x)}"
                     cy="${round(merge.y)}"
-                    r="4"
+                    r="${ITEM_MERGE_GAP}"
                 />
             `;
             const itemMarkup = drawItemTraces(module, card, moduleRect, merge, config, layerRect, isOpen);
