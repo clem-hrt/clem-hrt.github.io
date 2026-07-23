@@ -1667,15 +1667,14 @@ const Network = (() => {
                 <div class="module-scanline"></div>
 
                 <div class="module-header">
-
+                    <h3>${module.label}</h3>
+                    
                     <div class="module-header-top">
                         <span class="module-status">
                             <span class="module-status-dot"></span>
                             <span class="module-status-label">STANDBY</span>
                         </span>
                     </div>
-
-                    <h3>${module.label}</h3>
 
                     <p>${module.subtitle}</p>
 
