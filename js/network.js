@@ -579,7 +579,7 @@ const Network = (() => {
     
             return base;
         });
-
+    }
     const ITEM_ANCHOR_MIN_SPACING = 22;
     
     function getItemAnchor(moduleRect, config, index, itemCount) {
