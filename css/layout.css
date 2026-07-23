@@ -2566,17 +2566,18 @@ body{
 ========================================================== */
 
 .module-header{
-    position:relative;
-    z-index:2;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+       "title status"
+       "subtitle subtitle";
+    gap: 6px 12px;
 }
 
 .module-header-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:12px;
-
-    margin-bottom:14px;
+    grid-area: status;
+    justify-self: end;
+    align-self: start;
 }
 
 .module-card.module-open,
@@ -2622,12 +2623,13 @@ body{
 }
 
 .module-card h3{
+    grid-area: title;
     font-family:var(--font-title);
     font-size:1.2rem;
 
     letter-spacing:.2px;
 
-    margin-bottom:10px;
+    margin: 0;
 
     transition:
         color var(--transition-normal),
@@ -2644,10 +2646,11 @@ body{
 }
 
 .module-card p{
-    color:var(--clr-text-secondary);
-
-    font-size:.85rem;
-    line-height:1.5;
+    grid-area: subtitle;
+    margin: 0;
+    color: var(--clr-text-secondary);
+    font-size: .85rem;
+    line-height: 1.5;
 }
 
 /* ==========================================================
