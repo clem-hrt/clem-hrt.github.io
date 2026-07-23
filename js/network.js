@@ -484,11 +484,11 @@ const Network = (() => {
             const start = bus.center;
             const end = getModuleAnchor(moduleRect, config);
             const merge = getMergePoint(end, config);
-            const linkTarget = getLinkTarget(merge);
+            // const linkTarget = getLinkTarget(merge);
             const isOpen = card.classList.contains("module-open");
             const obstacles = openObstacles.map(o => o.rect);
             const routeD = [
-                buildPcbRoute(start, linkTarget, config, moduleRect, isOpen, obstacles),
+                buildPcbRoute(start, merge, config, moduleRect, isOpen, obstacles),
                 bus.railPath,
                 bus.tapPath
             ].filter(Boolean).join(" ");
@@ -1089,8 +1089,8 @@ const Network = (() => {
             obstacles || [],
             end
         );
-
-        return pointsToPath(trimPathStart(routed, CPU_MERGE_GAP));
+        return pointsToPath(collinearSimplify(routed));
+        // return pointsToPath(trimPathStart(routed, CPU_MERGE_GAP));
     }
 
     function pointsToPath(points) {
