@@ -70,7 +70,7 @@ const Network = (() => {
             items: [
                 {
                     title: "Programming",
-                    meta: "Python · C/C++ · Java · VHDL",
+                    meta: "Python · C/C++ · Java",
                     date: "Software foundations",
                     details: [
                         "Python",
