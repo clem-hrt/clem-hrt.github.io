@@ -681,8 +681,8 @@ const Network = (() => {
 
     /* Gap left between the CPU link's end and the merge point, so the link
        touches the junction without overlapping the backbone. */
-    const ITEM_MERGE_GAP = 6;
-    const CPU_MERGE_GAP = 6;
+    const ITEM_MERGE_GAP = 16;
+    const CPU_MERGE_GAP = 16;
     /*
         The common point where all item traces converge and where the CPU link
         terminates. It sits on the item spine, just outside the card's
