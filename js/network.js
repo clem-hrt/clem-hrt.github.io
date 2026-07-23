@@ -460,7 +460,19 @@ const Network = (() => {
         let padsMarkup = "";
         let itemTracesMarkup = "";
         let itemPadsMarkup = "";
+        const openObstacles = [];
 
+        modules.forEach(m => {
+            const el = document.querySelector(`[data-module="${m.id}"]`);
+        
+            if (el && el.classList.contains("module-open")) {
+                openObstacles.push({
+                    id: m.id,
+                    rect: toLayerRect(el, layerRect)
+                });
+            }
+        });
+        
         modules.forEach(module => {
             const card = document.querySelector(`[data-module="${module.id}"]`);
             const config = traceConfig[module.id];
@@ -471,9 +483,9 @@ const Network = (() => {
             const bus = getCpuPinBus(config, layerRect, cpuRect);
             const start = bus.center;
             const end = getModuleAnchor(moduleRect, config);
-
+            const obstacles = openObstacles.map(o => o.rect);
             const routeD = [
-                buildPcbRoute(start, end, config),
+                buildPcbRoute(start, end, config, moduleRect, isOpen, obstacles),
                 bus.railPath,
                 bus.tapPath
             ].filter(Boolean).join(" ");
@@ -503,7 +515,7 @@ const Network = (() => {
                     r="4"
                 />
             `;
-            const itemMarkup = drawItemTraces(module, card, moduleRect, end, config);
+            const itemMarkup = drawItemTraces(module, card, moduleRect, end, config, layerRect, isOpen);
             itemTracesMarkup += itemMarkup.traces;
             itemPadsMarkup += itemMarkup.pads;
         });
@@ -513,218 +525,226 @@ const Network = (() => {
         refreshItemTraceClasses();
     }
 
-    function drawItemTraces(module, card, moduleRect, moduleEntryPoint, config, layerRect) {
+    function drawItemTraces(
+        module,
+        card,
+        moduleRect,
+        moduleEntryPoint,
+        config,
+        layerRect,
+        isOpen
+    ) {
         let traces = "";
         let pads = "";
     
         const itemCount = module.items.length;
     
-        const anchors = module.items.map((item, index) =>
-            getItemAnchor(moduleRect, config, index, itemCount)
+        // Open: anchor each item to its ACTUAL text row (read from the DOM) so the
+        // taps line up with what the user sees. Closed: fall back to even spacing.
+        const rowY = [];
+    
+        if (isOpen && layerRect) {
+            module.items.forEach((item, index) => {
+                const btn = card.querySelector(
+                    `[data-module-item="${module.id}"][data-item-index="${index}"]`
+                );
+    
+                if (btn) {
+                    const r = toLayerRect(btn, layerRect);
+                    rowY[index] = (r.top + r.bottom) / 2;
+                }
+            });
+        }
+    
+        const anchors = module.items.map((item, index) => {
+            const base = getItemAnchor(
+                moduleRect,
+                config,
+                index,
+                itemCount
+            );
+    
+            if (
+                rowY[index] != null &&
+                (
+                    config.moduleSide === "left" ||
+                    config.moduleSide === "right"
+                )
+            ) {
+                return {
+                    x: base.x,
+                    y: rowY[index]
+                };
+            }
+    
+            return base;
+        });
+
+    const ITEM_ANCHOR_MIN_SPACING = 22;
+    
+    function getItemAnchor(moduleRect, config, index, itemCount) {
+        const naturalPadding = Math.min(24, moduleRect.height * 0.2);
+    
+        const naturalSpacing =
+            (moduleRect.height - naturalPadding * 2) /
+            (itemCount + 1);
+    
+        const spacing = Math.max(
+            naturalSpacing,
+            ITEM_ANCHOR_MIN_SPACING
         );
     
-        traces += `
-            <path
-                class="pcb-item-backbone"
-                data-item-backbone="${module.id}"
-                d="${buildItemBackboneRoute(moduleEntryPoint, anchors, config)}"
-            />
-        `;
+        const span = spacing * (itemCount + 1);
     
-        module.items.forEach((item, index) => {
-            const itemAnchor = anchors[index];
-            const traceKey = `${module.id}-${index}`;
+        const centerY =
+            moduleRect.top + moduleRect.height / 2;
     
-            traces += `
-                <path
-                    class="pcb-item-trace"
-                    data-item-trace="${traceKey}"
-                    d="${buildItemStubRoute(moduleEntryPoint, itemAnchor, config)}"
-                />
-            `;
+        const startY = centerY - span / 2;
     
-            pads += `
-                <circle
-                    class="pcb-item-pad"
-                    data-item-pad="${traceKey}"
-                    cx="${round(itemAnchor.x)}"
-                    cy="${round(itemAnchor.y)}"
-                    r="3.2"
-                />
-            `;
-        });
+        const y = startY + spacing * (index + 1);
     
-        return {
-            traces,
-            pads
-        };
-    }
-
-const ITEM_ANCHOR_MIN_SPACING = 22;
-
-function getItemAnchor(moduleRect, config, index, itemCount) {
-    const naturalPadding = Math.min(24, moduleRect.height * 0.2);
-
-    const naturalSpacing =
-        (moduleRect.height - naturalPadding * 2) /
-        (itemCount + 1);
-
-    const spacing = Math.max(
-        naturalSpacing,
-        ITEM_ANCHOR_MIN_SPACING
-    );
-
-    const span = spacing * (itemCount + 1);
-
-    const centerY =
-        moduleRect.top + moduleRect.height / 2;
-
-    const startY = centerY - span / 2;
-
-    const y = startY + spacing * (index + 1);
-
-    if (config.moduleSide === "left") {
-        return {
-            x: moduleRect.left,
-            y
-        };
-    }
-
-    if (config.moduleSide === "right") {
-        return {
-            x: moduleRect.right,
-            y
-        };
-    }
-
-    const naturalPaddingX = Math.min(24, moduleRect.width * 0.2);
-
-    const naturalSpacingX =
-        (moduleRect.width - naturalPaddingX * 2) /
-        (itemCount + 1);
-
-    const spacingX = Math.max(
-        naturalSpacingX,
-        ITEM_ANCHOR_MIN_SPACING
-    );
-
-    const spanX = spacingX * (itemCount + 1);
-
-    const centerX =
-        moduleRect.left + moduleRect.width / 2;
-
-    const startX = centerX - spanX / 2;
-
-    const x = startX + spacingX * (index + 1);
-
-    if (config.moduleSide === "top") {
+        if (config.moduleSide === "left") {
+            return {
+                x: moduleRect.left,
+                y
+            };
+        }
+    
+        if (config.moduleSide === "right") {
+            return {
+                x: moduleRect.right,
+                y
+            };
+        }
+    
+        const naturalPaddingX = Math.min(24, moduleRect.width * 0.2);
+    
+        const naturalSpacingX =
+            (moduleRect.width - naturalPaddingX * 2) /
+            (itemCount + 1);
+    
+        const spacingX = Math.max(
+            naturalSpacingX,
+            ITEM_ANCHOR_MIN_SPACING
+        );
+    
+        const spanX = spacingX * (itemCount + 1);
+    
+        const centerX =
+            moduleRect.left + moduleRect.width / 2;
+    
+        const startX = centerX - spanX / 2;
+    
+        const x = startX + spacingX * (index + 1);
+    
+        if (config.moduleSide === "top") {
+            return {
+                x,
+                y: moduleRect.top
+            };
+        }
+    
         return {
             x,
-            y: moduleRect.top
+            y: moduleRect.bottom
         };
     }
-
-    return {
-        x,
-        y: moduleRect.bottom
-    };
-}
-
-const ITEM_SPINE_OFFSET = 34;
-
-function buildItemBackboneRoute(moduleEntryPoint, anchors, config) {
-    const vertical =
-        config.moduleSide === "left" ||
-        config.moduleSide === "right";
-
-    const outward =
-        config.moduleSide === "left" ||
-        config.moduleSide === "top"
-            ? -1
-            : 1;
-
-    if (vertical) {
-        const spineX =
-            moduleEntryPoint.x +
+    
+    const ITEM_SPINE_OFFSET = 34;
+    
+    function buildItemBackboneRoute(moduleEntryPoint, anchors, config) {
+        const vertical =
+            config.moduleSide === "left" ||
+            config.moduleSide === "right";
+    
+        const outward =
+            config.moduleSide === "left" ||
+            config.moduleSide === "top"
+                ? -1
+                : 1;
+    
+        if (vertical) {
+            const spineX =
+                moduleEntryPoint.x +
+                outward * ITEM_SPINE_OFFSET;
+    
+            const ys = anchors.map(a => a.y);
+            const yTop = Math.min(...ys);
+            const yBottom = Math.max(...ys);
+    
+            const joinY =
+                Math.abs(yTop - moduleEntryPoint.y) <=
+                Math.abs(yBottom - moduleEntryPoint.y)
+                    ? yTop
+                    : yBottom;
+    
+            return [
+                `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
+                `L ${round(spineX)} ${round(moduleEntryPoint.y)}`,
+                `L ${round(spineX)} ${round(joinY)}`,
+                `M ${round(spineX)} ${round(yTop)}`,
+                `L ${round(spineX)} ${round(yBottom)}`
+            ].join(" ");
+        }
+    
+        const spineY =
+            moduleEntryPoint.y +
             outward * ITEM_SPINE_OFFSET;
-
-        const ys = anchors.map(a => a.y);
-        const yTop = Math.min(...ys);
-        const yBottom = Math.max(...ys);
-
-        const joinY =
-            Math.abs(yTop - moduleEntryPoint.y) <=
-            Math.abs(yBottom - moduleEntryPoint.y)
-                ? yTop
-                : yBottom;
-
+    
+        const xs = anchors.map(a => a.x);
+        const xLeft = Math.min(...xs);
+        const xRight = Math.max(...xs);
+    
+        const joinX =
+            Math.abs(xLeft - moduleEntryPoint.x) <=
+            Math.abs(xRight - moduleEntryPoint.x)
+                ? xLeft
+                : xRight;
+    
         return [
             `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
-            `L ${round(spineX)} ${round(moduleEntryPoint.y)}`,
-            `L ${round(spineX)} ${round(joinY)}`,
-            `M ${round(spineX)} ${round(yTop)}`,
-            `L ${round(spineX)} ${round(yBottom)}`
+            `L ${round(moduleEntryPoint.x)} ${round(spineY)}`,
+            `L ${round(joinX)} ${round(spineY)}`,
+            `M ${round(xLeft)} ${round(spineY)}`,
+            `L ${round(xRight)} ${round(spineY)}`
         ].join(" ");
     }
-
-    const spineY =
-        moduleEntryPoint.y +
-        outward * ITEM_SPINE_OFFSET;
-
-    const xs = anchors.map(a => a.x);
-    const xLeft = Math.min(...xs);
-    const xRight = Math.max(...xs);
-
-    const joinX =
-        Math.abs(xLeft - moduleEntryPoint.x) <=
-        Math.abs(xRight - moduleEntryPoint.x)
-            ? xLeft
-            : xRight;
-
-    return [
-        `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
-        `L ${round(moduleEntryPoint.x)} ${round(spineY)}`,
-        `L ${round(joinX)} ${round(spineY)}`,
-        `M ${round(xLeft)} ${round(spineY)}`,
-        `L ${round(xRight)} ${round(spineY)}`
-    ].join(" ");
-}
-
-function buildItemStubRoute(moduleEntryPoint, itemAnchor, config) {
-    const vertical =
-        config.moduleSide === "left" ||
-        config.moduleSide === "right";
-
-    const outward =
-        config.moduleSide === "left" ||
-        config.moduleSide === "top"
-            ? -1
-            : 1;
-
-    if (vertical) {
-        const spineX =
-            moduleEntryPoint.x +
+    
+    function buildItemStubRoute(moduleEntryPoint, itemAnchor, config) {
+        const vertical =
+            config.moduleSide === "left" ||
+            config.moduleSide === "right";
+    
+        const outward =
+            config.moduleSide === "left" ||
+            config.moduleSide === "top"
+                ? -1
+                : 1;
+    
+        if (vertical) {
+            const spineX =
+                moduleEntryPoint.x +
+                outward * ITEM_SPINE_OFFSET;
+    
+            return [
+                `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
+                `L ${round(spineX)} ${round(moduleEntryPoint.y)}`,
+                `L ${round(spineX)} ${round(itemAnchor.y)}`,
+                `L ${round(itemAnchor.x)} ${round(itemAnchor.y)}`
+            ].join(" ");
+        }
+    
+        const spineY =
+            moduleEntryPoint.y +
             outward * ITEM_SPINE_OFFSET;
-
+    
         return [
             `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
-            `L ${round(spineX)} ${round(moduleEntryPoint.y)}`,
-            `L ${round(spineX)} ${round(itemAnchor.y)}`,
+            `L ${round(moduleEntryPoint.x)} ${round(spineY)}`,
+            `L ${round(itemAnchor.x)} ${round(spineY)}`,
             `L ${round(itemAnchor.x)} ${round(itemAnchor.y)}`
         ].join(" ");
     }
-
-    const spineY =
-        moduleEntryPoint.y +
-        outward * ITEM_SPINE_OFFSET;
-
-    return [
-        `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
-        `L ${round(moduleEntryPoint.x)} ${round(spineY)}`,
-        `L ${round(itemAnchor.x)} ${round(spineY)}`,
-        `L ${round(itemAnchor.x)} ${round(itemAnchor.y)}`
-    ].join(" ");
-}
     
     function activateItemTrace(moduleId, itemIndex) {
         const traceKey = `${moduleId}-${itemIndex}`;
@@ -1009,21 +1029,409 @@ function buildItemStubRoute(moduleEntryPoint, itemAnchor, config) {
             : rect.bottom;
     }
     
-    function buildPcbRoute(start, end, config, moduleRect, isOpen) {
+    function buildPcbRoute(
+        start,
+        end,
+        config,
+        moduleRect,
+        isOpen,
+        obstacles
+    ) {
         const open = isOpen && moduleRect ? moduleRect : null;
     
-        if (config.cpuSide === "left" || config.cpuSide === "right") {
-            return buildHorizontalRoute(start, end, config, open);
-        }
+        const points =
+            config.cpuSide === "left" || config.cpuSide === "right"
+                ? buildHorizontalPoints(start, end, config, open)
+                : buildVerticalPoints(start, end, config, open);
     
-        // bottom / top pins -> vertical-first route
-        return buildVerticalRoute(start, end, config, open);
+        const routed = avoidObstacles(
+            points,
+            obstacles || [],
+            end
+        );
+    
+        return pointsToPath(routed);
+    }
+    
+    function pointsToPath(points) {
+        return points
+            .map(
+                (p, i) =>
+                    `${i === 0 ? "M" : "L"} ${round(p.x)} ${round(p.y)}`
+            )
+            .join(" ");
     }
     
     /*
-        CPU pins on the left/right edge. Runs horizontally out of the pins to a
-        vertical channel, along it to the module row, then into the module.
+        Orthogonal A* router. Routes the connector link from the CPU pin bus to
+        the module connector while avoiding open cards. Uses a "Hanan grid":
+        candidate lines from the start, the end, and each obstacle's inflated
+        edges. Manhattan heuristic + turn penalty keeps paths clean.
     */
+    const OBSTACLE_PAD = 18;
+    const TURN_PENALTY = 40;
+    const ENDPOINT_REACH = 60;
+    
+    function avoidObstacles(points, obstacles, end) {
+        if (!obstacles.length || points.length < 2) {
+            return points;
+        }
+    
+        const start = points[0];
+        const goal = points[points.length - 1];
+    
+        const contains = (r, p) =>
+            p.x > r.left - OBSTACLE_PAD &&
+            p.x < r.right + OBSTACLE_PAD &&
+            p.y > r.top - OBSTACLE_PAD &&
+            p.y < r.bottom + OBSTACLE_PAD;
+    
+        // A panel that already encloses an endpoint can't be avoided for that
+        // endpoint — exclude it so A* can still reach the connector.
+        const boxes = obstacles
+            .filter(
+                r =>
+                    !contains(r, start) &&
+                    !contains(r, goal)
+            )
+            .map(r => ({
+                left: r.left - OBSTACLE_PAD,
+                right: r.right + OBSTACLE_PAD,
+                top: r.top - OBSTACLE_PAD,
+                bottom: r.bottom + OBSTACLE_PAD
+            }));
+    
+        if (!boxes.length) {
+            return points;
+        }
+    
+        if (!pathHitsAny(points, boxes)) {
+            return points;
+        }
+    
+        const routed = astarRoute(start, goal, boxes);
+    
+        return routed || points;
+    }
+    
+    function pathHitsAny(points, boxes) {
+        for (let i = 0; i < points.length - 1; i++) {
+            for (const box of boxes) {
+                if (
+                    segmentHitsBox(
+                        points[i],
+                        points[i + 1],
+                        box
+                    )
+                ) {
+                    return true;
+                }
+            }
+        }
+    
+        return false;
+    }
+    
+    function astarRoute(start, goal, boxes) {
+        const xsSet = new Set([start.x, goal.x]);
+        const ysSet = new Set([start.y, goal.y]);
+    
+        for (const b of boxes) {
+            xsSet.add(b.left);
+            xsSet.add(b.right);
+            ysSet.add(b.top);
+            ysSet.add(b.bottom);
+        }
+    
+        const xs = [...xsSet].sort((a, c) => a - c);
+        const ys = [...ysSet].sort((a, c) => a - c);
+    
+        const xi = new Map(
+            xs.map((v, i) => [v, i])
+        );
+        const yi = new Map(
+            ys.map((v, i) => [v, i])
+        );
+    
+        const key = (ix, iy) => ix * 10000 + iy;
+    
+        const isEndpoint = (x, y) =>
+            (
+                Math.abs(x - start.x) < 0.5 &&
+                Math.abs(y - start.y) < 0.5
+            ) ||
+            (
+                Math.abs(x - goal.x) < 0.5 &&
+                Math.abs(y - goal.y) < 0.5
+            );
+    
+        const nodeBlocked = (x, y) => {
+            if (isEndpoint(x, y)) {
+                return false;
+            }
+    
+            for (const b of boxes) {
+                if (
+                    x > b.left + 0.5 &&
+                    x < b.right - 0.5 &&
+                    y > b.top + 0.5 &&
+                    y < b.bottom - 0.5
+                ) {
+                    return true;
+                }
+            }
+    
+            return false;
+        };
+    
+        const edgeBlocked = (x1, y1, x2, y2) => {
+            if (
+                isEndpoint(x1, y1) ||
+                isEndpoint(x2, y2)
+            ) {
+                const len =
+                    Math.abs(x2 - x1) +
+                    Math.abs(y2 - y1);
+    
+                if (len <= ENDPOINT_REACH) {
+                    return false;
+                }
+            }
+    
+            for (const b of boxes) {
+                if (
+                    segmentHitsBox(
+                        { x: x1, y: y1 },
+                        { x: x2, y: y2 },
+                        b
+                    )
+                ) {
+                    return true;
+                }
+            }
+    
+            return false;
+        };
+    
+        const sIx = xi.get(start.x);
+        const sIy = yi.get(start.y);
+        const gIx = xi.get(goal.x);
+        const gIy = yi.get(goal.y);
+    
+        const h = (ix, iy) =>
+            Math.abs(xs[ix] - goal.x) +
+            Math.abs(ys[iy] - goal.y);
+    
+        const open = new Map();
+        const came = new Map();
+        const gScore = new Map();
+    
+        const startKey = key(sIx, sIy);
+    
+        gScore.set(startKey, 0);
+    
+        open.set(startKey, {
+            ix: sIx,
+            iy: sIy,
+            f: h(sIx, sIy),
+            dir: null
+        });
+    
+        const popLowest = () => {
+            let best = null;
+            let bestKey = null;
+    
+            for (const [k, n] of open) {
+                if (!best || n.f < best.f) {
+                    best = n;
+                    bestKey = k;
+                }
+            }
+    
+            open.delete(bestKey);
+    
+            return best;
+        };
+    
+        let guard = 0;
+    
+        while (open.size && guard++ < 20000) {
+            const cur = popLowest();
+            const cKey = key(cur.ix, cur.iy);
+    
+            if (
+                cur.ix === gIx &&
+                cur.iy === gIy
+            ) {
+                return reconstruct(
+                    came,
+                    cKey,
+                    xs,
+                    ys,
+                    key
+                );
+            }
+    
+            const neighbours = [
+                [cur.ix + 1, cur.iy, "h"],
+                [cur.ix - 1, cur.iy, "h"],
+                [cur.ix, cur.iy + 1, "v"],
+                [cur.ix, cur.iy - 1, "v"]
+            ];
+    
+            for (const [nx, ny, dir] of neighbours) {
+                if (
+                    nx < 0 ||
+                    ny < 0 ||
+                    nx >= xs.length ||
+                    ny >= ys.length
+                ) {
+                    continue;
+                }
+    
+                if (
+                    nodeBlocked(
+                        xs[nx],
+                        ys[ny]
+                    )
+                ) {
+                    continue;
+                }
+    
+                if (
+                    edgeBlocked(
+                        xs[cur.ix],
+                        ys[cur.iy],
+                        xs[nx],
+                        ys[ny]
+                    )
+                ) {
+                    continue;
+                }
+    
+                const stepLen =
+                    Math.abs(
+                        xs[nx] - xs[cur.ix]
+                    ) +
+                    Math.abs(
+                        ys[ny] - ys[cur.iy]
+                    );
+    
+                const turn =
+                    cur.dir && cur.dir !== dir
+                        ? TURN_PENALTY
+                        : 0;
+    
+                const tentative =
+                    gScore.get(cKey) +
+                    stepLen +
+                    turn;
+    
+                const nKey = key(nx, ny);
+    
+                if (
+                    !gScore.has(nKey) ||
+                    tentative < gScore.get(nKey)
+                ) {
+                    gScore.set(
+                        nKey,
+                        tentative
+                    );
+    
+                    came.set(nKey, {
+                        pkey: cKey,
+                        dir
+                    });
+    
+                    open.set(nKey, {
+                        ix: nx,
+                        iy: ny,
+                        dir,
+                        f:
+                            tentative +
+                            h(nx, ny)
+                    });
+                }
+            }
+        }
+    
+        return null;
+    }
+    
+    function reconstruct(
+        came,
+        endKey,
+        xs,
+        ys,
+        key
+    ) {
+        const pts = [];
+        let k = endKey;
+    
+        while (k != null) {
+            const ix = Math.floor(k / 10000);
+            const iy = k % 10000;
+    
+            pts.push({
+                x: xs[ix],
+                y: ys[iy]
+            });
+    
+            const c = came.get(k);
+            k = c ? c.pkey : null;
+        }
+    
+        pts.reverse();
+    
+        return collinearSimplify(pts);
+    }
+    
+    function collinearSimplify(points) {
+        if (points.length < 3) {
+            return points;
+        }
+    
+        const out = [points[0]];
+    
+        for (let i = 1; i < points.length - 1; i++) {
+            const p = points[i - 1];
+            const c = points[i];
+            const n = points[i + 1];
+    
+            const colX =
+                Math.abs(p.x - c.x) < 0.5 &&
+                Math.abs(c.x - n.x) < 0.5;
+    
+            const colY =
+                Math.abs(p.y - c.y) < 0.5 &&
+                Math.abs(c.y - n.y) < 0.5;
+    
+            if (!(colX || colY)) {
+                out.push(c);
+            }
+        }
+    
+        out.push(points[points.length - 1]);
+    
+        return out;
+    }
+    
+    function segmentHitsBox(a, b, box) {
+        const minX = Math.min(a.x, b.x);
+        const maxX = Math.max(a.x, b.x);
+        const minY = Math.min(a.y, b.y);
+        const maxY = Math.max(a.y, b.y);
+    
+        return (
+            maxX > box.left + 0.5 &&
+            minX < box.right - 0.5 &&
+            maxY > box.top + 0.5 &&
+            minY < box.bottom - 0.5
+        );
+    }
+
+
+    
     function buildHorizontalRoute(start, end, config, open) {
         const dir = config.cpuSide === "left" ? -1 : 1; // outward from CPU
     
