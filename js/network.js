@@ -22,7 +22,7 @@ const Network = (() => {
     const modules = [
         {
             id: "experience",
-            label: "Professional Experience",
+            label: "Experience",
             position: "left-top",
             subtitle: "Career path",
             items: [
