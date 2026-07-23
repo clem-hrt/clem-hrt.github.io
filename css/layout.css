@@ -2449,7 +2449,7 @@ body{
 /* Middle row */
 .module-left-middle,
 .module-right-middle{
-    top:46%;
+    top:49%;
 }
 
 /* Bottom row */
@@ -2588,8 +2588,8 @@ body{
 .module-status{
     display:flex;
     align-items:center;
-    gap:7px;
-
+    gap:5px;
+    margin-top:8px;
     color:#7f8a9b;
 
     font-size:.56rem;
