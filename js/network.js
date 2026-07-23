@@ -525,61 +525,48 @@ const Network = (() => {
         refreshItemTraceClasses();
     }
 
-    function drawItemTraces(
-        module,
-        card,
-        moduleRect,
-        moduleEntryPoint,
-        config,
-        layerRect,
-        isOpen
-    ) {
-        let traces = "";
-        let pads = "";
-    
-        const itemCount = module.items.length;
-    
-        // Open: anchor each item to its ACTUAL text row (read from the DOM) so the
-        // taps line up with what the user sees. Closed: fall back to even spacing.
-        const rowY = [];
-    
-        if (isOpen && layerRect) {
-            module.items.forEach((item, index) => {
-                const btn = card.querySelector(
-                    `[data-module-item="${module.id}"][data-item-index="${index}"]`
-                );
-    
-                if (btn) {
-                    const r = toLayerRect(btn, layerRect);
-                    rowY[index] = (r.top + r.bottom) / 2;
-                }
-            });
-        }
-    
-        const anchors = module.items.map((item, index) => {
-            const base = getItemAnchor(
-                moduleRect,
-                config,
-                index,
-                itemCount
+    function drawItemTraces(module, card, moduleRect, moduleEntryPoint, config, layerRect, isOpen) {
+    let traces = "";
+    let pads = "";
+
+    const itemCount = module.items.length;
+
+    // Open: anchor each item to its ACTUAL text row (read from the DOM) so the
+    // taps line up with what the user sees. Closed: fall back to even spacing.
+    const rowY = [];
+
+    if (isOpen && layerRect) {
+        module.items.forEach((item, index) => {
+            const btn = card.querySelector(
+                `[data-module-item="${module.id}"][data-item-index="${index}"]`
             );
-    
-            if (
-                rowY[index] != null &&
-                (
-                    config.moduleSide === "left" ||
-                    config.moduleSide === "right"
-                )
-            ) {
-                return {
-                    x: base.x,
-                    y: rowY[index]
-                };
+
+            if (btn) {
+                const r = toLayerRect(btn, layerRect);
+                rowY[index] = (r.top + r.bottom) / 2;
             }
-    
-            return base;
         });
     }
+
+    const anchors = module.items.map((item, index) => {
+        const base = getItemAnchor(moduleRect, config, index, itemCount);
+
+        if (
+            rowY[index] != null &&
+            (
+                config.moduleSide === "left" ||
+                config.moduleSide === "right"
+            )
+        ) {
+            return {
+                x: base.x,
+                y: rowY[index]
+            };
+        }
+
+        return base;
+    });
+        
     const ITEM_ANCHOR_MIN_SPACING = 22;
     
     function getItemAnchor(moduleRect, config, index, itemCount) {
