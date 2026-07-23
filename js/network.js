@@ -1669,7 +1669,7 @@ const Network = (() => {
                 <div class="module-header">
 
                     <div class="module-header-top">
-                        <span class="module-index">${module.id.toUpperCase()}</span>
+                        // <span class="module-index">${module.id.toUpperCase()}</span>
 
                         <span class="module-status">
                             <span class="module-status-dot"></span>
