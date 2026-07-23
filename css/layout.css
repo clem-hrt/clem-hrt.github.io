@@ -2579,17 +2579,8 @@ body{
     margin-bottom:14px;
 }
 
-.module-index{
-    color:var(--clr-accent);
-
-    letter-spacing:3px;
-    font-size:.62rem;
-
-    opacity:.75;
-}
-
-.module-card.module-open .module-index,
-.module-card.module-locked .module-index{
+.module-card.module-open,
+.module-card.module-locked{
     opacity:1;
 }
 
