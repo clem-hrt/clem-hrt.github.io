@@ -2285,7 +2285,7 @@ body{
     --module-closed-width:clamp(210px,16vw,250px);
     --module-open-width:clamp(500px,35vw,560px);
 
-    --module-open-height:min(300px, calc(100vh - 130px));
+    --module-open-height:min(350px, calc(100vh - 130px));
     --module-content-height:252px;
 
     --module-side-x:clamp(20px,3.2vw,58px);
@@ -2383,7 +2383,7 @@ body{
 .module-card.module-open{
     width:var(--module-open-width);
 
-    min-height:330px;
+    min-height:350px;
     max-height:var(--module-open-height);
 
     z-index:12;
