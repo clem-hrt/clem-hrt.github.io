@@ -10,7 +10,7 @@ const Network = (() => {
     const activatedModules = new Set();
     const activatedItemTraces = new Set();
     const CPU_PIN_CLEARANCE = 9;
-    
+
     let currentItemTrace = null;
     let portsUnlocked = false;
     let traceRedrawTimer = null;
@@ -267,7 +267,7 @@ const Network = (() => {
     const totalItems = modules.reduce((total, module) => {
         return total + module.items.length;
     }, 0);
-    
+
     const traceConfig = {
         experience: {
             cpuSide: "left",
@@ -282,7 +282,7 @@ const Network = (() => {
             ],
             cpuSlot: 0.30
         },
-    
+
         education: {
             cpuSide: "left",
             moduleSide: "right",
@@ -296,7 +296,7 @@ const Network = (() => {
             ],
             cpuSlot: 0.70
         },
-    
+
         hobbies: {
             cpuSide: "bottom",
             moduleSide: "right",
@@ -310,7 +310,7 @@ const Network = (() => {
             ],
             cpuSlot: 0.45
         },
-    
+
         projects: {
             cpuSide: "right",
             moduleSide: "left",
@@ -322,7 +322,7 @@ const Network = (() => {
             ],
             cpuSlot: 0.30
         },
-    
+
         skills: {
             cpuSide: "right",
             moduleSide: "left",
@@ -338,7 +338,7 @@ const Network = (() => {
             ],
             cpuSlot: 0.65
         },
-    
+
         certifications: {
             cpuSide: "bottom",
             moduleSide: "left",
@@ -351,7 +351,7 @@ const Network = (() => {
             cpuSlot: 0.55
         }
     };
-    
+
     function create() {
         createModules();
         createTraces();
@@ -399,27 +399,27 @@ const Network = (() => {
             redrawTracesSoon();
             forceTraceSync(700);
         });
-    
+
         document
             .querySelectorAll(".module-card, .cpu-core, #module-layer, #pcb-layer")
             .forEach(element => resizeObserver.observe(element));
-    
+
         if (mutationObserver) {
             mutationObserver.disconnect();
         }
-            
+
         mutationObserver = new MutationObserver(() => {
             redrawTracesSoon();
             forceTraceSync(500);
         });
-    
+
         mutationObserver.observe(moduleLayer, {
             attributes: true,
             childList: true,
             subtree: true,
             attributeFilter: ["class", "style"]
         });
-    
+
     }
 
     function forceTraceSync(duration = 700) {
@@ -437,7 +437,7 @@ const Network = (() => {
             traceSyncFrame = null;
         }
     }
-    
+
     function drawTraces() {
         if (!pcbLayer) return;
 
@@ -464,7 +464,7 @@ const Network = (() => {
 
         modules.forEach(m => {
             const el = document.querySelector(`[data-module="${m.id}"]`);
-        
+
             if (el && el.classList.contains("module-open")) {
                 openObstacles.push({
                     id: m.id,
@@ -472,7 +472,7 @@ const Network = (() => {
                 });
             }
         });
-        
+
         modules.forEach(module => {
             const card = document.querySelector(`[data-module="${module.id}"]`);
             const config = traceConfig[module.id];
@@ -483,13 +483,14 @@ const Network = (() => {
             const bus = getCpuPinBus(config, layerRect, cpuRect);
             const start = bus.center;
             const end = getModuleAnchor(moduleRect, config);
+            const isOpen = card.classList.contains("module-open");
             const obstacles = openObstacles.map(o => o.rect);
             const routeD = [
                 buildPcbRoute(start, end, config, moduleRect, isOpen, obstacles),
                 bus.railPath,
                 bus.tapPath
             ].filter(Boolean).join(" ");
-            
+
             tracesMarkup += `
                 <path
                     class="pcb-trace"
@@ -528,29 +529,29 @@ const Network = (() => {
     function drawItemTraces(module, card, moduleRect, moduleEntryPoint, config, layerRect, isOpen) {
         let traces = "";
         let pads = "";
-    
+
         const itemCount = module.items.length;
-    
+
         // Open: anchor each item to its ACTUAL text row (read from the DOM) so the
         // taps line up with what the user sees. Closed: fall back to even spacing.
         const rowY = [];
-    
+
         if (isOpen && layerRect) {
             module.items.forEach((item, index) => {
                 const btn = card.querySelector(
                     `[data-module-item="${module.id}"][data-item-index="${index}"]`
                 );
-    
+
                 if (btn) {
                     const r = toLayerRect(btn, layerRect);
                     rowY[index] = (r.top + r.bottom) / 2;
                 }
             });
         }
-    
+
         const anchors = module.items.map((item, index) => {
             const base = getItemAnchor(moduleRect, config, index, itemCount);
-    
+
             if (
                 rowY[index] != null &&
                 (
@@ -563,108 +564,145 @@ const Network = (() => {
                     y: rowY[index]
                 };
             }
-    
+
             return base;
         });
+
+        traces += `
+            <path
+                class="pcb-item-backbone"
+                data-item-backbone="${module.id}"
+                d="${buildItemBackboneRoute(moduleEntryPoint, anchors, config)}"
+            />
+        `;
+
+        module.items.forEach((item, index) => {
+            const itemAnchor = anchors[index];
+            const traceKey = `${module.id}-${index}`;
+
+            traces += `
+                <path
+                    class="pcb-item-trace"
+                    data-item-trace="${traceKey}"
+                    d="${buildItemStubRoute(moduleEntryPoint, itemAnchor, config)}"
+                />
+            `;
+
+            pads += `
+                <circle
+                    class="pcb-item-pad"
+                    data-item-pad="${traceKey}"
+                    cx="${round(itemAnchor.x)}"
+                    cy="${round(itemAnchor.y)}"
+                    r="3.2"
+                />
+            `;
+        });
+
+        return {
+            traces,
+            pads
+        };
     }
+
     const ITEM_ANCHOR_MIN_SPACING = 22;
-    
+
     function getItemAnchor(moduleRect, config, index, itemCount) {
         const naturalPadding = Math.min(24, moduleRect.height * 0.2);
-    
+
         const naturalSpacing =
             (moduleRect.height - naturalPadding * 2) /
             (itemCount + 1);
-    
+
         const spacing = Math.max(
             naturalSpacing,
             ITEM_ANCHOR_MIN_SPACING
         );
-    
+
         const span = spacing * (itemCount + 1);
-    
+
         const centerY =
             moduleRect.top + moduleRect.height / 2;
-    
+
         const startY = centerY - span / 2;
-    
+
         const y = startY + spacing * (index + 1);
-    
+
         if (config.moduleSide === "left") {
             return {
                 x: moduleRect.left,
                 y
             };
         }
-    
+
         if (config.moduleSide === "right") {
             return {
                 x: moduleRect.right,
                 y
             };
         }
-    
+
         const naturalPaddingX = Math.min(24, moduleRect.width * 0.2);
-    
+
         const naturalSpacingX =
             (moduleRect.width - naturalPaddingX * 2) /
             (itemCount + 1);
-    
+
         const spacingX = Math.max(
             naturalSpacingX,
             ITEM_ANCHOR_MIN_SPACING
         );
-    
+
         const spanX = spacingX * (itemCount + 1);
-    
+
         const centerX =
             moduleRect.left + moduleRect.width / 2;
-    
+
         const startX = centerX - spanX / 2;
-    
+
         const x = startX + spacingX * (index + 1);
-    
+
         if (config.moduleSide === "top") {
             return {
                 x,
                 y: moduleRect.top
             };
         }
-    
+
         return {
             x,
             y: moduleRect.bottom
         };
     }
-    
+
     const ITEM_SPINE_OFFSET = 34;
-    
+
     function buildItemBackboneRoute(moduleEntryPoint, anchors, config) {
         const vertical =
             config.moduleSide === "left" ||
             config.moduleSide === "right";
-    
+
         const outward =
             config.moduleSide === "left" ||
             config.moduleSide === "top"
                 ? -1
                 : 1;
-    
+
         if (vertical) {
             const spineX =
                 moduleEntryPoint.x +
                 outward * ITEM_SPINE_OFFSET;
-    
+
             const ys = anchors.map(a => a.y);
             const yTop = Math.min(...ys);
             const yBottom = Math.max(...ys);
-    
+
             const joinY =
                 Math.abs(yTop - moduleEntryPoint.y) <=
                 Math.abs(yBottom - moduleEntryPoint.y)
                     ? yTop
                     : yBottom;
-    
+
             return [
                 `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
                 `L ${round(spineX)} ${round(moduleEntryPoint.y)}`,
@@ -673,21 +711,21 @@ const Network = (() => {
                 `L ${round(spineX)} ${round(yBottom)}`
             ].join(" ");
         }
-    
+
         const spineY =
             moduleEntryPoint.y +
             outward * ITEM_SPINE_OFFSET;
-    
+
         const xs = anchors.map(a => a.x);
         const xLeft = Math.min(...xs);
         const xRight = Math.max(...xs);
-    
+
         const joinX =
             Math.abs(xLeft - moduleEntryPoint.x) <=
             Math.abs(xRight - moduleEntryPoint.x)
                 ? xLeft
                 : xRight;
-    
+
         return [
             `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
             `L ${round(moduleEntryPoint.x)} ${round(spineY)}`,
@@ -696,23 +734,23 @@ const Network = (() => {
             `L ${round(xRight)} ${round(spineY)}`
         ].join(" ");
     }
-    
+
     function buildItemStubRoute(moduleEntryPoint, itemAnchor, config) {
         const vertical =
             config.moduleSide === "left" ||
             config.moduleSide === "right";
-    
+
         const outward =
             config.moduleSide === "left" ||
             config.moduleSide === "top"
                 ? -1
                 : 1;
-    
+
         if (vertical) {
             const spineX =
                 moduleEntryPoint.x +
                 outward * ITEM_SPINE_OFFSET;
-    
+
             return [
                 `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
                 `L ${round(spineX)} ${round(moduleEntryPoint.y)}`,
@@ -720,11 +758,11 @@ const Network = (() => {
                 `L ${round(itemAnchor.x)} ${round(itemAnchor.y)}`
             ].join(" ");
         }
-    
+
         const spineY =
             moduleEntryPoint.y +
             outward * ITEM_SPINE_OFFSET;
-    
+
         return [
             `M ${round(moduleEntryPoint.x)} ${round(moduleEntryPoint.y)}`,
             `L ${round(moduleEntryPoint.x)} ${round(spineY)}`,
@@ -732,10 +770,10 @@ const Network = (() => {
             `L ${round(itemAnchor.x)} ${round(itemAnchor.y)}`
         ].join(" ");
     }
-    
+
     function activateItemTrace(moduleId, itemIndex) {
         const traceKey = `${moduleId}-${itemIndex}`;
-    
+
         currentItemTrace = traceKey;
         activatedItemTraces.add(traceKey);
         CPU.activateItemPins(moduleId, itemIndex);
@@ -750,34 +788,34 @@ const Network = (() => {
         }
         refreshItemTraceClasses();
     }
-        
+
     function refreshItemTraceClasses() {
         document
             .querySelectorAll(".pcb-item-trace")
             .forEach(trace => {
                 const key = trace.dataset.itemTrace;
-    
+
                 trace.classList.toggle(
                     "item-trace-locked",
                     activatedItemTraces.has(key)
                 );
-    
+
                 trace.classList.toggle(
                     "item-trace-active",
                     key === currentItemTrace
                 );
             });
-    
+
         document
             .querySelectorAll(".pcb-item-pad")
             .forEach(pad => {
                 const key = pad.dataset.itemPad;
-    
+
                 pad.classList.toggle(
                     "item-pad-locked",
                     activatedItemTraces.has(key)
                 );
-    
+
                 pad.classList.toggle(
                     "item-pad-active",
                     key === currentItemTrace
@@ -806,7 +844,7 @@ const Network = (() => {
             ) / values.length
         );
     }
-    
+
     function getModulePinRects(config, layerRect) {
         return (config.cpuPins || [])
             .map(id =>
@@ -817,13 +855,13 @@ const Network = (() => {
             .filter(Boolean)
             .map(pin => toLayerRect(pin, layerRect));
     }
-    
+
     function getCpuPinBus(config, layerRect, cpuRect) {
         const rects = getModulePinRects(
             config,
             layerRect
         );
-    
+
         if (!rects.length) {
             return {
                 center: getCpuSlotAnchor(cpuRect, config),
@@ -831,14 +869,14 @@ const Network = (() => {
                 tapPath: ""
             };
         }
-    
+
         if (
             config.cpuSide === "left" ||
             config.cpuSide === "right"
         ) {
             const isLeft =
                 config.cpuSide === "left";
-    
+
             const railX = isLeft
                 ? Math.min(
                       ...rects.map(r => r.left)
@@ -846,34 +884,34 @@ const Network = (() => {
                 : Math.max(
                       ...rects.map(r => r.right)
                   ) + CPU_PIN_CLEARANCE;
-    
+
             const centersY = rects.map(
                 r => (r.top + r.bottom) / 2
             );
-    
+
             const yTop = Math.min(...centersY);
             const yBottom = Math.max(...centersY);
-    
+
             const railPath =
                 `M ${round(railX)} ${round(yTop)} ` +
                 `L ${round(railX)} ${round(yBottom)}`;
-    
+
             const tapPath = rects
                 .map(r => {
                     const cy =
                         (r.top + r.bottom) / 2;
-    
+
                     const pinTipX = isLeft
                         ? r.left
                         : r.right;
-    
+
                     return (
                         `M ${round(pinTipX)} ${round(cy)} ` +
                         `L ${round(railX)} ${round(cy)}`
                     );
                 })
                 .join(" ");
-    
+
             return {
                 center: {
                     x: railX,
@@ -883,35 +921,35 @@ const Network = (() => {
                 tapPath
             };
         }
-    
+
         const railY =
             Math.max(
                 ...rects.map(r => r.bottom)
             ) + CPU_PIN_CLEARANCE;
-    
+
         const centersX = rects.map(
             r => (r.left + r.right) / 2
         );
-    
+
         const xLeft = Math.min(...centersX);
         const xRight = Math.max(...centersX);
-    
+
         const railPath =
             `M ${round(xLeft)} ${round(railY)} ` +
             `L ${round(xRight)} ${round(railY)}`;
-    
+
         const tapPath = rects
             .map(r => {
                 const cx =
                     (r.left + r.right) / 2;
-    
+
                 return (
                     `M ${round(cx)} ${round(r.bottom)} ` +
                     `L ${round(cx)} ${round(railY)}`
                 );
             })
             .join(" ");
-    
+
         return {
             center: {
                 x: averageOf([xLeft, xRight]),
@@ -921,7 +959,7 @@ const Network = (() => {
             tapPath
         };
     }
-    
+
     function getCpuSlotAnchor(cpuRect, config) {
         if (config.cpuSide === "left") {
             return {
@@ -931,7 +969,7 @@ const Network = (() => {
                     cpuRect.height * config.cpuSlot
             };
         }
-    
+
         if (config.cpuSide === "right") {
             return {
                 x: cpuRect.right,
@@ -940,7 +978,7 @@ const Network = (() => {
                     cpuRect.height * config.cpuSlot
             };
         }
-    
+
         if (config.cpuSide === "bottom") {
             return {
                 x:
@@ -949,7 +987,7 @@ const Network = (() => {
                 y: cpuRect.bottom
             };
         }
-    
+
         if (config.cpuSide === "top") {
             return {
                 x:
@@ -958,7 +996,7 @@ const Network = (() => {
                 y: cpuRect.top
             };
         }
-    
+
         return {
             x: cpuRect.right,
             y:
@@ -1009,13 +1047,13 @@ const Network = (() => {
             ? rect.left
             : rect.right;
     }
-    
+
     function nearestEdgeY(end, rect) {
         return Math.abs(end.y - rect.top) <= Math.abs(end.y - rect.bottom)
             ? rect.top
             : rect.bottom;
     }
-    
+
     function buildPcbRoute(
         start,
         end,
@@ -1025,21 +1063,21 @@ const Network = (() => {
         obstacles
     ) {
         const open = isOpen && moduleRect ? moduleRect : null;
-    
+
         const points =
             config.cpuSide === "left" || config.cpuSide === "right"
                 ? buildHorizontalPoints(start, end, config, open)
                 : buildVerticalPoints(start, end, config, open);
-    
+
         const routed = avoidObstacles(
             points,
             obstacles || [],
             end
         );
-    
+
         return pointsToPath(routed);
     }
-    
+
     function pointsToPath(points) {
         return points
             .map(
@@ -1048,7 +1086,7 @@ const Network = (() => {
             )
             .join(" ");
     }
-    
+
     /*
         Orthogonal A* router. Routes the connector link from the CPU pin bus to
         the module connector while avoiding open cards. Uses a "Hanan grid":
@@ -1058,21 +1096,21 @@ const Network = (() => {
     const OBSTACLE_PAD = 18;
     const TURN_PENALTY = 40;
     const ENDPOINT_REACH = 60;
-    
+
     function avoidObstacles(points, obstacles, end) {
         if (!obstacles.length || points.length < 2) {
             return points;
         }
-    
+
         const start = points[0];
         const goal = points[points.length - 1];
-    
+
         const contains = (r, p) =>
             p.x > r.left - OBSTACLE_PAD &&
             p.x < r.right + OBSTACLE_PAD &&
             p.y > r.top - OBSTACLE_PAD &&
             p.y < r.bottom + OBSTACLE_PAD;
-    
+
         // A panel that already encloses an endpoint can't be avoided for that
         // endpoint — exclude it so A* can still reach the connector.
         const boxes = obstacles
@@ -1087,20 +1125,20 @@ const Network = (() => {
                 top: r.top - OBSTACLE_PAD,
                 bottom: r.bottom + OBSTACLE_PAD
             }));
-    
+
         if (!boxes.length) {
             return points;
         }
-    
+
         if (!pathHitsAny(points, boxes)) {
             return points;
         }
-    
+
         const routed = astarRoute(start, goal, boxes);
-    
+
         return routed || points;
     }
-    
+
     function pathHitsAny(points, boxes) {
         for (let i = 0; i < points.length - 1; i++) {
             for (const box of boxes) {
@@ -1115,33 +1153,33 @@ const Network = (() => {
                 }
             }
         }
-    
+
         return false;
     }
-    
+
     function astarRoute(start, goal, boxes) {
         const xsSet = new Set([start.x, goal.x]);
         const ysSet = new Set([start.y, goal.y]);
-    
+
         for (const b of boxes) {
             xsSet.add(b.left);
             xsSet.add(b.right);
             ysSet.add(b.top);
             ysSet.add(b.bottom);
         }
-    
+
         const xs = [...xsSet].sort((a, c) => a - c);
         const ys = [...ysSet].sort((a, c) => a - c);
-    
+
         const xi = new Map(
             xs.map((v, i) => [v, i])
         );
         const yi = new Map(
             ys.map((v, i) => [v, i])
         );
-    
+
         const key = (ix, iy) => ix * 10000 + iy;
-    
+
         const isEndpoint = (x, y) =>
             (
                 Math.abs(x - start.x) < 0.5 &&
@@ -1151,12 +1189,12 @@ const Network = (() => {
                 Math.abs(x - goal.x) < 0.5 &&
                 Math.abs(y - goal.y) < 0.5
             );
-    
+
         const nodeBlocked = (x, y) => {
             if (isEndpoint(x, y)) {
                 return false;
             }
-    
+
             for (const b of boxes) {
                 if (
                     x > b.left + 0.5 &&
@@ -1167,10 +1205,10 @@ const Network = (() => {
                     return true;
                 }
             }
-    
+
             return false;
         };
-    
+
         const edgeBlocked = (x1, y1, x2, y2) => {
             if (
                 isEndpoint(x1, y1) ||
@@ -1179,12 +1217,12 @@ const Network = (() => {
                 const len =
                     Math.abs(x2 - x1) +
                     Math.abs(y2 - y1);
-    
+
                 if (len <= ENDPOINT_REACH) {
                     return false;
                 }
             }
-    
+
             for (const b of boxes) {
                 if (
                     segmentHitsBox(
@@ -1196,56 +1234,56 @@ const Network = (() => {
                     return true;
                 }
             }
-    
+
             return false;
         };
-    
+
         const sIx = xi.get(start.x);
         const sIy = yi.get(start.y);
         const gIx = xi.get(goal.x);
         const gIy = yi.get(goal.y);
-    
+
         const h = (ix, iy) =>
             Math.abs(xs[ix] - goal.x) +
             Math.abs(ys[iy] - goal.y);
-    
+
         const open = new Map();
         const came = new Map();
         const gScore = new Map();
-    
+
         const startKey = key(sIx, sIy);
-    
+
         gScore.set(startKey, 0);
-    
+
         open.set(startKey, {
             ix: sIx,
             iy: sIy,
             f: h(sIx, sIy),
             dir: null
         });
-    
+
         const popLowest = () => {
             let best = null;
             let bestKey = null;
-    
+
             for (const [k, n] of open) {
                 if (!best || n.f < best.f) {
                     best = n;
                     bestKey = k;
                 }
             }
-    
+
             open.delete(bestKey);
-    
+
             return best;
         };
-    
+
         let guard = 0;
-    
+
         while (open.size && guard++ < 20000) {
             const cur = popLowest();
             const cKey = key(cur.ix, cur.iy);
-    
+
             if (
                 cur.ix === gIx &&
                 cur.iy === gIy
@@ -1258,14 +1296,14 @@ const Network = (() => {
                     key
                 );
             }
-    
+
             const neighbours = [
                 [cur.ix + 1, cur.iy, "h"],
                 [cur.ix - 1, cur.iy, "h"],
                 [cur.ix, cur.iy + 1, "v"],
                 [cur.ix, cur.iy - 1, "v"]
             ];
-    
+
             for (const [nx, ny, dir] of neighbours) {
                 if (
                     nx < 0 ||
@@ -1275,7 +1313,7 @@ const Network = (() => {
                 ) {
                     continue;
                 }
-    
+
                 if (
                     nodeBlocked(
                         xs[nx],
@@ -1284,7 +1322,7 @@ const Network = (() => {
                 ) {
                     continue;
                 }
-    
+
                 if (
                     edgeBlocked(
                         xs[cur.ix],
@@ -1295,7 +1333,7 @@ const Network = (() => {
                 ) {
                     continue;
                 }
-    
+
                 const stepLen =
                     Math.abs(
                         xs[nx] - xs[cur.ix]
@@ -1303,19 +1341,19 @@ const Network = (() => {
                     Math.abs(
                         ys[ny] - ys[cur.iy]
                     );
-    
+
                 const turn =
                     cur.dir && cur.dir !== dir
                         ? TURN_PENALTY
                         : 0;
-    
+
                 const tentative =
                     gScore.get(cKey) +
                     stepLen +
                     turn;
-    
+
                 const nKey = key(nx, ny);
-    
+
                 if (
                     !gScore.has(nKey) ||
                     tentative < gScore.get(nKey)
@@ -1324,12 +1362,12 @@ const Network = (() => {
                         nKey,
                         tentative
                     );
-    
+
                     came.set(nKey, {
                         pkey: cKey,
                         dir
                     });
-    
+
                     open.set(nKey, {
                         ix: nx,
                         iy: ny,
@@ -1341,10 +1379,10 @@ const Network = (() => {
                 }
             }
         }
-    
+
         return null;
     }
-    
+
     function reconstruct(
         came,
         endKey,
@@ -1354,61 +1392,61 @@ const Network = (() => {
     ) {
         const pts = [];
         let k = endKey;
-    
+
         while (k != null) {
             const ix = Math.floor(k / 10000);
             const iy = k % 10000;
-    
+
             pts.push({
                 x: xs[ix],
                 y: ys[iy]
             });
-    
+
             const c = came.get(k);
             k = c ? c.pkey : null;
         }
-    
+
         pts.reverse();
-    
+
         return collinearSimplify(pts);
     }
-    
+
     function collinearSimplify(points) {
         if (points.length < 3) {
             return points;
         }
-    
+
         const out = [points[0]];
-    
+
         for (let i = 1; i < points.length - 1; i++) {
             const p = points[i - 1];
             const c = points[i];
             const n = points[i + 1];
-    
+
             const colX =
                 Math.abs(p.x - c.x) < 0.5 &&
                 Math.abs(c.x - n.x) < 0.5;
-    
+
             const colY =
                 Math.abs(p.y - c.y) < 0.5 &&
                 Math.abs(c.y - n.y) < 0.5;
-    
+
             if (!(colX || colY)) {
                 out.push(c);
             }
         }
-    
+
         out.push(points[points.length - 1]);
-    
+
         return out;
     }
-    
+
     function segmentHitsBox(a, b, box) {
         const minX = Math.min(a.x, b.x);
         const maxX = Math.max(a.x, b.x);
         const minY = Math.min(a.y, b.y);
         const maxY = Math.max(a.y, b.y);
-    
+
         return (
             maxX > box.left + 0.5 &&
             minX < box.right - 0.5 &&
@@ -1418,69 +1456,86 @@ const Network = (() => {
     }
 
 
-    
-    function buildHorizontalRoute(start, end, config, open) {
+
+    function buildHorizontalPoints(start, end, config, open) {
         const dir = config.cpuSide === "left" ? -1 : 1; // outward from CPU
-    
+
         // Open: land straight on the card's CPU-facing edge at the pin row.
         if (open) {
             const entryX = nearestEdgeX(end, open);
-    
+
             return [
-                `M ${round(start.x)} ${round(start.y)}`,
-                `L ${round(entryX)} ${round(start.y)}`,
-                `L ${round(entryX)} ${round(end.y)}`,
-                `L ${round(end.x)} ${round(end.y)}`
-            ].join(" ");
+                { x: start.x, y: start.y },
+                { x: entryX, y: start.y },
+                { x: entryX, y: end.y },
+                { x: end.x, y: end.y }
+            ];
         }
-    
+
         // Closed: derived L/Z through the channel just outside the CPU edge.
         const channelX = start.x + dir * CHANNEL_GAP;
-    
+
         return [
-            `M ${round(start.x)} ${round(start.y)}`,
-            `L ${round(channelX)} ${round(start.y)}`,
-            `L ${round(channelX)} ${round(end.y)}`,
-            `L ${round(end.x)} ${round(end.y)}`
-        ].join(" ");
+            { x: start.x, y: start.y },
+            { x: channelX, y: start.y },
+            { x: channelX, y: end.y },
+            { x: end.x, y: end.y }
+        ];
     }
-    
+
     /*
         CPU pins on the bottom/top edge. Runs vertically out of the pins to a
         horizontal channel, along it to the module column, then into the module.
     */
-    function buildVerticalRoute(start, end, config, open) {
+    function buildVerticalPoints(start, end, config, open) {
         const dir = config.cpuSide === "top" ? -1 : 1; // outward from CPU
-    
-        // Open: land straight on the card's CPU-facing (top/bottom) edge at
-        // the pin column.
+        const sideEntry =
+            config.moduleSide === "left" || config.moduleSide === "right";
+
+        // Open: route to the actual connector.
         if (open) {
+            if (sideEntry) {
+                // Come up level with the side-edge middle, just outside the
+                // card, then step in horizontally to the entry point.
+                const laneX = config.moduleSide === "left"
+                    ? open.left - CHANNEL_GAP
+                    : open.right + CHANNEL_GAP;
+
+                return [
+                    { x: start.x, y: start.y },
+                    { x: start.x, y: end.y },
+                    { x: laneX, y: end.y },
+                    { x: end.x, y: end.y }
+                ];
+            }
+
+            // Top/bottom entry: land on that edge at the pin column.
             const entryY = nearestEdgeY(end, open);
-    
+
             return [
-                `M ${round(start.x)} ${round(start.y)}`,
-                `L ${round(start.x)} ${round(entryY)}`,
-                `L ${round(end.x)} ${round(entryY)}`,
-                `L ${round(end.x)} ${round(end.y)}`
-            ].join(" ");
+                { x: start.x, y: start.y },
+                { x: start.x, y: entryY },
+                { x: end.x, y: entryY },
+                { x: end.x, y: end.y }
+            ];
         }
-    
+
         // Closed: channel sits roughly halfway to the module so the run reads
         // as a bus, but never closer than CHANNEL_GAP to the CPU edge.
         let channelY = start.y + dir * CHANNEL_GAP;
         const midY = start.y + (end.y - start.y) * 0.5;
-    
+
         channelY =
             dir === 1
                 ? Math.max(channelY, midY)
                 : Math.min(channelY, midY);
-    
+
         return [
-            `M ${round(start.x)} ${round(start.y)}`,
-            `L ${round(start.x)} ${round(channelY)}`,
-            `L ${round(end.x)} ${round(channelY)}`,
-            `L ${round(end.x)} ${round(end.y)}`
-        ].join(" ");
+            { x: start.x, y: start.y },
+            { x: start.x, y: channelY },
+            { x: end.x, y: channelY },
+            { x: end.x, y: end.y }
+        ];
     }
 
     function restoreTraceState() {
