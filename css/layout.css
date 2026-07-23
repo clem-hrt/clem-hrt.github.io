@@ -1573,7 +1573,7 @@ body{
     grid-template-rows: repeat(12, 1fr);
     gap: 6px;
     align-self: stretch;
-    padding: 20px 0;
+    padding: 40px 0;
     pointer-events: none;
 }
 
@@ -2282,17 +2282,17 @@ body{
    MODULES
 ========================================================== */
 :root{
-    --module-closed-width:clamp(220px,17vw,270px);
-    --module-open-width:clamp(520px,37vw,600px);
+    --module-closed-width:clamp(210px,16vw,250px);
+    --module-open-width:clamp(500px,35vw,560px);
 
-    --module-open-height:min(405px, calc(100vh - 115px));
-    --module-content-height:248px;
+    --module-open-height:min(300px, calc(100vh - 130px));
+    --module-content-height:252px;
 
-    --module-side-x:clamp(18px,3vw,54px);
-    --module-bottom-gap:18px;
-    --module-top-y:clamp(32px,5vh,64px);
+    --module-side-x:clamp(20px,3.2vw,58px);
+    --module-bottom-gap:22px;
+    --module-top-y:clamp(30px,4.6vh,60px);
     --cpu-card-top-y:var(--module-top-y);
-    --module-items-width:240px;
+    --module-items-width:230px;
 }
 
 /* ==========================================================
@@ -2383,7 +2383,7 @@ body{
 .module-card.module-open{
     width:var(--module-open-width);
 
-    min-height:365px;
+    min-height:330px;
     max-height:var(--module-open-height);
 
     z-index:12;
@@ -2449,7 +2449,7 @@ body{
 /* Middle row */
 .module-left-middle,
 .module-right-middle{
-    top:55%;
+    top:44%;
 }
 
 /* Bottom row */
