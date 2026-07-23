@@ -484,14 +484,39 @@ const Network = (() => {
             const start = bus.center;
             const end = getModuleAnchor(moduleRect, config);
             const merge = getMergePoint(end, config);
-            // const linkTarget = getLinkTarget(merge);
+            
+            // A* runs strictly between the two standoff points, so it never
+            // targets or rides along the pin rail or the item backbone.
+            const busStandoff = getBusStandoff(start, config);
+            const mergeStandoff = getMergeStandoff(merge);
+            
             const isOpen = card.classList.contains("module-open");
             const obstacles = openObstacles.map(o => o.rect);
+            
+            const routedPoints = buildPcbRoutePoints(
+                busStandoff,
+                mergeStandoff,
+                config,
+                moduleRect,
+                isOpen,
+                obstacles
+            );
+            
+            // Short explicit connectors join each standoff back to its
+            // junction, so the bus is one continuous path end to end.
+            const fullPoints = collinearSimplify([
+                start,
+                ...routedPoints,
+                merge
+            ]);
+            
             const routeD = [
-                buildPcbRoute(start, merge, config, moduleRect, isOpen, obstacles),
+                pointsToPath(fullPoints),
                 bus.railPath,
                 bus.tapPath
-            ].filter(Boolean).join(" ");
+            ]
+                .filter(Boolean)
+                .join(" ");
 
             tracesMarkup += `
                 <path
@@ -708,7 +733,55 @@ const Network = (() => {
         };
         return out;
     }
+    /*
+    Standoff distance: how far the A* endpoints sit off the junctions.
+    A* only ever routes between standoff points, never onto a rail or a
+    backbone, so it can't overlap them. Short explicit connectors then
+    join each standoff back to its junction.
+    */
+    const LINK_STANDOFF = 10;
     
+    /* Standoff off the module merge point, pushed away from the card. */
+    function getMergeStandoff(merge) {
+        return merge.vertical
+            ? {
+                  x: merge.x + merge.outward * LINK_STANDOFF,
+                  y: merge.y
+              }
+            : {
+                  x: merge.x,
+                  y: merge.y + merge.outward * LINK_STANDOFF
+              };
+    }
+    
+    /* Standoff off the CPU pin bus rail, pushed away from the chip. */
+    function getBusStandoff(busCenter, config) {
+        if (config.cpuSide === "left") {
+            return {
+                x: busCenter.x - LINK_STANDOFF,
+                y: busCenter.y
+            };
+        }
+    
+        if (config.cpuSide === "right") {
+            return {
+                x: busCenter.x + LINK_STANDOFF,
+                y: busCenter.y
+            };
+        }
+    
+        if (config.cpuSide === "top") {
+            return {
+                x: busCenter.x,
+                y: busCenter.y - LINK_STANDOFF
+            };
+        }
+    
+        return {
+            x: busCenter.x,
+            y: busCenter.y + LINK_STANDOFF
+        };
+    }
     function getMergePoint(moduleEntryPoint, config) {
         const vertical =
             config.moduleSide === "left" ||
@@ -1069,7 +1142,7 @@ const Network = (() => {
             : rect.bottom;
     }
 
-    function buildPcbRoute(
+    function buildPcbRoutePoints(
         start,
         end,
         config,
@@ -1077,20 +1150,32 @@ const Network = (() => {
         isOpen,
         obstacles
     ) {
-        const open = isOpen && moduleRect ? moduleRect : null;
-
+        const open =
+            isOpen && moduleRect
+                ? moduleRect
+                : null;
+    
         const points =
-            config.cpuSide === "left" || config.cpuSide === "right"
-                ? buildHorizontalPoints(start, end, config, open)
-                : buildVerticalPoints(start, end, config, open);
-
-        const routed = avoidObstacles(
+            config.cpuSide === "left" ||
+            config.cpuSide === "right"
+                ? buildHorizontalPoints(
+                      start,
+                      end,
+                      config,
+                      open
+                  )
+                : buildVerticalPoints(
+                      start,
+                      end,
+                      config,
+                      open
+                  );
+    
+        return avoidObstacles(
             points,
             obstacles || [],
             end
         );
-        return pointsToPath(collinearSimplify(routed));
-        // return pointsToPath(trimPathStart(routed, CPU_MERGE_GAP));
     }
 
     function pointsToPath(points) {
