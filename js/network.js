@@ -704,10 +704,11 @@ const Network = (() => {
         const out = points.slice();
         out[0] = {
             x: a.x + (dx / len) * gap,
-            y: a.y + (dy / len/) *gap
+            y: a.y + (dy / len) * gap
         };
         return out;
     }
+    
     function getMergePoint(moduleEntryPoint, config) {
         const vertical =
             config.moduleSide === "left" ||
