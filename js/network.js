@@ -1669,7 +1669,6 @@ const Network = (() => {
                 <div class="module-header">
 
                     <div class="module-header-top">
-
                         <span class="module-status">
                             <span class="module-status-dot"></span>
                             <span class="module-status-label">STANDBY</span>
