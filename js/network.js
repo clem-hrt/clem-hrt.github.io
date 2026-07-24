@@ -438,6 +438,8 @@ const Network = (() => {
         }
     }
 
+    let lastTraceMarkup = "";
+    
     function drawTraces() {
         if (!pcbLayer) return;
 
@@ -547,8 +549,10 @@ const Network = (() => {
             itemTracesMarkup += itemMarkup.traces;
             itemPadsMarkup += itemMarkup.pads;
         });
-
-        svg.innerHTML = tracesMarkup + itemTracesMarkup + padsMarkup + itemPadsMarkup;
+        const markup = tracesMarkup + itemTracesMarkup + padsMarkup + itemPadsMarkup;
+        if (markup == lastTraceMarkup) return;
+        lastTraceMarkup = markup;
+        svg.innerHTML = markup;
         restoreTraceState();
         refreshItemTraceClasses();
     }
@@ -704,35 +708,6 @@ const Network = (() => {
 
     const ITEM_SPINE_OFFSET = 34;
 
-    /* Gap left between the CPU link's end and the merge point, so the link
-       touches the junction without overlapping the backbone. */
-    const ITEM_MERGE_GAP = 16;
-    const CPU_MERGE_GAP = 16;
-    /*
-        The common point where all item traces converge and where the CPU link
-        terminates. It sits on the item spine, just outside the card's
-        CPU-facing edge — never on the card itself, so the link can also avoid
-        its own open panel.
-    */
-    function trimPathStart(points, gap) {
-        if (points.length < 2 || gap <= 0) return points;
-
-        const a = points[0];
-        const b = points[1];
-
-        const dx = b.x - a.x;
-        const dy = b.y - a.y;
-        const len = Math.hypot(dx, dy);
-        
-        if (len <= gap) return points;
-
-        const out = points.slice();
-        out[0] = {
-            x: a.x + (dx / len) * gap,
-            y: a.y + (dy / len) * gap
-        };
-        return out;
-    }
     /*
     Standoff distance: how far the A* endpoints sit off the junctions.
     A* only ever routes between standoff points, never onto a rail or a
@@ -808,13 +783,6 @@ const Network = (() => {
             outward,
             vertical
         };
-    }
-
-    /* Where the CPU link stops: merge point pushed a few px further out. */
-    function getLinkTarget(merge) {
-        return merge.vertical
-            ? { x: merge.x + merge.outward * ITEM_MERGE_GAP, y: merge.y }
-            : { x: merge.x, y: merge.y + merge.outward * ITEM_MERGE_GAP };
     }
 
     function buildItemBackboneRoute(merge, anchors, config) {
