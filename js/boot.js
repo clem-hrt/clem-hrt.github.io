@@ -223,8 +223,6 @@ const Boot = (() => {
 
             plug.style.transform = `translateY(-50%) translateX(${x}px)`;
             current.style.width = `${progress * 100}%`;
-
-            slider.style.setProperty("--power-progress", progress.toFixed(3));
             slider.classList.toggle("has-power-current", progress > 0.04);
 
             if (progress > 0.72) {
