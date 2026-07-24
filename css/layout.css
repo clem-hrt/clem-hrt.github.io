@@ -2983,6 +2983,32 @@ body{
    RESPONSIVE
 ========================================================== */
 
+@media (max-width:1380px){
+    .module-content{
+        grid-template-columns:1fr;
+    }
+
+    :root{
+        --module-items-width:100%;
+        --module-open-height:min(400px, calc(100vh - 120px));
+        --module-content-height:300px;
+    }
+
+    .module-card.module-open{
+        min-height:300px;
+    }
+}
+
+@media (max-width:1600px){
+    :root{
+        --module-open-width:min(
+            540px,
+            calc((100vw - 470px) / 2 - var(--module-side-x))
+        );
+        --module-items-width:200px;
+    }
+}
+
 @media (max-width:900px){
 
     #app{
