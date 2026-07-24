@@ -9,17 +9,12 @@ COLORS
 ========================================================== */
 
 --clr-background:#070B12;
---clr-surface:#0F1624;
---clr-card:#151F31;
 
 --clr-text:#F5F8FC;
 --clr-text-secondary:#8D9AAF;
 
 --clr-accent:#35C2FF;
 --clr-success:#39F38C;
-
---clr-grid:rgba(255,255,255,.04);
---clr-pcb:rgba(53,194,255,.08);
 
 /* ==========================================================
 TYPOGRAPHY
@@ -32,20 +27,6 @@ sans-serif;
 --font-body:
 Arial,
 sans-serif;
-
-/* ==========================================================
-SPACING
-========================================================== */
-
---space-xxs:.25rem;
---space-xs:.5rem;
---space-s:.75rem;
---space-m:1rem;
---space-l:1.5rem;
---space-xl:2rem;
---space-xxl:3rem;
---space-hero:6rem;
-
 
 /* ==========================================================
 RADIUS
@@ -85,7 +66,5 @@ Z INDEX
 --z-background:0;
 
 --z-content:10;
-
---z-overlay:100;
 
 }
