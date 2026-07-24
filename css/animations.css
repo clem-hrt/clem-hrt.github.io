@@ -2,12 +2,6 @@
 ANIMATIONS
 ========================================================== */
 
-.fade-in{
-
-    animation:fadeIn .9s ease forwards;
-
-}
-
 @keyframes fadeIn{
 
     from{
