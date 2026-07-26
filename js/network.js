@@ -28,6 +28,7 @@ const Network = (() => {
             items: [
                 {
                     title: "Alstom",
+                    url: "https://www.alstom.com",
                     meta: "Lab Test Automation Engineer",
                     date: "Jun 2025 – Nov 2026 · Pittsburgh, US",
                     details: [
@@ -39,6 +40,7 @@ const Network = (() => {
                 },
                 {
                     title: "Bosch",
+                    url: "https://www.bosch.com",
                     meta: "Model Based & Function Development",
                     date: "Sep 2024 – Mar 2025 · Paris, FR",
                     details: [
@@ -50,6 +52,7 @@ const Network = (() => {
                 },
                 {
                     title: "Andrice",
+                    url: "https://andricegroup.com",
                     meta: "Embedded Systems Engineer Intern",
                     date: "May 2023 – Aug 2023 · Lyon, FR",
                     details: [
@@ -157,6 +160,7 @@ const Network = (() => {
             items: [
                 {
                     title: "Heriot-Watt University",
+                    url: "https://www.hw.ac.uk",
                     meta: "Master degree in Robotics",
                     date: "Sep 2023 – Sep 2024 · Edinburgh, UK",
                     details: [
@@ -168,6 +172,7 @@ const Network = (() => {
                 },
                 {
                     title: "ESIEE Paris",
+                    url: "https://www.esiee.fr",
                     meta: "Master degree in Embedded & Electrical Systems",
                     date: "Sep 2021 – Sep 2024 · Paris, FR",
                     details: [
@@ -178,7 +183,8 @@ const Network = (() => {
                     ]
                 },
                 {
-                    title: "CPGE",
+                    title: "CPGE - Camille Vernet",
+                    url: "https://camille-vernet.ent.auvergnerhonealpes.fr",
                     meta: "Mathematics & Physics",
                     date: "Sep 2018 – Sep 2021 · Valence, FR",
                     details: [
@@ -1806,10 +1812,14 @@ const Network = (() => {
 
         detailBox.classList.add("detail-active");
 
+        const titleMarkup = item.url
+                    ? `<h4><a class="detail-link" href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title}<span class="detail-link-icon" aria-hidden="true">↗</span></a></h4>`
+                    : `<h4>${item.title}</h4>`;
+
         detailBox.innerHTML = `
             <span class="detail-date">${item.date}</span>
 
-            <h4>${item.title}</h4>
+            ${titleMarkup}
 
             <p>${item.meta}</p>
 
