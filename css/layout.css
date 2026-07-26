@@ -2934,6 +2934,47 @@ body{
 .module-item{
     box-sizing:border-box;
 }
+
+.detail-link{
+    color:inherit;
+    text-decoration:none;
+
+    display:inline-flex;
+    align-items:baseline;
+    gap:5px;
+
+    border-bottom:1px solid rgba(53,194,255,.28);
+    padding-bottom:1px;
+
+    transition:
+        color var(--transition-fast, .2s ease),
+        border-color var(--transition-fast, .2s ease);
+}
+
+.detail-link:hover,
+.detail-link:focus-visible{
+    color:var(--clr-accent);
+    border-bottom-color:var(--clr-accent);
+    outline:none;
+}
+
+.detail-link-icon{
+    font-size:.7em;
+    color:var(--clr-accent);
+
+    opacity:.7;
+    transform:translateY(-1px);
+
+    transition:
+        opacity var(--transition-fast, .2s ease),
+        transform var(--transition-fast, .2s ease);
+}
+
+.detail-link:hover .detail-link-icon,
+.detail-link:focus-visible .detail-link-icon{
+    opacity:1;
+    transform:translate(1px,-2px);
+}
 /* ==========================================================
    MODULE SCROLLBARS
 ========================================================== */
