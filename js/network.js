@@ -1856,6 +1856,28 @@ const Network = (() => {
         forceTraceSync(1600);
     }
 
+    function completeAll() {
+        modules.forEach(module => {
+            activateModule(module.id);
+    
+            module.items.forEach((item, itemIndex) => {
+                activateItemTrace(
+                    module.id,
+                    itemIndex
+                );
+            });
+        });
+    
+        document
+            .querySelectorAll(".module-card")
+            .forEach(card =>
+                card.classList.remove("module-open")
+            );
+    
+        redrawTracesSoon();
+        forceTraceSync(700);
+    }
+    
     function show() {
         showTraces();
         showModules();
@@ -1870,7 +1892,8 @@ const Network = (() => {
         show,
         showTraces,
         showModules,
-        getTotalModules
+        getTotalModules,
+        completeAll
     };
 
 })();
