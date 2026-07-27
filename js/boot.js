@@ -11,12 +11,12 @@ const Boot = (() => {
 
     const timing = {
         socketOnline: 500,
-        systemOnline: 1500,
-        coreOk: 2500,
-        pcbOnline: 3500,
-        modulesReady: 4500,
-        fadeOut: 5500,
-        launchInterface: 6500
+        systemOnline: 2000,
+        coreOk: 3500,
+        pcbOnline: 5000,
+        modulesReady: 6500,
+        fadeOut: 8000,
+        launchInterface: 9500
     };
 
     let sliderState = {
