@@ -314,6 +314,71 @@ const Boot = (() => {
         }, timing.launchInterface);
     }
 
+    function showReturningChoice() {
+        if (document.querySelector(".resume-prompt")) {
+            return;
+        }
+    
+        const prompt = document.createElement("div");
+    
+        prompt.className = "resume-prompt";
+    
+        prompt.innerHTML = `
+            <div class="resume-prompt-card">
+                <span class="resume-prompt-label">
+                    SYSTEM MEMORY DETECTED
+                </span>
+    
+                <p class="resume-prompt-text">
+                    Previous session completed. Resume the finished board or replay the scan?
+                </p>
+    
+                <div class="resume-prompt-actions">
+                    <button
+                        type="button"
+                        class="resume-btn resume-btn-primary"
+                        data-resume="resume"
+                    >
+                        Resume completed
+                    </button>
+    
+                    <button
+                        type="button"
+                        class="resume-btn"
+                        data-resume="replay"
+                    >
+                        Replay
+                    </button>
+                </div>
+            </div>
+        `;
+    
+        document.body.appendChild(prompt);
+    
+        requestAnimationFrame(() => {
+            prompt.classList.add("resume-prompt-visible");
+        });
+    
+        const dismiss = () => {
+            prompt.classList.remove("resume-prompt-visible");
+    
+            setTimeout(() => {
+                prompt.remove();
+            }, 300);
+        };
+    
+        prompt
+            .querySelector('[data-resume="resume"]')
+            .addEventListener("click", () => {
+                Network.completeAll();
+                dismiss();
+            });
+    
+        prompt
+            .querySelector('[data-resume="replay"]')
+            .addEventListener("click", dismiss);
+    }
+    
     function launchInterface() {
         bootLayer.innerHTML = "";
         bootLayer.classList.add("boot-hidden");
@@ -340,6 +405,9 @@ const Boot = (() => {
 
         setTimeout(() => {
             Network.showModules();
+            if (Ports.hasCompletedBefore()) {
+                setTimeout(showReturningChoice, 600);
+            }
         }, 2000);
     }
 
