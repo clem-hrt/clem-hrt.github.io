@@ -10,13 +10,13 @@ const Boot = (() => {
     const bootLayer = document.querySelector("#boot-layer");
 
     const timing = {
-        socketOnline: 900,
-        systemOnline: 1900,
-        coreOk: 3300,
-        pcbOnline: 4800,
-        modulesReady: 6300,
-        fadeOut: 7900,
-        launchInterface: 9200
+        socketOnline: 500,
+        systemOnline: 1050,
+        coreOk: 1800,
+        pcbOnline: 2600,
+        modulesReady: 3450,
+        fadeOut: 4300,
+        launchInterface: 5000
     };
 
     let sliderState = {
