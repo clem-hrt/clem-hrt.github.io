@@ -6,7 +6,8 @@ Unlocked after all profile modules are activated
 */
 
 const Ports = (() => {
-    
+
+    const COMPLETION_KEY = "chrx01_completed";
     const email = "clem.heritier@laposte.net";
     const subject = encodeURIComponent("Contact from Portfolio");
     const body = encodeURIComponent(
@@ -77,17 +78,33 @@ const Ports = (() => {
         `;
     }
 
-    function unlock() {
-        const portsPanel = document.querySelector(".system-ports");
-
-        if (!portsPanel) return;
-
-        portsPanel.classList.add("ports-unlocked");
+    function markCompleted() {
+        try {
+            localStorage.setItem(COMPLETION_KEY, "1");
+        } catch (e) {
+            /* storage blocked (private mode) — feature just degrades off */
+        }
     }
 
+    function hasCompletedBefore() {
+        try {
+            return localStorage.getItem(COMPLETION_KEY) === "1";
+        } catch (e) {
+            return false;
+        }
+    }
+
+    function unlock() {
+        const portsPanel = document.querySelector(".system-ports");
+        if (!portsPanel) return;
+        portsPanel.classList.add("ports-unlocked");
+        markCompleted();
+    }
+    
     return {
         create,
-        unlock
+        unlock,
+        hasCompletedBefore
     };
 
 })();
