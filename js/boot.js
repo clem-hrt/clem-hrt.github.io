@@ -11,12 +11,12 @@ const Boot = (() => {
 
     const timing = {
         socketOnline: 500,
-        systemOnline: 1050,
-        coreOk: 1800,
-        pcbOnline: 2600,
-        modulesReady: 3450,
-        fadeOut: 4300,
-        launchInterface: 5000
+        systemOnline: 1350,
+        coreOk: 2100,
+        pcbOnline: 2900,
+        modulesReady: 3750,
+        fadeOut: 4600,
+        launchInterface: 5300
     };
 
     let sliderState = {
@@ -354,29 +354,70 @@ const Boot = (() => {
         `;
     
         document.body.appendChild(prompt);
-    
+
         requestAnimationFrame(() => {
             prompt.classList.add("resume-prompt-visible");
         });
-    
+        
+        const resumeBtn = prompt.querySelector(
+            '[data-resume="resume"]'
+        );
+        
+        const replayBtn = prompt.querySelector(
+            '[data-resume="replay"]'
+        );
+        
+        const resumeLabel = "Resume completed";
+        
+        let remaining = 10;
+        
+        resumeBtn.textContent =
+            `${resumeLabel} (${remaining})`;
+        
+        let countdownId = setInterval(() => {
+            remaining -= 1;
+        
+            if (remaining <= 0) {
+                clearInterval(countdownId);
+                countdownId = null;
+        
+                Network.completeAll();
+                dismiss();
+        
+                return;
+            }
+        
+            resumeBtn.textContent =
+                `${resumeLabel} (${remaining})`;
+        }, 1000);
+        
+        const stopTimer = () => {
+            if (countdownId) {
+                clearInterval(countdownId);
+                countdownId = null;
+            }
+        
+            resumeBtn.textContent = resumeLabel;
+        };
+        
         const dismiss = () => {
-            prompt.classList.remove("resume-prompt-visible");
-    
+            stopTimer();
+        
+            prompt.classList.remove(
+                "resume-prompt-visible"
+            );
+        
             setTimeout(() => {
                 prompt.remove();
             }, 300);
         };
-    
-        prompt
-            .querySelector('[data-resume="resume"]')
-            .addEventListener("click", () => {
-                Network.completeAll();
-                dismiss();
-            });
-    
-        prompt
-            .querySelector('[data-resume="replay"]')
-            .addEventListener("click", dismiss);
+        
+        resumeBtn.addEventListener("click", () => {
+            Network.completeAll();
+            dismiss();
+        });
+        
+        replayBtn.addEventListener("click", dismiss);
     }
     
     function launchInterface() {
