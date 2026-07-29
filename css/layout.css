@@ -81,7 +81,7 @@ body{
     border:1px solid rgba(53,194,255,.18);
     border-radius:var(--radius-large);
     background:rgba(10,16,28,.72);
-    backdrop-filter:blur(18px);
+    backdrop-filter:blur(7px);
     box-shadow:var(--shadow-card);
     text-align:center;
     transition:
@@ -1452,7 +1452,10 @@ body{
     box-shadow:
         var(--shadow-card),
         inset 0 0 38px rgba(53,194,255,.045),
-        0 0 42px rgba(53,194,255,.08);
+        0 0 42px rgba(53,194,255,.08),
+        inset 0 0 0 1px rgba(0,0,0,.5),
+        inset 0 0 0 8px rgba(9,14,22,.55),
+        inset 0 0 0 9px rgba(53,194,255,.16);
     transition:
         border-color var(--transition-normal),
         box-shadow var(--transition-normal);
@@ -1581,286 +1584,188 @@ body{
     margin-left: -2px;
 }
 
-.cpu-pins-bottom .cpu-pin {
-    justify-self: center;
-    width: 7px;
-    height: 15px;
-    border-radius: 0 0 2px 2px;
-    transform-origin: center top;
+/* ==========================================================
+   CPU LEADS (QFP package) — rebuilt to match the reference IC.
+   Solid, bold, matte-metal leads with a crisp edge and a short
+   root into the package body. data-pin hooks + dimensions +
+   transform-origin are preserved so trace routing is unaffected.
+========================================================== */
+
+.cpu-pin {
+    position: relative;
+    opacity: 0.95;
+
+    /* Solid matte-metal lead: flat mid-tone with subtle shading,
+       a bright specular line, and a dark grounded edge. */
+    background: linear-gradient(
+        180deg,
+        #c8d2de 0%,
+        #eef4fb 20%,
+        #ffffff 42%,
+        #dfe8f2 58%,
+        #9fabbb 82%,
+        #6c7887 100%
+    );
+
+    box-shadow:
+        inset 0 0 0 0.5px rgba(255, 255, 255, 0.55),
+        0 1px 2px rgba(0, 0, 0, 0.6);
+
+    transition:
+        background var(--transition-normal),
+        box-shadow var(--transition-normal),
+        opacity var(--transition-normal),
+        filter var(--transition-normal);
 }
 
+/* ---- Lead dimensions per side (bold, reference-like) ---- */
 .cpu-pins-left .cpu-pin {
     justify-self: end;
     align-self: center;
-    width: 15px;
-    height: 7px;
-    border-radius: 2px 0 0 2px;
+    width: 18px;
+    height: 9px;
+    border-radius: 1px 0 0 1px;
     transform-origin: right center;
 }
 
 .cpu-pins-right .cpu-pin {
     justify-self: start;
     align-self: center;
-    width: 15px;
-    height: 7px;
-    border-radius: 0 2px 2px 0;
+    width: 18px;
+    height: 9px;
+    border-radius: 0 1px 1px 0;
     transform-origin: left center;
 }
 
-.cpu-pin {
-    position: relative;
-    opacity: 0.9;
-
-    box-shadow:
-        inset 0 0 2px rgba(255, 255, 255, 0.28),
-        0 1px 2px rgba(0, 0, 0, 0.55);
-
-    transition:
-        background var(--transition-normal),
-        box-shadow var(--transition-normal),
-        opacity var(--transition-normal),
-        transform var(--transition-normal);
+.cpu-pins-bottom .cpu-pin {
+    justify-self: center;
+    width: 9px;
+    height: 18px;
+    border-radius: 0 0 1px 1px;
+    transform-origin: center top;
 }
 
-.cpu-pins-left .cpu-pin,
-.cpu-pins-right .cpu-pin {
-    background: linear-gradient(
-        180deg,
-        rgba(70, 84, 102, 0.95) 0%,
-        rgba(150, 168, 190, 0.98) 26%,
-        rgba(238, 246, 255, 1) 50%,
-        rgba(140, 158, 180, 0.98) 74%,
-        rgba(58, 70, 86, 0.95) 100%
-    );
-}
-
+/* Horizontal leads get a horizontal specular gradient */
 .cpu-pins-bottom .cpu-pin {
     background: linear-gradient(
         90deg,
-        rgba(70, 84, 102, 0.95) 0%,
-        rgba(150, 168, 190, 0.98) 26%,
-        rgba(238, 246, 255, 1) 50%,
-        rgba(140, 158, 180, 0.98) 74%,
-        rgba(58, 70, 86, 0.95) 100%
+        #c8d2de 0%,
+        #eef4fb 20%,
+        #ffffff 42%,
+        #dfe8f2 58%,
+        #9fabbb 82%,
+        #6c7887 100%
     );
 }
 
+/* ---- Root: short darker stub where the lead meets the package ---- */
 .cpu-pin::before {
     content: "";
     position: absolute;
     border-radius: 1px;
-
-    background: linear-gradient(
-        180deg,
-        rgba(58, 70, 86, 0.98),
-        rgba(96, 110, 128, 0.98),
-        rgba(48, 58, 72, 0.98)
-    );
-
-    box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.2);
+    background: #2b333f;
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.6);
 }
 
 .cpu-pins-left .cpu-pin::before {
-    right: -6px;
+    right: -5px;
     top: 50%;
-    width: 8px;
-    height: 9px;
+    width: 6px;
+    height: 100%;
     transform: translateY(-50%);
-
-    background: linear-gradient(
-        90deg,
-        rgba(48, 58, 72, 0.98),
-        rgba(96, 110, 128, 0.98),
-        rgba(58, 70, 86, 0.98)
-    );
 }
 
 .cpu-pins-right .cpu-pin::before {
-    left: -6px;
+    left: -5px;
     top: 50%;
-    width: 8px;
-    height: 9px;
+    width: 6px;
+    height: 100%;
     transform: translateY(-50%);
-
-    background: linear-gradient(
-        90deg,
-        rgba(58, 70, 86, 0.98),
-        rgba(96, 110, 128, 0.98),
-        rgba(48, 58, 72, 0.98)
-    );
 }
 
 .cpu-pins-bottom .cpu-pin::before {
-    top: -6px;
+    top: -5px;
     left: 50%;
-    width: 9px;
-    height: 8px;
+    width: 100%;
+    height: 6px;
     transform: translateX(-50%);
-
-    background: linear-gradient(
-        180deg,
-        rgba(48, 58, 72, 0.98),
-        rgba(96, 110, 128, 0.98),
-        rgba(58, 70, 86, 0.98)
-    );
 }
 
+/* ---- Tip: bright contact pad at the outer end ---- */
 .cpu-pin::after {
     content: "";
     position: absolute;
     display: block;
-
-    background: linear-gradient(
-        180deg,
-        rgba(210, 224, 240, 0.95),
-        rgba(150, 168, 190, 0.95)
-    );
-
-    box-shadow: 0 0 3px rgba(53, 194, 255, 0.18);
+    background: #f2f7fd;
+    box-shadow: 0 0 3px rgba(53, 194, 255, 0.25);
 }
 
 .cpu-pins-left .cpu-pin::after {
-    left: -3px;
+    left: -2px;
     top: 50%;
-    width: 4px;
-    height: 9px;
-    border-radius: 2px 0 0 2px;
+    width: 3px;
+    height: 100%;
+    border-radius: 1px 0 0 1px;
     transform: translateY(-50%);
 }
 
 .cpu-pins-right .cpu-pin::after {
-    right: -3px;
+    right: -2px;
     top: 50%;
-    width: 4px;
-    height: 9px;
-    border-radius: 0 2px 2px 0;
+    width: 3px;
+    height: 100%;
+    border-radius: 0 1px 1px 0;
     transform: translateY(-50%);
 }
 
 .cpu-pins-bottom .cpu-pin::after {
-    bottom: -3px;
+    bottom: -2px;
     left: 50%;
-    width: 9px;
-    height: 4px;
-    border-radius: 0 0 2px 2px;
+    width: 100%;
+    height: 3px;
+    border-radius: 0 0 1px 1px;
     transform: translateX(-50%);
 }
 
-.cpu-pins-left .cpu-pin.pin-active,
-.cpu-pins-right .cpu-pin.pin-active,
-.cpu-pins-left .cpu-pin.pin-item-locked,
-.cpu-pins-right .cpu-pin.pin-item-locked {
+/* ---- Activated / locked: lead turns green (energised) ---- */
+.cpu-pin.pin-active,
+.cpu-pin.pin-item-locked {
     opacity: 1;
-
     background: linear-gradient(
         180deg,
-        rgba(30, 120, 78, 0.98) 0%,
-        rgba(120, 240, 180, 0.98) 30%,
-        rgba(235, 255, 245, 1) 50%,
-        rgba(110, 235, 172, 0.98) 70%,
-        rgba(26, 108, 70, 0.98) 100%
+        #3fbf85 0%,
+        #8ff5bc 30%,
+        #eafff5 50%,
+        #74ecb0 70%,
+        #1f8a58 100%
     );
-
     box-shadow:
-        0 0 7px rgba(57, 243, 140, 0.6),
-        0 0 15px rgba(57, 243, 140, 0.22),
-        inset 0 0 3px rgba(255, 255, 255, 0.3);
+        0 0 7px rgba(57, 243, 140, 0.55),
+        0 0 15px rgba(57, 243, 140, 0.2),
+        inset 0 0 0 0.5px rgba(255, 255, 255, 0.4);
 }
 
 .cpu-pins-bottom .cpu-pin.pin-active,
 .cpu-pins-bottom .cpu-pin.pin-item-locked {
-    opacity: 1;
-
     background: linear-gradient(
         90deg,
-        rgba(30, 120, 78, 0.98) 0%,
-        rgba(120, 240, 180, 0.98) 30%,
-        rgba(235, 255, 245, 1) 50%,
-        rgba(110, 235, 172, 0.98) 70%,
-        rgba(26, 108, 70, 0.98) 100%
-    );
-
-    box-shadow:
-        0 0 7px rgba(57, 243, 140, 0.6),
-        0 0 15px rgba(57, 243, 140, 0.22),
-        inset 0 0 3px rgba(255, 255, 255, 0.3);
-}
-
-.cpu-pin.pin-active::before,
-.cpu-pin.pin-item-locked::before {
-    background: linear-gradient(
-        180deg,
-        rgba(26, 108, 70, 0.98),
-        rgba(70, 200, 138, 0.98),
-        rgba(26, 108, 70, 0.98)
+        #3fbf85 0%,
+        #8ff5bc 30%,
+        #eafff5 50%,
+        #74ecb0 70%,
+        #1f8a58 100%
     );
 }
 
 .cpu-pin.pin-active::after,
 .cpu-pin.pin-item-locked::after {
-    background: linear-gradient(
-        180deg,
-        rgba(200, 255, 228, 0.95),
-        rgba(90, 220, 158, 0.95)
-    );
-
+    background: #eafff5;
     box-shadow: 0 0 4px rgba(57, 243, 140, 0.5);
 }
 
-.cpu-pins-left .cpu-pin.pin-item-active,
-.cpu-pins-right .cpu-pin.pin-item-active {
-    opacity: 1;
-
-    background: linear-gradient(
-        180deg,
-        rgba(57, 243, 140, 0.85) 0%,
-        rgba(200, 255, 228, 1) 40%,
-        #ffffff 50%,
-        rgba(190, 255, 222, 1) 60%,
-        rgba(57, 243, 140, 0.88) 100%
-    );
-
-    box-shadow:
-        0 0 9px rgba(57, 243, 140, 0.95),
-        0 0 22px rgba(57, 243, 140, 0.42),
-        inset 0 0 5px rgba(255, 255, 255, 0.4);
-}
-
-.cpu-pins-bottom .cpu-pin.pin-item-active {
-    opacity: 1;
-
-    background: linear-gradient(
-        90deg,
-        rgba(57, 243, 140, 0.85) 0%,
-        rgba(200, 255, 228, 1) 40%,
-        #ffffff 50%,
-        rgba(190, 255, 222, 1) 60%,
-        rgba(57, 243, 140, 0.88) 100%
-    );
-
-    box-shadow:
-        0 0 9px rgba(57, 243, 140, 0.95),
-        0 0 22px rgba(57, 243, 140, 0.42),
-        inset 0 0 5px rgba(255, 255, 255, 0.4);
-}
-
-.cpu-pin.pin-item-active::after {
-    background: linear-gradient(
-        180deg,
-        #ffffff,
-        rgba(120, 240, 180, 0.95)
-    );
-
-    box-shadow: 0 0 6px rgba(57, 243, 140, 0.7);
-}
-
-.cpu-pins-left .cpu-pin.pin-item-active,
-.cpu-pins-right .cpu-pin.pin-item-active {
-    transform: scaleX(1.28);
-}
-
-.cpu-pins-bottom .cpu-pin.pin-item-active {
-    transform: scaleY(1.28);
+/* ---- Item hover: brightness pop only, NO transform (keeps geometry) ---- */
+.cpu-pin.pin-item-active {
+    filter: brightness(1.3) saturate(1.15);
 }
 
 .core-activated .cpu-core{
@@ -2295,7 +2200,9 @@ body{
    MODULE CARD BASE
 ========================================================== */
 
+
 .module-card{
+    contain:layout style;
     position:absolute;
 
     width:var(--module-closed-width);
@@ -2318,7 +2225,7 @@ body{
         var(--shadow-soft),
         inset 0 0 24px rgba(53,194,255,.025);
 
-    backdrop-filter:blur(18px);
+    backdrop-filter:blur(7px);
 
     opacity:0;
 
