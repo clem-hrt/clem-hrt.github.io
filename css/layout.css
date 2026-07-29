@@ -1585,7 +1585,10 @@ body{
 }
 
 /* ==========================================================
-   CPU LEADS
+   CPU LEADS (QFP package) — rebuilt to match the reference IC.
+   Solid, bold, matte-metal leads with a crisp edge and a short
+   root into the package body. data-pin hooks + dimensions +
+   transform-origin are preserved so trace routing is unaffected.
 ========================================================== */
 
 .cpu-pin {
