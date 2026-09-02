@@ -2195,10 +2195,10 @@ body{
 ========================================================== */
 :root{
     --module-closed-width:clamp(210px,16vw,250px);
-    --module-open-width:clamp(500px,35vw,560px);
+    --module-open-width:clamp(500px,35vw,580px);
 
-    --module-open-height:min(350px, calc(100vh - 130px));
-    --module-content-height:252px;
+    --module-open-height:min(370px, calc(100vh - 130px));
+    --module-content-height:235px;
 
     --module-side-x:clamp(20px,3.2vw,58px);
     --module-bottom-gap:22px;
