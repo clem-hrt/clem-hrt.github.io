@@ -2942,30 +2942,36 @@ body{
    RESPONSIVE
 ========================================================== */
 
-@media (max-width:1380px){
-    .module-content{
-        grid-template-columns:1fr;
-    }
-
+@media (max-width:1280px){
     :root{
-        --module-closed-width:clamp(210px,16vw,250px);
-        --module-open-width:clamp(500px,35vw,560px);    
-
-        --module-open-height:min(350px, calc(100vh - 130px));
-        --module-content-height:252px;
-
-        --module-side-x:clamp(20px,3.2vw,58px);
-        --module-bottom-gap:22px;
-        --module-top-y:clamp(30px,4.6vh,60px);
-        --cpu-card-top-y:var(--module-top-y);
-        --module-items-width:230px;
-        --module-items-width:100%;
-        --module-open-height:min(400px, calc(100vh - 120px));
-        --module-content-height:300px;
+        --cpu-core-width:340px;
+        --module-cpu-gap:30px;
+        --module-side-x:20px;
+        --module-top-y:26px;
+        --module-closed-width:clamp(218px,17vw,238px);
+        --module-items-width:150px;
+        --module-open-height:min(470px, calc(100vh - 100px));
+        --module-content-height:370px;
     }
 
     .module-card.module-open{
         min-height:300px;
+        transform:translateY(-6px) scale(1.012);
+    }
+
+    .module-item span,
+    .module-item small{
+        white-space:normal;
+        overflow:visible;
+        text-overflow:clip;
+        line-height:1.22;
+    }
+
+    .detail-date{
+        white-space:normal;
+        letter-spacing:.9px;
+        line-height:1.35;
+        border-radius:9px;
     }
 }
 
