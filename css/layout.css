@@ -1438,7 +1438,7 @@ body{
 
 .cpu-core{
     position:relative;
-    width:380px;
+    width:var(--cpu-core-width);
     padding:28px 28px 24px;
     overflow:hidden;
     text-align:center;
@@ -1560,7 +1560,7 @@ body{
     display: grid;
     grid-template-columns: repeat(10, 1fr);
     gap: 9px;
-    width: 380px;
+    width: var(--cpu-core-width);
     margin-top: -4px;
     padding: 0 34px;
     pointer-events: none;
@@ -2194,6 +2194,9 @@ body{
    MODULES
 ========================================================== */
 :root{
+    --cpu-core-width:380px;
+    --cpu-footprint:calc(var(--cpu-core-width) + 40px);
+    --module-cpu-gap:32px;
     --module-closed-width:clamp(210px,16vw,250px);
     --module-open-width:clamp(500px,35vw,580px);
 
@@ -2941,22 +2944,28 @@ body{
 /* ==========================================================
    RESPONSIVE
 ========================================================== */
-
-@media (max-width:1280px){
+/* ----------------------------------------------------------
+   LAPTOP BOARD — 1201px and up
+   Covers 1536x864, 1440x900, 1366x768, 1280x800, 1280x720.
+---------------------------------------------------------- */
+@media (min-width:1201px){
     :root{
-        --cpu-core-width:340px;
-        --module-cpu-gap:30px;
-        --module-side-x:20px;
-        --module-top-y:26px;
-        --module-closed-width:clamp(218px,17vw,238px);
-        --module-items-width:150px;
-        --module-open-height:min(470px, calc(100vh - 100px));
-        --module-content-height:370px;
-    }
+        --module-cpu-gap:32px;
+        --module-side-x:clamp(20px,2.6vw,52px);
 
-    .module-card.module-open{
-        min-height:300px;
-        transform:translateY(-6px) scale(1.012);
+        --module-open-width:min(
+            580px,
+            calc(
+                (100vw - var(--cpu-footprint)) / 2
+                - var(--module-side-x)
+                - var(--module-cpu-gap)
+            )
+        );
+
+        --module-items-width:clamp(150px, calc(var(--module-open-width) * .40), 230px);
+
+        --module-open-height:min(470px, calc(100vh - 96px));
+        --module-content-height:calc(var(--module-open-height) - 100px);
     }
 
     .module-item span,
@@ -2973,9 +2982,87 @@ body{
         line-height:1.35;
         border-radius:9px;
     }
+
+    /* 1.022 inflates the painted box by ~10px per panel, which is
+       clearance the router needs. 1.012 keeps the pop, halves the cost. */
+    .module-card.module-open{
+        transform:translateY(-6px) scale(1.012);
+    }
 }
 
-@media (max-width:900px){
+/* ----------------------------------------------------------
+   COMPACT LAPTOP — 1300px and down
+   1280x800 and 1280x720. The 380px core no longer leaves a
+   usable detail column, so the package itself steps down.
+---------------------------------------------------------- */
+@media (max-width:1300px){
+    :root{
+        --cpu-core-width:340px;
+        --module-cpu-gap:30px;
+        --module-side-x:20px;
+        --module-top-y:26px;
+        --module-closed-width:clamp(214px,17vw,238px);
+        --module-items-width:152px;
+    }
+
+    .cpu-pins-bottom{
+        padding:0 26px;
+    }
+
+}
+
+/* ----------------------------------------------------------
+   SHORT BOARD — height 820px and under, board mode only
+   1280x720 and 1366x768. Height, not width, is the binding
+   constraint here: the package plus a full-height bottom panel
+   does not fit in 720px, so the package loses some internal
+   padding and the bottom row is capped clear of it.
+---------------------------------------------------------- */
+@media (min-width:1201px) and (max-height:820px){
+    :root{
+        --module-top-y:22px;
+    }
+
+    .cpu-core{
+        padding:20px 24px 18px;
+    }
+
+    .cpu-identity{
+        margin-bottom:10px;
+    }
+
+    .cpu-core h2{
+        font-size:1.38rem;
+        margin-bottom:7px;
+    }
+
+    .core-monitor{
+        padding:10px;
+    }
+
+    .ports-header{
+        margin-bottom:8px;
+    }
+
+    /* Bottom row grows upward from the floor; stop it before the
+       package, which paints above the module layer. */
+    .module-left-bottom.module-open,
+    .module-right-bottom.module-open{
+        min-height:0;
+        max-height:calc(100vh - 412px);
+    }
+}
+
+/* ----------------------------------------------------------
+   STACK MODE — 1200px and down
+   Board becomes a single column, traces are dropped, the CPU
+   package tracks the viewport instead of a fixed 380px.
+---------------------------------------------------------- */
+@media (max-width:1200px){
+    :root{
+        --cpu-core-width:min(360px, calc(100vw - 68px));
+        --module-content-height:760px;
+    }
 
     #app{
         overflow:visible;
@@ -2994,12 +3081,14 @@ body{
 
     .cpu-wrapper{
         min-height:auto;
-        padding:80px 20px 40px;
+        padding:64px 20px 36px;
     }
 
+    /* Layout box must match painted box or the chip forces a
+       horizontal scrollbar it does not appear to need. */
     .cpu-chip,
     .cpu-visible .cpu-chip{
-        transform:scale(.9);
+        transform:none;
     }
 
     #module-layer{
@@ -3019,31 +3108,32 @@ body{
     .module-right-top,
     .module-right-middle,
     .module-right-bottom{
-       position:relative;
-       inset:auto;
-       translate:0 0;
-       width:100%;
-       max-height:none;
-       transform:none;
+        position:relative;
+        inset:auto;
+        translate:0 0;
+        width:100%;
+        max-height:none;
+        min-height:0;
+        transform:none;
     }
 
-    .module-content{
-        grid-template-columns:1fr;
+    .module-open .module-content,
+    .module-open .module-items,
+    .module-open .module-detail{
+        max-height:none;
     }
 
+    .module-content,
     .module-open .module-content{
-        max-height:520px;
-    }
-
-    .module-detail,
-    .module-top-center .module-detail,
-    .module-bottom-center .module-detail{
-        max-height:220px;
+        grid-template-columns:1fr;
     }
 }
 
+/* ----------------------------------------------------------
+   LARGE PHONE — 520px and down
+   430-448 (Pro Max / Pro XL) and 412-414 (Pixel, Galaxy).
+---------------------------------------------------------- */
 @media (max-width:520px){
-
     .boot-panel{
         padding:34px 22px;
     }
@@ -3060,8 +3150,11 @@ body{
         width:108px;
     }
 
+    .cpu-wrapper{
+        padding:52px 16px 32px;
+    }
+
     .cpu-core{
-        width:300px;
         padding:22px 20px 20px;
     }
 
@@ -3069,26 +3162,99 @@ body{
         font-size:1.32rem;
     }
 
+    .cpu-pins-left .cpu-pin,
+    .cpu-pins-right .cpu-pin{
+        width:13px;
+    }
+
+    .cpu-pins-bottom{
+        padding:0 22px;
+    }
+
+    .cpu-pins-bottom .cpu-pin{
+        height:13px;
+    }
+
+    .module-card{
+        padding:20px;
+    }
+}
+
+/* ----------------------------------------------------------
+   STANDARD PHONE — 400px and down
+   375-393 (iPhone base / Pro) and 360 (compact Android).
+   Two-up grids stop fitting inside the core below ~330px.
+---------------------------------------------------------- */
+@media (max-width:400px){
+    :root{
+        --cpu-core-width:calc(100vw - 60px);
+    }
+
+    .cpu-wrapper{
+        padding:44px 12px 28px;
+    }
+
+    .cpu-core{
+        padding:20px 16px 18px;
+    }
+
+    .cpu-core h2{
+        font-size:1.2rem;
+    }
+
     .core-monitor-grid,
     .ports-grid{
         grid-template-columns:1fr;
     }
 
-   .cpu-pins-left .cpu-pin,
-   .cpu-pins-right .cpu-pin{
-       width:13px;
-   }
-   
-   .cpu-pins-bottom{
-       width:300px;
-       padding:0 26px;
-   }
-   
-   .cpu-pins-bottom .cpu-pin{
-       height:13px;
-   }
+    #module-layer{
+        padding:16px 12px 48px;
+        gap:14px;
+    }
+
+    .module-card{
+        padding:18px 16px;
+    }
 }
 
+/* ----------------------------------------------------------
+   ACCESSIBILITY FLOOR — 340px and down
+   320px baseline and 200% zoom on a 640px viewport.
+---------------------------------------------------------- */
+@media (max-width:340px){
+    .cpu-wrapper{
+        padding:36px 8px 24px;
+    }
+
+    .cpu-core{
+        padding:18px 13px 16px;
+    }
+
+    .cpu-core h2{
+        font-size:1.06rem;
+    }
+
+    .cpu-pins-left .cpu-pin,
+    .cpu-pins-right .cpu-pin{
+        width:10px;
+    }
+
+    .cpu-pins-bottom{
+        padding:0 14px;
+    }
+
+    .cpu-pins-bottom .cpu-pin{
+        height:10px;
+    }
+
+    #module-layer{
+        padding:14px 8px 40px;
+    }
+
+    .module-card{
+        padding:16px 13px;
+    }
+}
 /* ==========================================================
    RETURNING-VISITOR RESUME PROMPT
 ========================================================== */
