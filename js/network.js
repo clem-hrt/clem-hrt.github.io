@@ -29,37 +29,38 @@ const Network = (() => {
                 {
                     title: "Alstom",
                     url: "https://www.alstom.com",
-                    meta: "Lab Test Automation Engineer",
+                    meta: "Lab Test Automation Engineer - VIE",
                     date: "Jun 2025 – Nov 2026 · Pittsburgh, US",
                     details: [
                         "Full-stack network analysis platform",
-                        "Real-time packet capture and diagnostics",
-                        "Robot Framework automation",
-                        "Embedded communication systems"
+                        "Real-time data packet capture, visualisation, diagnostics",
+                        "Automated end-to-end validation in virtualised environment with Robot Framework automation",
+                        "Delivered API-driven backend services and GUI tooling that reduced system-level debug time"
                     ]
                 },
                 {
                     title: "Bosch",
                     url: "https://www.bosch.com",
-                    meta: "Model Based & Function Development",
+                    meta: "Model-Based & Function Development Engineer - Internship",
                     date: "Sep 2024 – Mar 2025 · Paris, FR",
                     details: [
-                        "MATLAB / Simulink workflows",
-                        "MCDC model coverage improvement",
-                        "Simulink Design Verifier",
-                        "Processor-in-the-Loop testing"
+                        "MATLAB / Simulink workflows model-based design workflows deployed across 2 distributed teams, compliant with automotive (ISO 26262) standards",
+                        "Raised MCDC model test coverage from 81% to 98%",
+                        "Simulink Design Verifier test generation",
+                        "Fixed Processor-in-the-Loop failures on embedded targets"
                     ]
                 },
                 {
                     title: "Andrice",
                     url: "https://andricegroup.com",
-                    meta: "Embedded Systems Engineer Intern",
+                    meta: "Embedded Systems Engineer - Internship",
                     date: "May 2023 – Aug 2023 · Lyon, FR",
                     details: [
-                        "500W power converter design",
-                        "PCB development with Altium",
-                        "Prototype bring-up and validation",
-                        "Electrical and thermal testing"
+                        "Designed a 500W isolated Phase-Shift Full-Bridge converter",
+                        "LTSpice modelling and component sizing",
+                        "Schematic and PCB layout in Altium Designer",
+                        "Prototype assembly and bench validation",
+                        "STM32-generated PWM, oscilloscope measurement"
                     ]
                 }
             ]
@@ -73,7 +74,7 @@ const Network = (() => {
             items: [
                 {
                     title: "Programming",
-                    meta: "Python · C/C++ · Java",
+                    meta: "Python · C/C++",
                     date: "Software foundations",
                     details: [
                         "Python",
@@ -92,7 +93,7 @@ const Network = (() => {
                         "ESP32 / ESP8266",
                         "Altium Designer",
                         "LTSpice",
-                        "PCB bring-up"
+                        "PCB design & bring-up"
                     ]
                 },
                 {
@@ -114,7 +115,7 @@ const Network = (() => {
                     date: "International communication",
                     details: [
                         "French — Native",
-                        "English — Professional",
+                        "English — Fluent",
                         "Spanish — Basic"
                     ]
                 }
@@ -128,25 +129,26 @@ const Network = (() => {
             subtitle: "Engineering missions",
             items: [
                 {
-                    title: "Autonomous Waste Collection",
-                    meta: "Robotic Surface Vehicle",
+                    title: "Path Planning for Robotic Surface Vehicles",
+                    meta: "MSc Thesis",
                     date: "May 2024 – Aug 2024 · Heriot-Watt",
                     details: [
                         "Navigation and control algorithms",
-                        "Autonomous surface vehicle",
+                        "Autonomous waste-collection USVs",
                         "Path planning strategy evaluation",
-                        "Sensor and actuator integration"
+                        "Sensor and actuator simulation"
                     ]
                 },
                 {
                     title: "Voix de l’Univers",
-                    meta: "Embedded signal detection system",
+                    meta: "Electromagnetic Signal Detection",
                     date: "Apr 2022 – Jun 2022 · ESIEE Paris",
                     details: [
-                        "Electromagnetic signal detection",
-                        "Circuit and PCB design",
+                        "Built 2 receivers for lightning and solar-flare emissions",
+                        "Circuit and PCB design scaling",
                         "Simulation and measurement",
-                        "Real-world signal acquisition"
+                        "Real-world signal acquisition through PC sound card",
+                        "FFT spectral analysis in Spectrum Lab and Audacity"
                     ]
                 }
             ]
@@ -164,9 +166,9 @@ const Network = (() => {
                     meta: "Master degree in Robotics",
                     date: "Sep 2023 – Sep 2024 · Edinburgh, UK",
                     details: [
-                        "Robotics engineering",
-                        "Autonomous systems",
-                        "Navigation and control",
+                        "Double-degree programme with ESIEE Paris",
+                        "Robotics and Autonomous systems",
+                        "Navigation, planning and control",
                         "Robotic surface vehicle project"
                     ]
                 },
@@ -176,8 +178,8 @@ const Network = (() => {
                     meta: "Master degree in Embedded & Electrical Systems",
                     date: "Sep 2021 – Sep 2024 · Paris, FR",
                     details: [
-                        "Embedded systems",
-                        "Electrical systems",
+                        "Embedded systems and Electronics",
+                        "Electrical and power systems",
                         "Software engineering",
                         "Model-based development"
                     ]
@@ -188,10 +190,23 @@ const Network = (() => {
                     meta: "Mathematics & Physics",
                     date: "Sep 2018 – Sep 2021 · Valence, FR",
                     details: [
-                        "Intensive mathematics",
-                        "Physics",
+                        "Intensive mathematics and physics",
                         "Engineering sciences",
-                        "Scientific problem solving"
+                        "Scientific problem solving",
+                        "Preparation for French engineering schools"
+
+                    ]
+                },
+                {
+                    title: "Institution Notre Dame",
+                    url: "https://ind-valence.fr",
+                    meta: "Scientific Baccalaureate",
+                    date: "Sep 2018 · Valence, FR",
+                    details: [
+                        "Science track - mathematics and physics",
+                        "Graduated in 2018, Valence, FR",
+                        "Fondation for CPGE and engineering studies"
+
                     ]
                 }
             ]
@@ -205,7 +220,7 @@ const Network = (() => {
             items: [
                 {
                     title: "Competitive Rugby",
-                    meta: "15 years of practice",
+                    meta: "16 years of practice",
                     date: "Teamwork · Discipline · Resilience",
                     details: [
                         "Long-term competitive sport background",
@@ -298,7 +313,9 @@ const Network = (() => {
                 "left-9",
                 "left-10",
                 "left-11",
-                "left-12"
+                "left-12",
+                "left-13",
+                "left-14"
             ],
             cpuSlot: 0.70
         },

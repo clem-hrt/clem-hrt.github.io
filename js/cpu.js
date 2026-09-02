@@ -15,7 +15,7 @@ const CPU = (() => {
                 <div class="cpu-chip">
                     <div class="cpu-row">
                         <div class="cpu-pins cpu-pins-left">
-                            ${createPins("left", 12)}
+                            ${createPins("left", 14)}
                         </div>
     
                         <div class="cpu-core">
@@ -82,7 +82,8 @@ const CPU = (() => {
         education: [
             ["left-7", "left-8"],
             ["left-9", "left-10"],
-            ["left-11", "left-12"]
+            ["left-11", "left-12"],
+            ["left-13", "left-14"]
         ],
     
         projects: [
