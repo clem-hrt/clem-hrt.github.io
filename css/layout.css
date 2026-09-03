@@ -3094,9 +3094,9 @@ body{
     #module-layer{
         display:grid;
         grid-template-columns:1fr;
-        gap:18px;
+        gap:12px;
         height:auto;
-        padding:20px 20px 60px;
+        padding:16px 20px 56px;
     }
 
     .module-card,
@@ -3110,11 +3110,52 @@ body{
     .module-right-bottom{
         position:relative;
         inset:auto;
-        translate:0 0;
         width:100%;
-        max-height:none;
         min-height:0;
+        max-height:none;
+    }
+
+    /* The row transforms are set by .modules-visible .module-*-middle
+       (0,2,0) and win over any single-class reset. In flow layout the
+       -50% pull drags a card up over the one above it. */
+    .modules-visible .module-card,
+    .modules-visible .module-card.module-open{
+        translate:0 0;
         transform:none;
+    }
+
+    /* Board rows read left-to-right; a single column has to be resequenced
+       into CV order instead. */
+    .module-left-top    { order:1; }   /* Experience     */
+    .module-left-middle { order:2; }   /* Education      */
+    .module-right-middle{ order:3; }   /* Skills         */
+    .module-right-top   { order:4; }   /* Projects       */
+    .module-right-bottom{ order:5; }   /* Certifications */
+    .module-left-bottom { order:6; }   /* Hobbies        */
+
+    /* Closed cards are a list, not six posters: tighten the header block
+       so more than two fit on screen at once. */
+    .module-card{
+        padding:18px 20px;
+    }
+
+    .module-card h3{
+        font-size:1.06rem;
+    }
+
+    .module-card p{
+        font-size:.78rem;
+        line-height:1.35;
+    }
+
+    .module-header{
+        gap:3px 12px;
+    }
+
+    .module-status{
+        margin-top:4px;
+        font-size:.52rem;
+        letter-spacing:1.4px;
     }
 
     .module-open .module-content,
@@ -3128,7 +3169,6 @@ body{
         grid-template-columns:1fr;
     }
 }
-
 /* ----------------------------------------------------------
    LARGE PHONE — 520px and down
    430-448 (Pro Max / Pro XL) and 412-414 (Pixel, Galaxy).
