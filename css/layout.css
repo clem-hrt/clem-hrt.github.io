@@ -2964,16 +2964,8 @@ body{
 
         --module-items-width:clamp(150px, calc(var(--module-open-width) * .40), 230px);
 
-        --module-open-height:min(470px, calc(100vh - 96px));
+        --module-open-height:min(333px, calc(100vh - 96px));
         --module-content-height:calc(var(--module-open-height) - 100px);
-    }
-
-    .module-item span,
-    .module-item small{
-        white-space:normal;
-        overflow:visible;
-        text-overflow:clip;
-        line-height:1.22;
     }
 
     .detail-date{
