@@ -29,38 +29,39 @@ const Network = (() => {
                 {
                     title: "Alstom",
                     url: "https://www.alstom.com",
-                    meta: "Lab Test Automation Engineer - VIE",
-                    date: "Jun 2025 – Nov 2026 · Pittsburgh, US",
+                    meta: "Test Automation Engineer – VIE, CBTC signaling",
+                    date: "Jun 2025 – Present · Pittsburgh, US",
                     details: [
-                        "Full-stack network analysis platform",
-                        "Real-time data packet capture, visualisation, diagnostics",
-                        "Automated end-to-end validation in virtualised environment with Robot Framework automation",
-                        "Delivered API-driven backend services and GUI tooling that reduced system-level debug time"
+                        "Built a full-stack platform to capture and analyse <strong>CBTC</strong> communications (Python, Flask, PyShark, MongoDB)",
+                        "IP and time-window filtering of UDP/TCP traffic, triggered per test or per campaign",
+                        "Automated conversion of <strong>ICDs</strong> into Wireshark Lua filters",
+                        "Automated <strong>70+</strong> end-to-end test cases (Robot Framework, VM/Docker, GitLab)",
+                        "<strong>−30%</strong> execution time per case and zero sequencing errors"
                     ]
                 },
                 {
                     title: "Bosch",
                     url: "https://www.bosch.com",
-                    meta: "Model-Based & Function Development Engineer - Internship",
+                    meta: "Model-Based Validation Engineer – Intern",
                     date: "Sep 2024 – Mar 2025 · Paris, FR",
                     details: [
-                        "MATLAB / Simulink workflows model-based design workflows deployed across 2 distributed teams, compliant with automotive (ISO 26262) standards",
-                        "Raised MCDC model test coverage from 81% to 98%",
-                        "Simulink Design Verifier test generation",
-                        "Fixed Processor-in-the-Loop failures on embedded targets"
+                        "Automated a <strong>PIL</strong> validation pipeline on Jenkins: back-to-back testing of Simulink models against embedded code",
+                        "V-model workflow under <strong>ISO 26262</strong>",
+                        "SLDV coverage via MATLAB scripts: MC/DC <strong>81 → 98%</strong>, decision 92 → 98%, condition 95 → 99%",
+                        "Built a new SLDV test-case injection mode",
+                        "Supported <strong>2</strong> offshore teams (India, Vietnam)"
                     ]
                 },
                 {
                     title: "Andrice",
                     url: "https://andricegroup.com",
-                    meta: "Embedded Systems Engineer - Internship",
+                    meta: "Embedded Systems Engineer – Intern",
                     date: "May 2023 – Aug 2023 · Lyon, FR",
                     details: [
-                        "Designed a 500W isolated Phase-Shift Full-Bridge converter",
-                        "LTSpice modelling and component sizing",
-                        "Schematic and PCB layout in Altium Designer",
-                        "Prototype assembly and bench validation",
-                        "STM32-generated PWM, oscilloscope measurement"
+                        "Designed a <strong>500 W</strong> isolated phase-shifted full-bridge converter",
+                        "From LTSpice simulation and component sizing to bench validation",
+                        "Full schematic and PCB layout in Altium Designer",
+                        "Prototype assembly and testing: STM32 PWM, oscilloscope measurements"
                     ]
                 }
             ]
@@ -74,38 +75,52 @@ const Network = (() => {
             items: [
                 {
                     title: "Programming",
-                    meta: "Python · C/C++",
+                    meta: "Python · C/C++ · MATLAB",
                     date: "Software foundations",
                     details: [
                         "Python",
                         "C / C++",
-                        "HTML / CSS",
-                        "Java",
-                        "VHDL"
+                        "MATLAB",
+                        "Lua",
+                        "VHDL",
+                        "Java"
+                    ]
+                },
+                {
+                    title: "Test & Validation",
+                    meta: "Robot Framework · SLDV · PIL",
+                    date: "Verification engineering",
+                    details: [
+                        "Robot Framework",
+                        "Simulink Design Verifier",
+                        "PIL / back-to-back testing",
+                        "Jenkins",
+                        "Wireshark / PyShark (UDP/TCP)"
                     ]
                 },
                 {
                     title: "Embedded & Electronics",
-                    meta: "STM32 · ESP32 · PCB",
+                    meta: "STM32 · ESP32 · Altium",
                     date: "Hardware-oriented engineering",
                     details: [
                         "STM32",
                         "ESP32 / ESP8266",
-                        "Altium Designer",
                         "LTSpice",
-                        "PCB design & bring-up"
+                        "CAN / I2C / SPI (academic)",
+                        "Altium Designer"
                     ]
                 },
                 {
                     title: "Software & Tools",
-                    meta: "MATLAB · ROS · Docker · Git",
+                    meta: "ROS · Simulink · Docker",
                     date: "Engineering workflow",
                     details: [
-                        "MATLAB / Simulink",
                         "ROS",
-                        "Robot Framework",
-                        "Git / GitHub",
+                        "MATLAB / Simulink",
+                        "Flask",
+                        "MongoDB",
                         "Docker",
+                        "Git / GitLab",
                         "IBM Rhapsody"
                     ]
                 },
@@ -114,9 +129,9 @@ const Network = (() => {
                     meta: "FR · EN · ES",
                     date: "International communication",
                     details: [
-                        "French — Native",
-                        "English — Fluent",
-                        "Spanish — Basic"
+                        "French: native",
+                        "English: fluent (TOEIC 905/990)",
+                        "Spanish: basic"
                     ]
                 }
             ]
@@ -129,26 +144,26 @@ const Network = (() => {
             subtitle: "Engineering missions",
             items: [
                 {
-                    title: "Path Planning for Robotic Surface Vehicles",
-                    meta: "MSc Thesis",
-                    date: "May 2024 – Aug 2024 · Heriot-Watt",
+                    title: "USV Path Planning",
+                    meta: "MSc Thesis – Heriot-Watt University",
+                    date: "May 2024 – Aug 2024 · Edinburgh, UK",
                     details: [
-                        "Navigation and control algorithms",
-                        "Autonomous waste-collection USVs",
-                        "Path planning strategy evaluation",
-                        "Sensor and actuator simulation"
+                        "Compared <strong>6</strong> path-planning algorithms (A*, Dijkstra, BFS, PRM, RRT*, Hybrid A*/Theta*) for autonomous waste-collecting USVs",
+                        "Evaluated in MATLAB on runtime, path smoothness and collision-free validity",
+                        "Modelled the BlueBoat hull (MATLAB, MSS toolbox) under a 0.3 m/s current",
+                        "A* fastest at <strong>47 ms</strong>",
+                        "Hybrid A*/Theta*: energy <strong>8.9 → 6.7 W/h</strong>, settling time <strong>22 s → 8 s</strong>"
                     ]
                 },
                 {
-                    title: "Voix de l’Univers",
-                    meta: "Electromagnetic Signal Detection",
-                    date: "Apr 2022 – Jun 2022 · ESIEE Paris",
+                    title: "TurtleBot3 Autonomous Navigation",
+                    meta: "ROS Project – ESIEE Paris",
+                    date: "Nov 2022 – Jan 2023 · Paris, FR",
                     details: [
-                        "Built 2 receivers for lightning and solar-flare emissions",
-                        "Circuit and PCB design scaling",
-                        "Simulation and measurement",
-                        "Real-world signal acquisition through PC sound card",
-                        "FFT spectral analysis in Spectrum Lab and Audacity"
+                        "Multi-node ROS package in C++ (topics, services, actions)",
+                        "LiDAR obstacle detection over <strong>8</strong> sectors",
+                        "PID control",
+                        "Validated on a <strong>real robot</strong> in a maze"
                     ]
                 }
             ]
@@ -163,50 +178,36 @@ const Network = (() => {
                 {
                     title: "Heriot-Watt University",
                     url: "https://www.hw.ac.uk",
-                    meta: "Master degree in Robotics",
+                    meta: "MSc Robotics",
                     date: "Sep 2023 – Sep 2024 · Edinburgh, UK",
                     details: [
-                        "Double-degree programme with ESIEE Paris",
-                        "Robotics and Autonomous systems",
+                        "Double degree with ESIEE Paris",
+                        "Robotics and autonomous systems",
                         "Navigation, planning and control",
-                        "Robotic surface vehicle project"
+                        "MSc thesis: USV path planning"
                     ]
                 },
                 {
                     title: "ESIEE Paris",
                     url: "https://www.esiee.fr",
-                    meta: "Master degree in Embedded & Electrical Systems",
+                    meta: "MSc Embedded and Electrical Systems",
                     date: "Sep 2021 – Sep 2024 · Paris, FR",
                     details: [
-                        "Embedded systems and Electronics",
+                        "Embedded systems and electronics",
                         "Electrical and power systems",
-                        "Software engineering",
-                        "Model-based development"
+                        "Model-based development",
+                        "ROS project: TurtleBot3 autonomous navigation"
                     ]
                 },
                 {
-                    title: "CPGE - Camille Vernet",
+                    title: "Lycée Camille Vernet",
                     url: "https://camille-vernet.ent.auvergnerhonealpes.fr",
-                    meta: "Mathematics & Physics",
+                    meta: "Prep. Classes, Maths & Physics",
                     date: "Sep 2018 – Sep 2021 · Valence, FR",
                     details: [
                         "Intensive mathematics and physics",
                         "Engineering sciences",
-                        "Scientific problem solving",
                         "Preparation for French engineering schools"
-
-                    ]
-                },
-                {
-                    title: "Institution Notre Dame",
-                    url: "https://ind-valence.fr",
-                    meta: "Scientific Baccalaureate",
-                    date: "Sep 2018 · Valence, FR",
-                    details: [
-                        "Science track - mathematics and physics",
-                        "Graduated in 2018, Valence, FR",
-                        "Fondation for CPGE and engineering studies"
-
                     ]
                 }
             ]
@@ -220,24 +221,22 @@ const Network = (() => {
             items: [
                 {
                     title: "Competitive Rugby",
-                    meta: "16 years of practice",
+                    meta: "16 years",
                     date: "Teamwork · Discipline · Resilience",
                     details: [
-                        "Long-term competitive sport background",
-                        "Strong team mindset",
-                        "Pressure management",
+                        "16 years of competitive play",
+                        "Team mindset and communication under pressure",
                         "Physical and mental discipline"
                     ]
                 },
                 {
                     title: "Robotics & Aerospace",
                     meta: "Technical curiosity",
-                    date: "Autonomy · Systems · Innovation",
+                    date: "Autonomy · Systems",
                     details: [
-                        "Interest in autonomous systems",
-                        "Embedded software and robotics",
-                        "Aerospace engineering culture",
-                        "Continuous technical learning"
+                        "Autonomous systems and navigation",
+                        "Embedded software for robots",
+                        "Aerospace engineering culture"
                     ]
                 },
                 {
@@ -245,10 +244,9 @@ const Network = (() => {
                     meta: "Global mindset",
                     date: "France · UK · US",
                     details: [
-                        "International academic path",
+                        "Studied and worked in France, the UK and the US",
                         "Adaptability to new environments",
-                        "Cross-cultural communication",
-                        "Professional mobility"
+                        "Cross-cultural communication"
                     ]
                 }
             ]
@@ -262,24 +260,21 @@ const Network = (() => {
             items: [
                 {
                     title: "TOEIC",
-                    meta: "English certification",
-                    date: "2023 · Score: 905",
+                    meta: "English proficiency",
+                    date: "2023 · 905 / 990",
                     details: [
-                        "Professional English proficiency",
-                        "International work environment",
-                        "Technical communication",
-                        "Cross-functional collaboration"
+                        "Score: <strong>905 / 990</strong>",
+                        "Professional working proficiency",
+                        "Daily use in an international team (Pittsburgh, US)"
                     ]
                 },
                 {
-                    title: "Voltaire",
-                    meta: "French certification",
+                    title: "Certificat Voltaire",
+                    meta: "French writing",
                     date: "Written communication",
                     details: [
-                        "Strong written French level",
-                        "Professional documentation",
-                        "Clear technical reporting",
-                        "Structured communication"
+                        "Certified French spelling and grammar",
+                        "Professional documentation and technical reporting"
                     ]
                 }
             ]
@@ -313,9 +308,7 @@ const Network = (() => {
                 "left-9",
                 "left-10",
                 "left-11",
-                "left-12",
-                "left-13",
-                "left-14"
+                "left-12"
             ],
             cpuSlot: 0.70
         },
@@ -357,7 +350,9 @@ const Network = (() => {
                 "right-9",
                 "right-10",
                 "right-11",
-                "right-12"
+                "right-12",
+                "right-13",
+                "right-14"
             ],
             cpuSlot: 0.65
         },
@@ -378,6 +373,7 @@ const Network = (() => {
     function create() {
         createModules();
         createTraces();
+        setRevealOrigin(); /* set before the reveal so only the radius animates */
         bindInteractions();
         startTraceSync();
         SystemMonitor.setItems(0, totalItems, "IDLE");
@@ -462,7 +458,7 @@ const Network = (() => {
     }
 
     let lastTraceMarkup = "";
-    
+
     function drawTraces() {
         if (!pcbLayer) return;
 
@@ -509,15 +505,15 @@ const Network = (() => {
             const start = bus.center;
             const end = getModuleAnchor(moduleRect, config);
             const merge = getMergePoint(end, config);
-            
+
             // A* runs strictly between the two standoff points, so it never
             // targets or rides along the pin rail or the item backbone.
             const busStandoff = getBusStandoff(start, config);
             const mergeStandoff = getMergeStandoff(merge);
-            
+
             const isOpen = card.classList.contains("module-open");
             const obstacles = openObstacles.map(o => o.rect);
-            
+
             const routedPoints = buildPcbRoutePoints(
                 busStandoff,
                 mergeStandoff,
@@ -526,7 +522,7 @@ const Network = (() => {
                 isOpen,
                 obstacles
             );
-            
+
             // Short explicit connectors join each standoff back to its
             // junction, so the bus is one continuous path end to end.
             const fullPoints = collinearSimplify([
@@ -534,7 +530,7 @@ const Network = (() => {
                 ...routedPoints,
                 merge
             ]);
-            
+
             const routeD = [
                 pointsToPath(fullPoints),
                 bus.railPath,
@@ -738,7 +734,7 @@ const Network = (() => {
     join each standoff back to its junction.
     */
     const LINK_STANDOFF = 10;
-    
+
     /* Standoff off the module merge point, pushed away from the card. */
     function getMergeStandoff(merge) {
         return merge.vertical
@@ -751,7 +747,7 @@ const Network = (() => {
                   y: merge.y + merge.outward * LINK_STANDOFF
               };
     }
-    
+
     /* Standoff off the CPU pin bus rail, pushed away from the chip. */
     function getBusStandoff(busCenter, config) {
         if (config.cpuSide === "left") {
@@ -760,21 +756,21 @@ const Network = (() => {
                 y: busCenter.y
             };
         }
-    
+
         if (config.cpuSide === "right") {
             return {
                 x: busCenter.x + LINK_STANDOFF,
                 y: busCenter.y
             };
         }
-    
+
         if (config.cpuSide === "top") {
             return {
                 x: busCenter.x,
                 y: busCenter.y - LINK_STANDOFF
             };
         }
-    
+
         return {
             x: busCenter.x,
             y: busCenter.y + LINK_STANDOFF
@@ -1145,7 +1141,7 @@ const Network = (() => {
             isOpen && moduleRect
                 ? moduleRect
                 : null;
-    
+
         const points =
             config.cpuSide === "left" ||
             config.cpuSide === "right"
@@ -1161,7 +1157,7 @@ const Network = (() => {
                       config,
                       open
                   );
-    
+
         return avoidObstacles(
             points,
             obstacles || [],
@@ -1659,7 +1655,7 @@ const Network = (() => {
 
                 <div class="module-header">
                     <h3>${module.label}</h3>
-                    
+
                     <div class="module-header-top">
                         <span class="module-status">
                             <span class="module-status-dot"></span>
@@ -1855,28 +1851,100 @@ const Network = (() => {
         renderItemDetails(moduleId, itemIndex);
     }
 
+    function getCpuCenter(relativeTo) {
+        const core = document.querySelector(".cpu-core");
+        if (!core) return null;
+
+        const c = core.getBoundingClientRect();
+        const r = relativeTo ? relativeTo.getBoundingClientRect() : { left: 0, top: 0 };
+
+        return {
+            x: c.left + c.width / 2 - r.left,
+            y: c.top + c.height / 2 - r.top
+        };
+    }
+
+    function setRevealOrigin() {
+        /* Radial reveal origin = CPU core centre, in pcb-layer coordinates. */
+        const center = getCpuCenter(pcbLayer);
+        if (center) {
+            pcbLayer.style.setProperty("--reveal-x", `${round(center.x)}px`);
+            pcbLayer.style.setProperty("--reveal-y", `${round(center.y)}px`);
+
+            /* Radius = farthest layer corner, so the eased wipe spends its
+               whole duration on visible area (not on off-screen radius). */
+            const w = pcbLayer.offsetWidth;
+            const h = pcbLayer.offsetHeight;
+            const r = Math.max(
+                Math.hypot(center.x, center.y),
+                Math.hypot(w - center.x, center.y),
+                Math.hypot(center.x, h - center.y),
+                Math.hypot(w - center.x, h - center.y)
+            );
+            pcbLayer.style.setProperty("--reveal-r", `${Math.ceil(r)}px`);
+        }
+
+    }
+
     function showTraces() {
         if (!pcbLayer) return;
 
-        pcbLayer.classList.add("network-visible");
+        setRevealOrigin();
 
         redrawTracesSoon();
+
+        requestAnimationFrame(() => {
+            pcbLayer.classList.add("network-visible");
+        });
+
+        window.setTimeout(() => {
+            pcbLayer.classList.add("network-revealed");
+        }, 1500);
+
         forceTraceSync(1600);
     }
 
+    /* Modules light up in the order the bus wavefront reaches them:
+       entry delay is proportional to card distance from the CPU core.
+       Delays are cleared afterwards so hover/open transitions stay instant. */
     function showModules() {
         if (!moduleLayer) return;
 
+        const cards = [...moduleLayer.querySelectorAll(".module-card")];
+        const center = getCpuCenter(null);
+        const stacked = window.matchMedia("(max-width:1200px)").matches;
+        let maxDelay = 0;
+
+        cards.forEach((card, index) => {
+            let delay = index * 70;
+
+            if (center && !stacked) {
+                const r = card.getBoundingClientRect();
+                const dx = r.left + r.width / 2 - center.x;
+                const dy = r.top + r.height / 2 - center.y;
+                delay = Math.min(Math.hypot(dx, dy) * 0.55, 650);
+            }
+
+            maxDelay = Math.max(maxDelay, delay);
+            card.style.transitionDelay = `${Math.round(delay)}ms`;
+        });
+
         moduleLayer.classList.add("modules-visible");
 
+        window.setTimeout(() => {
+            cards.forEach(card => {
+                card.style.transitionDelay = "";
+            });
+        }, maxDelay + 800);
+
         redrawTracesSoon();
-        forceTraceSync(1600);
+        forceTraceSync(1600 + maxDelay);
     }
 
     function completeAll() {
         modules.forEach(module => {
             activateModule(module.id);
-    
+
             module.items.forEach((item, itemIndex) => {
                 activateItemTrace(
                     module.id,
@@ -1884,17 +1952,17 @@ const Network = (() => {
                 );
             });
         });
-    
+
         document
             .querySelectorAll(".module-card")
             .forEach(card =>
                 card.classList.remove("module-open")
             );
-    
+
         redrawTracesSoon();
         forceTraceSync(700);
     }
-    
+
     function show() {
         showTraces();
         showModules();
