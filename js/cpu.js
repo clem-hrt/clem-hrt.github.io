@@ -17,38 +17,43 @@ const CPU = (() => {
                         <div class="cpu-pins cpu-pins-left">
                             ${createPins("left", 14)}
                         </div>
-    
+
                         <div class="cpu-core">
                             <span class="cpu-corner cpu-corner-tl"></span>
                             <span class="cpu-corner cpu-corner-tr"></span>
                             <span class="cpu-corner cpu-corner-bl"></span>
                             <span class="cpu-corner cpu-corner-br"></span>
-    
+
                             <div class="cpu-core-grid"></div>
-    
+
                             <div class="cpu-core-content">
                                 <div class="cpu-identity">
                                     <span class="cpu-ref">CH-RX01</span>
                                     <span class="cpu-subref">CORE MODULE</span>
                                 </div>
-    
+
                                 <h2>Clément Héritier</h2>
-    
+
                                 <p>
                                     Embedded Systems & Robotics Engineer
                                 </p>
-    
+
+                                <span class="cpu-availability">
+                                    <span class="cpu-availability-dot"></span>
+                                    Available January 2027, Paris
+                                </span>
+
                                 <div id="cpu-monitor-slot"></div>
-    
+
                                 <div id="system-ports-slot"></div>
                             </div>
                         </div>
-    
+
                         <div class="cpu-pins cpu-pins-right">
-                            ${createPins("right", 12)}
+                            ${createPins("right", 14)}
                         </div>
                     </div>
-    
+
                     <div class="cpu-pins cpu-pins-bottom">
                         ${createPins("bottom", 10)}
                     </div>
@@ -59,10 +64,12 @@ const CPU = (() => {
 
     function createPins(side, count) {
         return Array.from({ length: count }, (_, index) => {
+            const id = `${side}-${index + 1}`;
+            const nc = connectedPins.has(id) ? "" : " cpu-pin-nc";
             return `
-                <span 
-                    class="cpu-pin cpu-pin-${side}" 
-                    data-pin="${side}-${index + 1}">
+                <span
+                    class="cpu-pin cpu-pin-${side}${nc}"
+                    data-pin="${id}">
                 </span>
             `;
         }).join("");
@@ -78,52 +85,56 @@ const CPU = (() => {
             ["left-3", "left-4"],
             ["left-5", "left-6"]
         ],
-    
+
         education: [
             ["left-7", "left-8"],
             ["left-9", "left-10"],
-            ["left-11", "left-12"],
-            ["left-13", "left-14"]
+            ["left-11", "left-12"]
         ],
-    
+
         projects: [
             ["right-1", "right-2"],
             ["right-3", "right-4"]
         ],
-    
+
         skills: [
             ["right-5", "right-6"],
             ["right-7", "right-8"],
             ["right-9", "right-10"],
-            ["right-11", "right-12"]
+            ["right-11", "right-12"],
+            ["right-13", "right-14"]
         ],
-    
+
         hobbies: [
             ["bottom-1", "bottom-2"],
             ["bottom-3", "bottom-4"],
             ["bottom-5", "bottom-6"]
         ],
-    
+
         certifications: [
             ["bottom-7", "bottom-8"],
             ["bottom-9", "bottom-10"]
         ]
     };
-    
+
+    /* Any lead not in a pair is rendered NC (left-13/14 after the
+       education list dropped to three entries). */
+    const connectedPins = new Set(Object.values(itemPinPairs).flat(2));
+
     const activatedItemPinPairs = new Set();
-    
+
     let currentItemPinPair = null;
-    
+
     function activateItemPins(moduleId, itemIndex) {
         const pair = itemPinPairs[moduleId]?.[itemIndex];
-    
+
         if (!pair) return;
-    
+
         const key = `${moduleId}-${itemIndex}`;
-    
+
         currentItemPinPair = key;
         activatedItemPinPairs.add(key);
-    
+
         document
             .querySelectorAll(".cpu-pin")
             .forEach(pin => {
@@ -133,18 +144,18 @@ const CPU = (() => {
                     "pin-item-locked"
                 );
             });
-    
+
         activatedItemPinPairs.forEach(savedKey => {
             const [savedModuleId, savedItemIndex] =
                 savedKey.split("-");
-    
+
             const savedPair =
                 itemPinPairs[savedModuleId]?.[
                     Number(savedItemIndex)
                 ];
-    
+
             if (!savedPair) return;
-    
+
             savedPair.forEach(pinId => {
                 document
                     .querySelector(
@@ -156,7 +167,7 @@ const CPU = (() => {
                     );
             });
         });
-    
+
         pair.forEach(pinId => {
             document
                 .querySelector(`[data-pin="${pinId}"]`)

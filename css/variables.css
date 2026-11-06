@@ -58,6 +58,10 @@ TRANSITIONS
 
 --transition-slow:.60s;
 
+/* Shared easings: one motion language for boot, board and panels */
+--ease-out:cubic-bezier(.22,1,.36,1);
+--ease-in-out:cubic-bezier(.65,0,.35,1);
+
 
 /* ==========================================================
 Z INDEX

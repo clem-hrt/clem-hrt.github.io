@@ -12,9 +12,9 @@ const Ports = (() => {
     const subject = encodeURIComponent("Contact from Portfolio");
     const body = encodeURIComponent(
         `Hello Clement,
-        
+
         I found your portfolio and would like to get in touch.
-        
+
         Best regards,`
     );
 
@@ -22,7 +22,7 @@ const Ports = (() => {
         {
             label: "CV",
             status: "READY",
-            href: "assets/cv/CV_EN_HERITIER.pdf",
+            href: "assets/cv/CV_EN_Clement_Heritier.pdf",
             type: "download"
         },
         {
@@ -100,7 +100,7 @@ const Ports = (() => {
         portsPanel.classList.add("ports-unlocked");
         markCompleted();
     }
-    
+
     return {
         create,
         unlock,

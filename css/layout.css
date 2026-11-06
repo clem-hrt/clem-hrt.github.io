@@ -64,1118 +64,7 @@ body{
     pointer-events:none;
 }
 
-/* ==========================================================
-   BOOT SCREEN
-========================================================== */
-
-.boot-screen{
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.boot-panel{
-    width:min(520px,90vw);
-    padding:46px;
-    border:1px solid rgba(53,194,255,.18);
-    border-radius:var(--radius-large);
-    background:rgba(10,16,28,.72);
-    backdrop-filter:blur(7px);
-    box-shadow:var(--shadow-card);
-    text-align:center;
-    transition:
-        border-color var(--transition-slow),
-        box-shadow var(--transition-slow),
-        transform var(--transition-slow);
-}
-
-.boot-label{
-    display:block;
-    color:var(--clr-accent);
-    letter-spacing:4px;
-    font-size:.72rem;
-    margin-bottom:18px;
-    opacity:.8;
-}
-
-.boot-panel h1{
-    font-family:var(--font-title);
-    font-size:clamp(2.4rem,6vw,4rem);
-    letter-spacing:6px;
-    margin-bottom:22px;
-}
-
-.boot-state{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    gap:12px;
-    color:#7f8a9b;
-    letter-spacing:5px;
-    font-size:.9rem;
-    margin-bottom:22px;
-}
-
-.boot-led{
-    width:11px;
-    height:11px;
-    border-radius:50%;
-    background:#626b78;
-    box-shadow:0 0 0 transparent;
-    transition:all var(--transition-normal);
-}
-
-.boot-led.online{
-    background:var(--clr-success);
-    box-shadow:0 0 18px rgba(57,243,140,.85);
-}
-
-.online-text{
-    color:var(--clr-success);
-}
-
-.boot-message{
-    color:var(--clr-text-secondary);
-    font-size:.95rem;
-    margin-bottom:28px;
-}
-
-.boot-online{
-    border-color:rgba(57,243,140,.35);
-    box-shadow:
-        var(--shadow-card),
-        0 0 45px rgba(57,243,140,.08);
-    transform:scale(1.015);
-}
-
-.boot-fade-out{
-    animation:bootFadeOut .9s ease forwards;
-}
-
-.boot-hidden{
-    display:none;
-}
-
-@keyframes bootFadeOut{
-    from{
-        opacity:1;
-        filter:blur(0);
-    }
-
-    to{
-        opacity:0;
-        filter:blur(10px);
-    }
-}
-
-/* ==========================================================
-   POWER SLIDER
-========================================================== */
-
-.power-rig{
-    width:100%;
-    max-width:430px;
-    margin:30px auto 18px;
-}
-
-.power-slider{
-    position:relative;
-    width:100%;
-    height:88px;
-    display:block;
-}
-
-/* ==========================================================
-   LIVE POWER TRACE CURRENT
-========================================================== */
-
-.power-cable-rail{
-    position:absolute;
-
-    left:8px;
-    right:118px;
-    top:50%;
-
-    height:6px;
-
-    transform:translateY(-50%);
-
-    border:1px solid rgba(53,194,255,.10);
-    border-radius:999px;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255,255,255,.045),
-            transparent 50%,
-            rgba(0,0,0,.16)
-        ),
-        rgba(53,194,255,.09);
-
-    box-shadow:
-        inset 0 0 6px rgba(53,194,255,.10),
-        0 0 10px rgba(53,194,255,.08);
-
-    overflow:hidden;
-}
-
-.power-cable-rail::before{
-    content:"";
-
-    position:absolute;
-    inset:0;
-
-    background:repeating-linear-gradient(
-        90deg,
-        transparent 0,
-        transparent 14px,
-        rgba(53,194,255,.08) 15px,
-        transparent 16px
-    );
-
-    opacity:.45;
-
-    pointer-events:none;
-}
-
-.power-current{
-    position:relative;
-
-    display:block;
-
-    width:0%;
-    height:100%;
-
-    overflow:hidden;
-
-    border-radius:999px;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(53,194,255,.22),
-            rgba(53,194,255,.55),
-            rgba(57,243,140,.88),
-            rgba(53,194,255,.42)
-        );
-
-    background-size:220% 100%;
-
-    box-shadow:
-        0 0 10px rgba(57,243,140,.55),
-        0 0 20px rgba(57,243,140,.22),
-        inset 0 0 6px rgba(255,255,255,.20);
-
-    transition:width .12s linear;
-}
-
-.power-slider.has-power-current .power-current{
-    animation:powerCurrentGradient 1.15s linear infinite;
-}
-
-.power-current::after{
-    content:"";
-
-    position:absolute;
-
-    left:-30px;
-    top:50%;
-
-    width:34px;
-    height:12px;
-
-    border-radius:999px;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,255,255,.95) 0%,
-            rgba(57,243,140,.90) 32%,
-            rgba(53,194,255,.28) 62%,
-            transparent 75%
-        );
-
-    transform:translateY(-50%);
-
-    opacity:0;
-
-    filter:blur(.2px);
-}
-
-.power-slider.has-power-current .power-current::after{
-    animation:powerCurrentPulse 1.05s ease-in-out infinite;
-}
-
-.power-slider.power-current-locked .power-current{
-    box-shadow:
-        0 0 12px rgba(57,243,140,.72),
-        0 0 28px rgba(57,243,140,.28),
-        inset 0 0 8px rgba(255,255,255,.22);
-}
-
-@keyframes powerCurrentGradient{
-    from{
-        background-position:0% 50%;
-    }
-
-    to{
-        background-position:220% 50%;
-    }
-}
-
-@keyframes powerCurrentPulse{
-    0%{
-        left:-34px;
-        opacity:0;
-    }
-
-    20%{
-        opacity:1;
-    }
-
-    78%{
-        opacity:1;
-    }
-
-    100%{
-        left:calc(100% + 12px);
-        opacity:0;
-    }
-}
-
-/* ==========================================================
-   PLUG
-========================================================== */
-
-.power-plug{
-    position:absolute;
-
-    left:0;
-    top:50%;
-
-    min-width:132px;
-
-    display:flex;
-    align-items:center;
-    gap:0;
-
-    color:var(--clr-accent);
-
-    transform:translateY(-50%) translateX(0);
-
-    cursor:grab;
-
-    touch-action:none;
-    user-select:none;
-
-    transition:
-        transform .18s ease,
-        filter var(--transition-normal);
-}
-
-.power-plug.is-dragging{
-    cursor:grabbing;
-
-    transition:none;
-
-    filter:drop-shadow(0 0 12px rgba(53,194,255,.28));
-}
-
-.power-plug:disabled{
-    cursor:default;
-}
-
-/* Rear cable entering the plug */
-.plug-cable-tail{
-    width:22px;
-    height:17px;
-
-    border:1px solid rgba(53,194,255,.16);
-    border-right:none;
-    border-radius:999px 0 0 999px;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255,255,255,.08),
-            rgba(53,194,255,.10),
-            rgba(0,0,0,.18)
-        ),
-        rgba(7,11,18,.92);
-
-    box-shadow:
-        inset 0 0 8px rgba(0,0,0,.32),
-        0 0 8px rgba(53,194,255,.08);
-}
-
-/* Main plug shell */
-.plug-shell{
-    position:relative;
-
-    height:42px;
-
-    display:flex;
-    align-items:center;
-
-    border:1px solid rgba(53,194,255,.34);
-    border-radius:12px 4px 4px 12px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(20,29,44,.98),
-            rgba(5,9,16,.98)
-        );
-
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.055),
-        inset 0 0 18px rgba(53,194,255,.035),
-        0 0 18px rgba(53,194,255,.10);
-
-    overflow:hidden;
-
-    transition:
-        border-color var(--transition-normal),
-        box-shadow var(--transition-normal),
-        color var(--transition-normal);
-}
-
-.plug-shell::before{
-    content:"";
-
-    position:absolute;
-
-    left:0;
-    top:0;
-    bottom:0;
-
-    width:36%;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(255,255,255,.055),
-            transparent
-        );
-
-    pointer-events:none;
-}
-
-/* Grip ridges */
-.plug-grip{
-    width:26px;
-    height:100%;
-
-    padding-left:8px;
-    padding-right:6px;
-
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    gap:4px;
-
-    border-right:1px solid rgba(53,194,255,.14);
-
-    background:rgba(255,255,255,.015);
-}
-
-.plug-grip span{
-    width:10px;
-    height:2px;
-
-    border-radius:999px;
-
-    background:rgba(234,243,255,.28);
-
-    box-shadow:0 0 4px rgba(53,194,255,.08);
-}
-
-/* POWER face */
-.plug-face{
-    height:100%;
-
-    padding:0 12px;
-
-    display:flex;
-    align-items:center;
-    gap:8px;
-
-    color:var(--clr-accent);
-
-    font-size:.62rem;
-    letter-spacing:1.8px;
-}
-
-.plug-text{
-    position:relative;
-    top:1px;
-}
-
-.plug-light{
-    width:7px;
-    height:7px;
-
-    border-radius:50%;
-
-    background:#657184;
-
-    box-shadow:inset 0 0 2px rgba(0,0,0,.55);
-
-    transition:
-        background var(--transition-normal),
-        box-shadow var(--transition-normal);
-}
-
-/* Collar now becomes the mechanical transition to the head */
-.plug-collar{
-    width:10px;
-    height:30px;
-
-    margin-right:0;
-
-    border:1px solid rgba(53,194,255,.22);
-    border-right:none;
-    border-radius:3px 0 0 3px;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255,255,255,.08),
-            rgba(0,0,0,.14)
-        ),
-        rgba(53,194,255,.08);
-
-    box-shadow:inset 0 0 8px rgba(0,0,0,.24);
-}
-
-/* New front head: makes prongs part of the plug */
-.plug-head{
-    position:relative;
-
-    height:42px;
-
-    display:flex;
-    align-items:center;
-
-    margin-left:-1px;
-
-    transition:
-        transform var(--transition-normal),
-        filter var(--transition-normal);
-}
-
-/* Connector nose before the metal prongs */
-.plug-nose{
-    position:relative;
-
-    width:17px;
-    height:31px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    border:1px solid rgba(53,194,255,.28);
-    border-left:none;
-    border-radius:0 6px 6px 0;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(18,27,42,.96),
-            rgba(5,9,16,.96)
-        );
-
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.045),
-        inset 0 0 10px rgba(53,194,255,.035),
-        0 0 10px rgba(53,194,255,.08);
-
-    z-index:2;
-}
-
-.plug-nose::before,
-.plug-nose::after{
-    content:"";
-
-    position:absolute;
-
-    right:-3px;
-
-    width:6px;
-    height:8px;
-
-    border-radius:2px;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(7,11,18,.98),
-            rgba(53,194,255,.12)
-        );
-
-    border:1px solid rgba(53,194,255,.18);
-    border-left:none;
-
-    box-shadow:
-        inset 0 0 4px rgba(0,0,0,.38);
-}
-
-.plug-nose::before{
-    top:6px;
-}
-
-.plug-nose::after{
-    bottom:6px;
-}
-
-/* Small vertical seam on the nose */
-.plug-nose-line{
-    width:1px;
-    height:20px;
-
-    border-radius:999px;
-
-    background:rgba(234,243,255,.14);
-
-    box-shadow:0 0 5px rgba(53,194,255,.10);
-}
-
-/* Prongs now visually grow from the nose */
-.plug-prongs{
-    position:relative;
-
-    height:31px;
-
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    gap:8px;
-
-    margin-left:0;
-
-    z-index:1;
-
-    transition:
-        transform var(--transition-normal),
-        filter var(--transition-normal);
-}
-
-.plug-prongs::before{
-    content:"";
-
-    position:absolute;
-
-    left:-2px;
-    top:50%;
-
-    width:10px;
-    height:24px;
-
-    border-radius:0 5px 5px 0;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(53,194,255,.10),
-            rgba(234,243,255,.10),
-            transparent
-        );
-
-    transform:translateY(-50%);
-
-    pointer-events:none;
-}
-
-/* Metal contacts */
-.plug-prong{
-    position:relative;
-
-    width:28px;
-    height:4px;
-
-    margin-left:1px;
-
-    border-radius:999px;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255,255,255,.82),
-            rgba(140,153,169,.65) 48%,
-            rgba(255,255,255,.72)
-        );
-
-    box-shadow:
-        inset 0 0 3px rgba(0,0,0,.32),
-        0 0 7px rgba(234,243,255,.10);
-
-    overflow:hidden;
-}
-
-.plug-prong::before{
-    content:"";
-
-    position:absolute;
-
-    left:0;
-    top:0;
-    bottom:0;
-
-    width:9px;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(53,194,255,.18),
-            transparent
-        );
-}
-
-.plug-prong::after{
-    content:"";
-
-    position:absolute;
-
-    right:2px;
-    top:50%;
-
-    width:5px;
-    height:2px;
-
-    border-radius:999px;
-
-    background:rgba(255,255,255,.72);
-
-    transform:translateY(-50%);
-
-    opacity:.8;
-}
-
-/* Approach state */
-.power-plug.is-dragging .plug-shell,
-.power-plug.is-dragging .plug-nose{
-    border-color:rgba(53,194,255,.58);
-
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.07),
-        inset 0 0 18px rgba(53,194,255,.055),
-        0 0 24px rgba(53,194,255,.18);
-}
-
-.power-plug.plug-near-socket .plug-head{
-    filter:drop-shadow(0 0 9px rgba(53,194,255,.30));
-}
-
-.power-plug.plug-near-socket .plug-prong{
-    box-shadow:
-        inset 0 0 3px rgba(0,0,0,.26),
-        0 0 9px rgba(53,194,255,.18);
-}
-
-/* Engaged: subtle only, no excessive over-insertion */
-.power-plug.plug-engaged .plug-head{
-    transform:translateX(1px);
-}
-
-/* Powered state */
-.power-connected .plug-shell,
-.power-connected .plug-nose{
-    border-color:rgba(57,243,140,.48);
-
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.06),
-        inset 0 0 18px rgba(57,243,140,.055),
-        0 0 26px rgba(57,243,140,.16);
-}
-
-.power-connected .plug-face{
-    color:var(--clr-success);
-}
-
-.power-connected .plug-light{
-    background:var(--clr-success);
-
-    box-shadow:
-        0 0 11px rgba(57,243,140,.85),
-        inset 0 0 2px rgba(255,255,255,.35);
-}
-
-.power-connected .plug-nose::before,
-.power-connected .plug-nose::after{
-    border-color:rgba(57,243,140,.32);
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(7,11,18,.98),
-            rgba(57,243,140,.16)
-        );
-}
-
-.power-connected .plug-prong{
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255,255,255,.88),
-            rgba(57,243,140,.55) 48%,
-            rgba(255,255,255,.78)
-        );
-
-    box-shadow:
-        inset 0 0 3px rgba(0,0,0,.22),
-        0 0 9px rgba(57,243,140,.34);
-}
-
-.power-connected .plug-cable-tail{
-    border-color:rgba(57,243,140,.26);
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255,255,255,.08),
-            rgba(57,243,140,.12),
-            rgba(0,0,0,.18)
-        ),
-        rgba(7,11,18,.92);
-}
-
-/* ==========================================================
-   SOCKET V2
-========================================================== */
-
-.power-socket{
-    position:absolute;
-
-    right:6px;
-    top:50%;
-
-    width:108px;
-    height:64px;
-
-    padding:7px 8px;
-
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-
-    transform:translateY(-50%);
-
-    border:1px solid rgba(53,194,255,.25);
-    border-radius:15px;
-
-    background:
-        radial-gradient(
-            circle at 35% 50%,
-            rgba(53,194,255,.08),
-            transparent 38%
-        ),
-        linear-gradient(
-            145deg,
-            rgba(16,24,38,.92),
-            rgba(4,8,14,.86)
-        );
-
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.05),
-        inset 0 0 24px rgba(53,194,255,.035),
-        0 0 24px rgba(53,194,255,.08);
-
-    transition:
-        border-color var(--transition-normal),
-        box-shadow var(--transition-normal),
-        transform var(--transition-normal);
-}
-
-.socket-bezel{
-    position:relative;
-
-    width:66px;
-    height:32px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    border:1px solid rgba(53,194,255,.24);
-    border-radius:11px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,.055),
-            rgba(255,255,255,.01)
-        ),
-        rgba(4,8,14,.55);
-
-    box-shadow:
-        inset 0 0 12px rgba(0,0,0,.35),
-        inset 0 1px 0 rgba(255,255,255,.06);
-
-    transition:
-        border-color var(--transition-normal),
-        box-shadow var(--transition-normal);
-}
-
-.socket-bezel::before{
-    content:"";
-
-    position:absolute;
-    inset:4px;
-
-    border:1px solid rgba(53,194,255,.08);
-    border-radius:9px;
-
-    pointer-events:none;
-}
-
-.socket-screw{
-    position:absolute;
-
-    width:5px;
-    height:5px;
-
-    border-radius:50%;
-
-    background:rgba(234,243,255,.28);
-
-    box-shadow:
-        inset 0 0 2px rgba(0,0,0,.45),
-        0 0 5px rgba(53,194,255,.10);
-}
-
-.socket-screw-left{
-    left:7px;
-    top:50%;
-    transform:translateY(-50%);
-}
-
-.socket-screw-right{
-    right:7px;
-    top:50%;
-    transform:translateY(-50%);
-}
-
-.socket-mouth{
-    position:relative;
-
-    width:36px;
-    height:20px;
-
-    overflow:hidden;
-
-    border:1px solid rgba(53,194,255,.26);
-    border-radius:7px;
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(0,0,0,.42),
-            rgba(53,194,255,.045),
-            rgba(0,0,0,.38)
-        );
-
-    box-shadow:
-        inset 0 0 10px rgba(0,0,0,.42),
-        0 0 8px rgba(53,194,255,.08);
-
-    transition:
-        border-color var(--transition-normal),
-        box-shadow var(--transition-normal),
-        background var(--transition-normal);
-}
-
-.socket-slot{
-    position:absolute;
-
-    left:8px;
-    right:8px;
-
-    height:3px;
-
-    border-radius:999px;
-
-    background:rgba(234,243,255,.30);
-
-    box-shadow:
-        inset 0 0 3px rgba(0,0,0,.4),
-        0 0 6px rgba(234,243,255,.08);
-
-    transition:
-        background var(--transition-normal),
-        box-shadow var(--transition-normal);
-}
-
-.socket-slot-top{
-    top:6px;
-}
-
-.socket-slot-bottom{
-    bottom:6px;
-}
-
-.socket-inner-current{
-    position:absolute;
-
-    left:-45%;
-    top:-20%;
-
-    width:42%;
-    height:140%;
-
-    background:linear-gradient(
-        90deg,
-        transparent,
-        rgba(53,194,255,.26),
-        rgba(57,243,140,.82),
-        transparent
-    );
-
-    opacity:0;
-
-    transform:skewX(-18deg);
-
-    pointer-events:none;
-}
-
-.socket-label{
-    margin-top:1px;
-
-    color:rgba(141,154,175,.78);
-
-    font-size:.48rem;
-    letter-spacing:1.45px;
-
-    text-shadow:0 0 8px rgba(53,194,255,.10);
-}
-
-.socket-magnetic{
-    border-color:rgba(53,194,255,.46);
-
-    transform:translateY(-50%) scale(1.025);
-
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.06),
-        inset 0 0 24px rgba(53,194,255,.055),
-        0 0 30px rgba(53,194,255,.16);
-}
-
-.socket-magnetic .socket-bezel{
-    border-color:rgba(53,194,255,.44);
-
-    box-shadow:
-        inset 0 0 12px rgba(0,0,0,.32),
-        0 0 18px rgba(53,194,255,.14);
-}
-
-.socket-magnetic .socket-mouth{
-    border-color:rgba(53,194,255,.55);
-
-    box-shadow:
-        inset 0 0 10px rgba(0,0,0,.38),
-        0 0 14px rgba(53,194,255,.24);
-}
-
-.socket-engaged .socket-slot{
-    background:rgba(57,243,140,.55);
-
-    box-shadow:
-        0 0 7px rgba(57,243,140,.34),
-        inset 0 0 4px rgba(255,255,255,.16);
-}
-
-.socket-engaged .socket-mouth{
-    background:
-        linear-gradient(
-            90deg,
-            rgba(0,0,0,.44),
-            rgba(57,243,140,.07),
-            rgba(0,0,0,.36)
-        );
-}
-
-.socket-online .socket-bezel{
-    border-color:rgba(57,243,140,.52);
-
-    box-shadow:
-        inset 0 0 12px rgba(57,243,140,.045),
-        0 0 22px rgba(57,243,140,.16);
-}
-
-.socket-online .socket-mouth{
-    border-color:rgba(57,243,140,.68);
-
-    box-shadow:
-        inset 0 0 10px rgba(57,243,140,.07),
-        0 0 18px rgba(57,243,140,.28);
-}
-
-.socket-online .socket-inner-current{
-    opacity:1;
-
-    animation:socketInnerCurrent 1.1s ease-in-out infinite;
-}
-
-.socket-online .socket-label{
-    color:var(--clr-success);
-
-    text-shadow:0 0 9px rgba(57,243,140,.38);
-}
-
-.power-connected .power-slider::after{
-    content:"";
-
-    position:absolute;
-
-    left:0;
-    top:50%;
-
-    width:8px;
-    height:8px;
-
-    border-radius:50%;
-
-    background:var(--clr-success);
-
-    box-shadow:
-        0 0 12px rgba(57,243,140,.95),
-        0 0 28px rgba(57,243,140,.45);
-
-    transform:translateY(-50%);
-
-    animation:powerPulseSlider 1.8s ease forwards;
-}
-
-@keyframes socketInnerCurrent{
-    from{
-        left:-45%;
-        opacity:0;
-    }
-
-    25%{
-        opacity:1;
-    }
-
-    to{
-        left:110%;
-        opacity:0;
-    }
-}
-
-@keyframes powerPulseSlider{
-    from{
-        opacity:1;
-        left:0%;
-    }
-
-    to{
-        opacity:0;
-        left:76%;
-    }
-}
+/* BOOT SCREEN, POWER RIG, SOCKET: moved to css/boot.css */
 
 /* ==========================================================
    BOOT DIAGNOSTICS
@@ -1418,10 +307,10 @@ body{
     place-items:center;
     gap:0;
     opacity:0;
-    transform:scale(.92);
+    transform:scale(.96);
     transition:
-        opacity .9s ease,
-        transform .9s ease;
+        opacity .6s var(--ease-out),
+        transform .9s var(--ease-out);
 }
 
 .cpu-visible .cpu-chip{
@@ -1577,7 +466,7 @@ body{
 
 .cpu-pins-right {
     display: grid;
-    grid-template-rows: repeat(12, 1fr);
+    grid-template-rows: repeat(14, 1fr);
     gap: 6px;
     align-self: stretch;
     padding: 40px 0;
@@ -1774,6 +663,33 @@ body{
 /* ---- Item hover: brightness pop only, NO transform (keeps geometry) ---- */
 .cpu-pin.pin-item-active {
     filter: brightness(1.3) saturate(1.15);
+}
+
+/* Not-connected leads: present on the package, dimmed, never lit. */
+.cpu-pin.cpu-pin-nc{
+    opacity:.38;
+    filter:saturate(.4);
+}
+
+.cpu-availability{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    margin-top:8px;
+    padding:3px 10px;
+    border:1px solid rgba(57,243,140,.28);
+    border-radius:999px;
+    color:rgba(57,243,140,.9);
+    font-size:.68rem;
+    letter-spacing:.4px;
+}
+
+.cpu-availability-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--clr-success);
+    box-shadow:0 0 8px rgba(57,243,140,.8);
 }
 
 .core-activated .cpu-core{
@@ -2046,11 +962,22 @@ body{
     overflow: visible;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 1s ease;
+    /* Power propagates outward from the CPU: radial wipe centred on the core
+       (--reveal-x/y set by Network.showTraces). */
+    clip-path: circle(0px at var(--reveal-x, 50%) var(--reveal-y, 25%));
+    transition:
+        opacity .4s ease,
+        clip-path 1.2s cubic-bezier(.4,0,.2,1);
 }
 
 .network-visible .pcb-svg {
     opacity: 1;
+    clip-path: circle(var(--reveal-r, 250vmax) at var(--reveal-x, 50%) var(--reveal-y, 25%));
+}
+
+/* Drop the clip once revealed: no per-frame clipping cost afterwards. */
+.network-revealed .pcb-svg {
+    clip-path: none;
 }
 
 /* Main module bus traces */
@@ -2251,11 +1178,11 @@ body{
     isolation:isolate;
 
     transition:
-        opacity .8s ease,
-        transform .8s ease,
-        width .5s ease,
-        min-height .5s ease,
-        max-height .5s ease,
+        opacity .7s var(--ease-out),
+        transform .7s var(--ease-out),
+        width .5s var(--ease-out),
+        min-height .5s var(--ease-out),
+        max-height .5s var(--ease-out),
         border-color .3s ease,
         box-shadow .3s ease;
 }
@@ -2590,10 +1517,15 @@ body{
     transform:translateY(10px);
 
     transition:
-        max-height .65s ease,
-        opacity .45s ease,
-        transform .45s ease,
-        margin-top .45s ease;
+        max-height .55s var(--ease-out),
+        opacity .35s ease,
+        transform .45s var(--ease-out),
+        margin-top .45s var(--ease-out);
+}
+
+/* Content arrives after the panel has started to widen, not with it. */
+.module-open .module-content{
+    transition-delay:0s,.12s,.12s,0s;
 }
 
 .module-open .module-content{
@@ -2798,6 +1730,24 @@ body{
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+}
+
+.module-detail > *{
+    animation:detailIn .32s var(--ease-out) both;
+}
+
+.module-detail > *:nth-child(2){ animation-delay:.03s; }
+.module-detail > *:nth-child(3){ animation-delay:.06s; }
+.module-detail > *:nth-child(4){ animation-delay:.09s; }
+
+@keyframes detailIn{
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:none; }
+}
+
+.module-detail li strong{
+    color:var(--clr-text);
+    font-weight:600;
 }
 
 .module-detail h4{
@@ -3166,22 +2116,6 @@ body{
    430-448 (Pro Max / Pro XL) and 412-414 (Pixel, Galaxy).
 ---------------------------------------------------------- */
 @media (max-width:520px){
-    .boot-panel{
-        padding:34px 22px;
-    }
-
-    .power-rig{
-        width:100%;
-    }
-
-    .power-cable-rail{
-        right:118px;
-    }
-
-    .power-socket{
-        width:108px;
-    }
-
     .cpu-wrapper{
         padding:52px 16px 32px;
     }
@@ -3398,4 +2332,26 @@ body{
 .resume-btn-primary:focus-visible {
     border-color: var(--clr-success);
     background: rgba(57, 243, 140, 0.10);
+}
+
+
+/* ==========================================================
+   REDUCED MOTION (board)
+========================================================== */
+
+@media (prefers-reduced-motion:reduce){
+    .pcb-svg,
+    .network-visible .pcb-svg{
+        clip-path:none;
+    }
+
+    .module-detail > *{
+        animation:none;
+    }
+
+    .cpu-chip,
+    .module-card,
+    .module-content{
+        transition-duration:.01s;
+    }
 }
