@@ -47,21 +47,26 @@ const Boot = (() => {
             <div class="boot-screen">
                 <div class="boot-panel">
 
-                    <span class="boot-label">SYSTEM STATUS</span>
+                    <header class="boot-header">
+                        <h1 class="boot-title">
+                            <span>PORTFOLIO</span>
+                            <span>SYSTEM</span>
+                        </h1>
 
-                    <h1 class="boot-title">
-                        <span>PORTFOLIO</span>
-                        <span>SYSTEM</span>
-                    </h1>
+                        <!-- HTML entities: immune to the file being re-saved in a non-UTF-8 encoding -->
+                        <p class="boot-identity">
+                            <span class="boot-name">Cl&eacute;ment H&eacute;ritier</span>
+                            <span class="boot-role">Embedded Systems &amp; Robotics Engineer</span>
+                        </p>
+                    </header>
 
-                    <p class="boot-identity">Clément Héritier, Embedded Systems &amp; Robotics Engineer</p>
-
-                    <div class="boot-state">
-                        <span class="boot-led"></span>
-                        <span id="boot-status-text">OFFLINE</span>
+                    <div class="boot-status">
+                        <div class="boot-state">
+                            <span class="boot-led"></span>
+                            <span id="boot-status-text">OFFLINE</span>
+                        </div>
+                        <p class="boot-message">Connect the supply to boot the board.</p>
                     </div>
-
-                    <p class="boot-message">Board unpowered. Connect the supply to boot the portfolio.</p>
 
                     <div class="power-rig">
                         <div id="power-slider" class="power-slider is-idle">
@@ -84,7 +89,7 @@ const Boot = (() => {
                             </div>
 
                             <button id="power-plug" class="power-plug" type="button"
-                                aria-label="Power plug. Drag it into the socket, or press Enter to connect.">
+                                aria-label="Power plug. Drag it into the socket to connect.">
                                 <span class="plug-body">
                                     <span class="plug-boot"></span>
                                     <span class="plug-shell">
@@ -128,7 +133,6 @@ const Boot = (() => {
                         </svg>
                         <span class="hint-pointer">Drag the plug into the socket</span>
                         <span class="hint-touch">Slide the plug into the socket</span>
-                        <span class="hint-key">or press <kbd>Enter</kbd></span>
                     </p>
 
                     <div class="boot-diagnostics" aria-live="polite">

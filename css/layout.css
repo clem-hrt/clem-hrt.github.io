@@ -457,7 +457,7 @@ body{
 
 .cpu-pins-left {
     display: grid;
-    grid-template-rows: repeat(14, 1fr);
+    grid-template-rows: repeat(12, 1fr);
     gap: 6px;
     align-self: stretch;
     padding: 40px 0;
