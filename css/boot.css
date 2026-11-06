@@ -1,0 +1,853 @@
+/* ==========================================================
+   BOOT
+   Welcome screen, power rig, handoff to the board.
+   Replaces the BOOT SCREEN → SOCKET V2 sections of layout.css.
+========================================================== */
+
+:root{
+    --metal:linear-gradient(180deg,#f4f8fc 0%,#c3cdd9 45%,#8995a5 70%,#e6edf5 100%);
+    --metal-live:linear-gradient(180deg,#f2fff8 0%,#9ff3c6 45%,#3fbf85 70%,#e6fff2 100%);
+    --hatch:repeating-linear-gradient(45deg,rgba(53,194,255,.16) 0 1px,transparent 1px 5px);
+}
+
+/* ==========================================================
+   SCREEN + PANEL
+========================================================== */
+
+.boot-screen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px 0;
+}
+
+.boot-panel{
+    position:relative;
+    width:min(540px,92vw);
+    padding:44px 44px 34px;
+    border:1px solid rgba(53,194,255,.18);
+    border-radius:var(--radius-large);
+    background:rgba(10,16,28,.74);
+    backdrop-filter:blur(7px);
+    box-shadow:var(--shadow-card);
+    text-align:center;
+    transform-origin:center center;
+    transition:
+        border-color var(--transition-slow),
+        box-shadow var(--transition-slow);
+}
+
+.boot-panel > *{
+    transition:opacity .22s ease;
+}
+
+.boot-label{
+    display:block;
+    color:var(--clr-accent);
+    letter-spacing:4px;
+    font-size:.72rem;
+    margin-bottom:16px;
+    opacity:.8;
+}
+
+.boot-title{
+    font-family:var(--font-title);
+    line-height:1;
+    margin-bottom:14px;
+}
+
+.boot-title span:first-child{
+    display:block;
+    font-size:clamp(2.1rem,6vw,3.3rem);
+    letter-spacing:.14em;
+    margin-right:-.14em;
+}
+
+.boot-title span:last-child{
+    display:block;
+    margin-top:10px;
+    color:var(--clr-accent);
+    font-size:.82rem;
+    font-weight:500;
+    letter-spacing:.9em;
+    margin-right:-.9em;
+}
+
+.boot-identity{
+    color:var(--clr-text);
+    opacity:.82;
+    font-size:.92rem;
+    margin-bottom:20px;
+}
+
+.boot-state{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:12px;
+    color:#7f8a9b;
+    letter-spacing:5px;
+    font-size:.85rem;
+    margin-bottom:12px;
+}
+
+.boot-led{
+    width:11px;
+    height:11px;
+    border-radius:50%;
+    background:#626b78;
+    transition:background var(--transition-normal),box-shadow var(--transition-normal);
+}
+
+.boot-led.online{
+    background:var(--clr-success);
+    box-shadow:0 0 18px rgba(57,243,140,.85);
+}
+
+.online-text{
+    color:var(--clr-success);
+}
+
+.boot-message{
+    color:var(--clr-text-secondary);
+    font-size:.9rem;
+    min-height:1.3em;
+}
+
+.boot-online{
+    border-color:rgba(57,243,140,.35);
+    box-shadow:
+        var(--shadow-card),
+        0 0 45px rgba(57,243,140,.08);
+}
+
+/* Handoff: content fades first, then the empty frame morphs into the CPU (WAAPI). */
+.boot-collapsing{
+    border-color:rgba(53,194,255,.6);
+    box-shadow:0 0 40px rgba(53,194,255,.18);
+}
+
+.boot-collapsing > *{
+    opacity:0;
+}
+
+.boot-fade-out{
+    animation:bootFadeOut .5s ease forwards;
+}
+
+.boot-hidden{
+    display:none;
+}
+
+@keyframes bootFadeOut{
+    to{ opacity:0; }
+}
+
+.boot-skip{
+    position:absolute;
+    top:16px;
+    right:18px;
+    padding:6px 10px;
+    border:1px solid transparent;
+    border-radius:8px;
+    background:none;
+    color:var(--clr-text-secondary);
+    font:inherit;
+    font-size:.72rem;
+    letter-spacing:.5px;
+    cursor:pointer;
+    transition:color var(--transition-fast),border-color var(--transition-fast);
+}
+
+.boot-skip:hover{
+    color:var(--clr-text);
+    border-color:rgba(53,194,255,.25);
+}
+
+.boot-skip:focus-visible,
+.power-plug:focus-visible{
+    outline:2px solid var(--clr-accent);
+    outline-offset:3px;
+}
+
+/* ==========================================================
+   RIG FRAME
+   Everything below is positioned off --cy, the cable axis.
+========================================================== */
+
+.power-rig{
+    width:100%;
+    max-width:440px;
+    margin:26px auto 4px;
+}
+
+.power-slider{
+    --cy:42px;
+    --plug-origin:92px;
+    position:relative;
+    width:100%;
+    height:106px;
+    user-select:none;
+}
+
+/* ==========================================================
+   CABLE (SVG, path written by boot.js every frame)
+========================================================== */
+
+.power-cable{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    overflow:visible;
+    z-index:1;
+    pointer-events:none;
+}
+
+.power-cable path{
+    fill:none;
+    stroke-linecap:round;
+}
+
+.cable-shadow{
+    stroke:rgba(0,0,0,.55);
+    stroke-width:9;
+    transform:translateY(4px);
+    filter:blur(2.5px);
+}
+
+.cable-body{
+    stroke:#1a2536;
+    stroke-width:7.5;
+}
+
+.cable-highlight{
+    stroke:rgba(180,220,250,.24);
+    stroke-width:1.6;
+    transform:translateY(-1.8px);
+}
+
+.cable-current{
+    stroke:var(--clr-success);
+    stroke-width:2.6;
+    stroke-dasharray:14 170;
+    opacity:0;
+    filter:drop-shadow(0 0 4px rgba(57,243,140,.9));
+    transition:opacity .3s ease;
+}
+
+.power-current-locked .cable-current{
+    opacity:1;
+    animation:cableCurrent 1.05s linear infinite;
+}
+
+.power-current-locked .cable-body{
+    stroke:#1a2f2c;
+    transition:stroke .4s ease;
+}
+
+@keyframes cableCurrent{
+    from{ stroke-dashoffset:0; }
+    to{ stroke-dashoffset:-184; }
+}
+
+/* ==========================================================
+   SOURCE (bench supply output the cable comes from)
+========================================================== */
+
+.power-source{
+    position:absolute;
+    left:0;
+    top:calc(var(--cy) - 24px);
+    width:38px;
+    height:48px;
+    z-index:2;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    border:1px solid rgba(53,194,255,.22);
+    border-radius:8px;
+    background:linear-gradient(145deg,#152034,#070c15);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 6px 14px rgba(0,0,0,.35);
+}
+
+.source-led{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--clr-success);
+    box-shadow:0 0 8px rgba(57,243,140,.8);
+}
+
+.source-label{
+    color:var(--clr-text-secondary);
+    font-size:.55rem;
+    letter-spacing:1px;
+}
+
+.source-gland{
+    position:absolute;
+    right:-7px;
+    top:50%;
+    width:8px;
+    height:14px;
+    transform:translateY(-50%);
+    border-radius:0 4px 4px 0;
+    background:linear-gradient(180deg,#2a3546,#0d141f);
+    border:1px solid rgba(53,194,255,.18);
+    border-left:none;
+}
+
+/* ==========================================================
+   PLUG (side view)
+========================================================== */
+
+.power-plug{
+    position:absolute;
+    left:var(--plug-origin);
+    top:calc(var(--cy) - 20px);
+    height:40px;
+    padding:0;
+    border:none;
+    background:none;
+    z-index:3;
+    cursor:grab;
+    touch-action:none;
+    will-change:transform;
+}
+
+.power-plug.is-dragging{
+    cursor:grabbing;
+}
+
+.power-plug:disabled{
+    cursor:default;
+}
+
+.plug-body{
+    display:flex;
+    align-items:center;
+    height:100%;
+    transition:filter var(--transition-normal);
+}
+
+.power-plug.is-dragging .plug-body{
+    filter:drop-shadow(0 8px 10px rgba(0,0,0,.45));
+}
+
+/* Strain-relief boot: tapers from cable to body */
+.plug-boot{
+    width:16px;
+    height:20px;
+    background:
+        repeating-linear-gradient(90deg,rgba(255,255,255,.06) 0 2px,transparent 2px 4px),
+        linear-gradient(180deg,#273246,#0b111b);
+    clip-path:polygon(0 30%,100% 0,100% 100%,0 70%);
+}
+
+.plug-shell{
+    position:relative;
+    height:40px;
+    display:flex;
+    align-items:center;
+    border:1px solid rgba(53,194,255,.34);
+    border-radius:10px 4px 4px 10px;
+    background:linear-gradient(170deg,#1c283c 0%,#0d1522 55%,#060a12 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.08),
+        inset 0 -6px 10px rgba(0,0,0,.35),
+        0 0 16px rgba(53,194,255,.10);
+    transition:border-color var(--transition-normal),box-shadow var(--transition-normal);
+}
+
+.plug-grip{
+    width:22px;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:4px;
+    border-right:1px solid rgba(53,194,255,.14);
+}
+
+.plug-grip span{
+    width:10px;
+    height:2px;
+    border-radius:2px;
+    background:rgba(234,243,255,.26);
+}
+
+.plug-face{
+    padding:0 11px 0 10px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+    color:var(--clr-accent);
+    font-size:.6rem;
+    letter-spacing:1.6px;
+    transition:color var(--transition-normal);
+}
+
+.plug-light{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#5d697b;
+    transition:background var(--transition-normal),box-shadow var(--transition-normal);
+}
+
+.plug-nose{
+    width:12px;
+    height:30px;
+    border:1px solid rgba(53,194,255,.28);
+    border-left:none;
+    border-radius:0 4px 4px 0;
+    background:linear-gradient(170deg,#18233a,#060a12);
+}
+
+.plug-prongs{
+    position:relative;
+    width:26px;
+    height:22px;
+}
+
+.plug-prong{
+    position:absolute;
+    left:0;
+    width:26px;
+    height:4px;
+    border-radius:0 2px 2px 0;
+    background:var(--metal);
+    box-shadow:0 1px 2px rgba(0,0,0,.5);
+    transition:box-shadow var(--transition-normal);
+}
+
+.plug-prong:first-child{ top:3px; }
+.plug-prong:last-child{ bottom:3px; }
+
+.power-plug.is-dragging .plug-shell,
+.power-plug.plug-near-socket .plug-shell{
+    border-color:rgba(53,194,255,.62);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.09),
+        inset 0 -6px 10px rgba(0,0,0,.35),
+        0 0 22px rgba(53,194,255,.2);
+}
+
+.power-plug.plug-engaged .plug-body{
+    animation:plugSeat .24s var(--ease-out);
+}
+
+@keyframes plugSeat{
+    0%{ transform:translateX(0); }
+    40%{ transform:translateX(2px); }
+    100%{ transform:translateX(0); }
+}
+
+.power-connected .plug-shell{
+    border-color:rgba(57,243,140,.5);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.08),
+        inset 0 -6px 10px rgba(0,0,0,.35),
+        0 0 22px rgba(57,243,140,.18);
+}
+
+.power-connected .plug-face{ color:var(--clr-success); }
+
+.power-connected .plug-light{
+    background:var(--clr-success);
+    box-shadow:0 0 10px rgba(57,243,140,.9);
+}
+
+.power-connected .plug-prong{ background:var(--metal-live); }
+
+/* ==========================================================
+   SOCKET (side view, cut-away housing)
+   Draw order: housing (2) < plug prongs (3) < flange + contacts (4)
+   so the prongs visibly pass through the flange opening and slide
+   under the leaf contacts.
+========================================================== */
+
+.power-socket{
+    --flange-w:7px;
+    --housing-w:62px;
+    position:absolute;
+    right:4px;
+    top:0;
+    width:calc(var(--flange-w) + var(--housing-w));
+    height:100%;
+    cursor:pointer;
+}
+
+.socket-housing{
+    position:absolute;
+    left:var(--flange-w);
+    top:calc(var(--cy) - 23px);
+    width:var(--housing-w);
+    height:46px;
+    z-index:2;
+    border:1px solid rgba(53,194,255,.3);
+    border-left:none;
+    border-radius:0 9px 9px 0;
+    background:var(--hatch),linear-gradient(170deg,#152034,#070c15);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 8px 16px rgba(0,0,0,.35);
+    transition:border-color var(--transition-normal),box-shadow var(--transition-normal);
+}
+
+.socket-cavity{
+    position:absolute;
+    left:0;
+    top:11px;
+    width:42px;
+    height:22px;
+    border:1px solid rgba(53,194,255,.18);
+    border-left:none;
+    border-radius:0 4px 4px 0;
+    background:linear-gradient(90deg,#02050a,#0a121e);
+    box-shadow:inset 0 0 10px rgba(0,0,0,.8);
+}
+
+.power-slider.is-idle .socket-cavity{
+    animation:cavityAwait 2.2s ease-in-out infinite;
+}
+
+@keyframes cavityAwait{
+    0%,100%{ box-shadow:inset 0 0 10px rgba(0,0,0,.8); }
+    50%{ box-shadow:inset 0 0 10px rgba(0,0,0,.8),0 0 14px rgba(53,194,255,.35); }
+}
+
+.socket-led{
+    position:absolute;
+    right:10px;
+    top:-4px;
+    width:9px;
+    height:4px;
+    border-radius:1px;
+    background:#e0a33a;
+    box-shadow:0 0 8px rgba(224,163,58,.7);
+    animation:ledBlink 1.4s steps(1) infinite;
+}
+
+.socket-magnetic .socket-led{ animation-duration:.45s; }
+
+@keyframes ledBlink{
+    0%{ opacity:1; }
+    50%{ opacity:.18; }
+}
+
+.socket-flange{
+    position:absolute;
+    left:0;
+    width:var(--flange-w);
+    height:21px;
+    z-index:4;
+    border:1px solid rgba(53,194,255,.32);
+    background:linear-gradient(90deg,#24324a,#0b121d);
+    transition:border-color var(--transition-normal);
+}
+
+.socket-flange-top{
+    top:calc(var(--cy) - 31px);
+    border-radius:3px 3px 0 0;
+    border-bottom-color:rgba(0,0,0,.6);
+}
+
+.socket-flange-bottom{
+    top:calc(var(--cy) + 10px);
+    border-radius:0 0 3px 3px;
+    border-top-color:rgba(0,0,0,.6);
+}
+
+.socket-screw{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:4px;
+    height:4px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:var(--metal);
+}
+
+/* Leaf contacts: angled into the prong path at rest, pushed flat when seated */
+.socket-contact{
+    position:absolute;
+    left:calc(var(--flange-w) + 9px);
+    width:26px;
+    height:3px;
+    z-index:4;
+    border-radius:2px;
+    background:var(--metal);
+    transition:transform .18s var(--ease-out),background .3s ease,box-shadow .3s ease;
+}
+
+.socket-contact-top{
+    top:calc(var(--cy) - 11px);
+    transform-origin:left center;
+    transform:rotate(7deg);
+}
+
+.socket-contact-bottom{
+    top:calc(var(--cy) + 8px);
+    transform-origin:left center;
+    transform:rotate(-7deg);
+}
+
+.socket-engaged .socket-contact{
+    transform:rotate(0deg);
+}
+
+.socket-online .socket-contact{
+    background:var(--metal-live);
+    box-shadow:0 0 8px rgba(57,243,140,.6);
+}
+
+.socket-leads span{
+    position:absolute;
+    top:calc(var(--cy) + 23px);
+    width:3px;
+    height:17px;
+    background:var(--metal);
+    opacity:.8;
+}
+
+.socket-leads span:first-child{ left:calc(var(--flange-w) + 14px); }
+.socket-leads span:last-child{ left:calc(var(--flange-w) + 44px); }
+
+.socket-pcb{
+    position:absolute;
+    left:-10px;
+    right:-4px;
+    top:calc(var(--cy) + 40px);
+    height:5px;
+    border-radius:2px;
+    background:linear-gradient(180deg,#123a3c,#08201f);
+    border-top:1px solid rgba(57,243,140,.25);
+}
+
+.socket-label{
+    position:absolute;
+    left:0;
+    right:0;
+    top:calc(var(--cy) + 50px);
+    color:rgba(141,154,175,.8);
+    font-size:.5rem;
+    letter-spacing:1.5px;
+    white-space:nowrap;
+    transition:color var(--transition-normal);
+}
+
+.socket-magnetic .socket-housing{
+    border-color:rgba(53,194,255,.6);
+    box-shadow:0 0 22px rgba(53,194,255,.22);
+}
+
+.socket-magnetic .socket-flange{
+    border-color:rgba(53,194,255,.65);
+}
+
+.socket-online .socket-housing{
+    border-color:rgba(57,243,140,.55);
+    box-shadow:0 0 24px rgba(57,243,140,.2);
+}
+
+.socket-online .socket-flange{ border-color:rgba(57,243,140,.55); }
+
+.socket-online .socket-led{
+    background:var(--clr-success);
+    box-shadow:0 0 10px rgba(57,243,140,.95);
+    animation:none;
+}
+
+.socket-online .socket-label{
+    color:var(--clr-success);
+}
+
+/* Contact spark on seating */
+.socket-sparks{
+    position:absolute;
+    left:calc(var(--flange-w) / 2);
+    top:var(--cy);
+    z-index:5;
+    pointer-events:none;
+}
+
+.socket-sparks i{
+    position:absolute;
+    width:3px;
+    height:3px;
+    border-radius:50%;
+    background:#eafff5;
+    box-shadow:0 0 6px var(--clr-success);
+    opacity:0;
+}
+
+.socket-engaged .socket-sparks i{
+    animation:spark .5s var(--ease-out) forwards;
+}
+
+.socket-sparks i:nth-child(1){ --dx:-18px; --dy:-16px; }
+.socket-sparks i:nth-child(2){ --dx:-24px; --dy:-3px;  animation-delay:.03s; }
+.socket-sparks i:nth-child(3){ --dx:-16px; --dy:14px;  animation-delay:.05s; }
+.socket-sparks i:nth-child(4){ --dx:-6px;  --dy:-22px; animation-delay:.02s; }
+.socket-sparks i:nth-child(5){ --dx:-8px;  --dy:20px;  animation-delay:.06s; }
+.socket-sparks i:nth-child(6){ --dx:-28px; --dy:8px;   animation-delay:.04s; }
+
+@keyframes spark{
+    0%{ opacity:1; transform:translate(0,0) scale(1.4); }
+    100%{ opacity:0; transform:translate(var(--dx),var(--dy)) scale(.4); }
+}
+
+/* ==========================================================
+   INVITATION: guide chevrons + hint line
+========================================================== */
+
+.insert-guide{
+    position:absolute;
+    left:var(--guide-left,190px);
+    right:var(--guide-right,90px);
+    top:calc(var(--cy) - 6px);
+    height:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:7px;
+    z-index:2;
+    pointer-events:none;
+    transition:opacity .3s ease;
+}
+
+.insert-guide span{
+    width:8px;
+    height:8px;
+    border-top:2px solid var(--clr-accent);
+    border-right:2px solid var(--clr-accent);
+    transform:rotate(45deg);
+    opacity:.15;
+    animation:chevronFlow 1.5s ease-in-out infinite;
+}
+
+.insert-guide span:nth-child(2){ animation-delay:.18s; }
+.insert-guide span:nth-child(3){ animation-delay:.36s; }
+
+@keyframes chevronFlow{
+    0%,100%{ opacity:.12; }
+    35%{ opacity:.95; }
+}
+
+.power-slider.is-engaged .insert-guide,
+.power-slider.is-near .insert-guide{
+    opacity:0;
+}
+
+.power-hint{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:6px 8px;
+    color:var(--clr-text-secondary);
+    font-size:.8rem;
+    transition:opacity .4s ease;
+}
+
+.power-hint.hint-used{
+    opacity:.35;
+}
+
+.power-connected .power-hint{
+    opacity:0;
+}
+
+.hint-hand{
+    width:18px;
+    height:18px;
+    fill:none;
+    stroke:var(--clr-accent);
+    stroke-width:1.6;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    animation:handDrag 2.4s var(--ease-in-out) infinite;
+}
+
+.hint-used .hint-hand{ animation:none; }
+
+@keyframes handDrag{
+    0%,20%{ transform:translateX(0); }
+    60%{ transform:translateX(10px); }
+    80%,100%{ transform:translateX(0); }
+}
+
+.power-hint kbd{
+    padding:1px 6px;
+    border:1px solid rgba(53,194,255,.3);
+    border-radius:4px;
+    background:rgba(53,194,255,.06);
+    color:var(--clr-text);
+    font:inherit;
+    font-size:.72rem;
+}
+
+.hint-touch{ display:none; }
+
+@media (hover:none) and (pointer:coarse){
+    .hint-pointer,
+    .hint-key{ display:none; }
+    .hint-touch{ display:inline; }
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width:520px){
+    .boot-panel{
+        padding:44px 22px 26px;
+    }
+}
+
+@media (max-width:420px){
+    .power-slider{
+        --plug-origin:64px;
+    }
+
+    .power-source{
+        width:28px;
+    }
+
+    .source-label{ display:none; }
+
+    .plug-face{
+        padding:0 8px;
+    }
+
+    .plug-text{ display:none; }
+
+    .power-socket{
+        --housing-w:50px;
+    }
+
+    .socket-leads span:last-child{ left:calc(var(--flange-w) + 34px); }
+}
+
+/* ==========================================================
+   REDUCED MOTION
+========================================================== */
+
+@media (prefers-reduced-motion:reduce){
+    .insert-guide span,
+    .hint-hand,
+    .socket-led,
+    .power-slider.is-idle .socket-cavity,
+    .power-current-locked .cable-current,
+    .socket-engaged .socket-sparks i,
+    .power-plug.plug-engaged .plug-body{
+        animation:none;
+    }
+
+    .insert-guide span{ opacity:.6; }
+}
