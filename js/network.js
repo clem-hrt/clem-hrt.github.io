@@ -29,7 +29,7 @@ const Network = (() => {
                 {
                     title: "Alstom",
                     url: "https://www.alstom.com",
-                    meta: "Test Automation Engineer – VIE, CBTC signaling",
+                    meta: "Test Automation Engineer – VIE",
                     date: "Jun 2025 – Present · Pittsburgh, US",
                     details: [
                         "Built a full-stack platform to capture and analyse <strong>CBTC</strong> communications (Python, Flask, PyShark, MongoDB)",
